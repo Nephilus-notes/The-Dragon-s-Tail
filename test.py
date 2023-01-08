@@ -4,10 +4,11 @@ from abc import ABC, abstractmethod
 from os.path import join as path_join
 
 
-from ImageClasses import * 
+from old_code.npc_classes import *
+from pyxel_code.image_classes import * 
 from pyxel_code.constants import *
-from utils import *
-from game_states import TownScreenState
+from pyxel_code.utils import *
+from pyxel_code.game_states import TownScreenState
 
 
 class App:
@@ -19,10 +20,12 @@ class App:
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.leather = ShopItem(**item_location[3])
+        self.enemy = ShadeFireFox()
+        Layer.main.append(self.enemy)
 
-        for num in range(6):
-            item = ShopItem(**item_location[num])
-            Layer.main.append(item)
+        # for num in range(6):
+            # item = ShopItem(**item_location[num])
+            # Layer.main.append(item)
 
         px.mouse(SHOW_CURSOR)
         px.run(self.update, self.draw)
@@ -32,15 +35,16 @@ class App:
 
     def draw(self):
         px.cls(0)
-        bg = Background(**background['blacksmith'])
+        bg = Background(**background['combat'])
         bg.draw()
-        # px.bltm(8, 8, 0, 0, 256, 64, 128)
-        # px.bltm(192, 8, 0, 64, 256, 64, 128)
         self.character_info.draw()
         self.item_info.draw()
+        # px.bltm(8, 8, 0, 0, 256, 64, 128)
+        # px.bltm(192, 8, 0, 64, 256, 64, 128)
+
         for itm in Layer.main:
             itm.draw()
-        self.leather.draw()
+        # self.leather.draw()
         # px.blt(96,24,2,0,0,16,16,7)
         # px.bltm(8, 8, 0, background['town']['u'], background['town']['v'], 128, 128)
         # px.bltm(8, 8, 0, background['blacksmith']['u'], background['blacksmith']['v'], 128, 128)

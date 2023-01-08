@@ -2,7 +2,7 @@ from random import randint
 
 from .character_builder import Character
 from .dicts import items as itm, attributes as atb, lvl_dict, currency_tiers
-from ..pyxel_code.ImageClasses import Sprite
+from pyxel_code.image_classes import Sprite
 
 class NPC(Character):
     def __init__(self, name, strength, dexterity, intelligence, constitution, armor, resistance):
@@ -58,7 +58,8 @@ class GraithLizard(NPC, Sprite):
         self.resistance = atb['resist_range']['weak']
         self.u=u 
         self.v=v
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
@@ -75,7 +76,8 @@ class GraithQueen(NPC, Sprite):
         self.resistance = atb['resist_range']['average']
         self.u=u 
         self.v=v
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
@@ -92,7 +94,8 @@ class GraithTree(NPC, Sprite):
         self.resistance = atb['resist_range']['weak']
         self.u=u 
         self.v=v
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
@@ -114,7 +117,8 @@ class GraithApple(NPC, Sprite):
         self.resistance = atb['resist_range']['weak']
         self.u=u 
         self.v=v
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
@@ -136,7 +140,8 @@ class KraktRat(NPC, Sprite):
         # it actually merged with some of the native lizards and began to dominate it's size category
         # growing more aggressive and larger as it did so. They came from the rats that 
         # ate the Goblins' stores when they lived above ground, so had a much faster evolution because of their proximity to magic
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
 
 #  Braba stats - vw str, low/mid dex, vw int, vw con, no extra hp
 class BrabaBat(NPC, Sprite):
@@ -156,7 +161,8 @@ class BrabaBat(NPC, Sprite):
         # return to its colony and bring them back to take down the marked prey as a group
         # If I have implimented multiple enemies, this is a great candidate for swarms of 3 +
         # if that's the case their stats have to be super low, but they will also try to flee if there is only one of them in the battle.
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
 
     def feed(self, target):
         # an attack that heals them for half the amount of damage dealt
@@ -178,9 +184,11 @@ class ShadeFireFox(NPC, Sprite):
         # An incredibly rare creature of magic, this fox can utilize fire magic in addition
         # to its fangs and claws when taking down prey. it can also use magic to make itself
         # more stealthy, making it a terrifying foe
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
+        print("fox created")
 
 
     def immolate(self, target):
@@ -204,7 +212,8 @@ class GraktaWolf(NPC, Sprite):
         # Gratka wolves - wolves that adapted to the Graith'gesh trees, these wolves are seen as 
         # plants by the trees and so are allowed to live. They are characterized by a mound of leaves growing from their shoulders
         # falling like a mane around them. They are formidable foes, either alone or in groups
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(NPC, self).__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        super(Sprite, self).__init__(x=96, y=24, bank=2, u=self.u, v=self.v, w=16, h=16, colkey=7)
 
     def trip(self, target):
         # decreases targets dodge value for 2/3 turns

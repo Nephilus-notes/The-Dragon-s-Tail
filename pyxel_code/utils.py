@@ -17,6 +17,8 @@ class Updatable(ABC):
     def stop_update(self):
         self.updatables.remove(self)
 
+class Interactable:
+    main = []
 
 class Layer:
     back = []  # background

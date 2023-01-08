@@ -4,12 +4,11 @@ from os.path import join as path_join
 
 import pyxel as px
 
-# import pyxel_code.ImageClasses as IC
 from pyxel_code.constants import *
-import pyxel_code.utils as u
+from pyxel_code.utils import *
 
 from old_code.npc_classes import *
-
+from .image_classes import *
 
 class GameState(ABC):
     def __init__(self, game):
@@ -30,24 +29,24 @@ class GameState(ABC):
         pass
 
     def clear_layers(self):
-        u.Layer.back = []
-        u.Layer.main = []
-        u.Layer.fore = []
+        Layer.back = []
+        Layer.main = []
+        Layer.fore = []
 
     def get_next_state(self):
         return self._next_state
 
     def draw_layers(self):
         # px.cls(Background.color)
-        for item in u.Layer.back:
+        for item in Layer.back:
             item.draw()
-        for item in reversed(u.Layer.main):
+        for item in reversed(Layer.main):
             item.draw()
-        for item in u.Layer.fore:
+        for item in Layer.fore:
             item.draw()
     
     def check_mouse_position(self):
-        for item in u.Layer.main:
+        for item in Layer.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -55,24 +54,43 @@ class GameState(ABC):
         # Score on top right
         score = str(self.game.score)
         x = WIDTH - len(score) * 4 - 1
-        # pos_txt = v2(x, 2) + Entity.offset
-        # px.text(*pos_txt, score, WHITE)
+
+    def build_buttons(self):
+        self.exit = Button(self)
+        self.explore = ExploreButton(self)
+        Layer.main.append(self.exit)
+        Layer.main.append(self.explore)
+
+    def build_exit(self):
+        self.exit = Button(self)
+        Layer.main.append(self.exit)
+
+    def build_interactables(self, class_instances:list):
+        for instance in class_instances:
+            Layer.main.append(instance)
+            Interactable.main.append(instance)
+            self.name = instance
+
+    def build_sprites(self, class_instances:list):
+        for sprite in class_instances:
+            Layer.main.append(sprite)
 
 class TownScreenState(GameState):
     def on_enter(self):
         self.clear_layers()
-        self.bg = IC.Background(**u.background['town'])
-        u.Layer.back.append(self.bg)
-        self.blacksmith = IC.Entrance(u.ted['Blacksmith'])
-        self.alchemist = IC.Entrance(u.ted["Alchemist's Shop"])
-        self.inn = IC.Entrance(u.ted['Inn'])
-        self.underbelly = IC.Entrance(u.ted['underbelly'])
-        self.shining_forest = IC.Entrance(u.ted['shining_forest'])
-        u.Layer.main.append(self.alchemist)
-        u.Layer.main.append(self.blacksmith)
-        u.Layer.main.append(self.inn)
-        u.Layer.main.append(self.underbelly)
-        u.Layer.main.append(self.shining_forest)
+
+        self.blacksmith = Entrance(ted['Blacksmith'])
+        self.alchemist = Entrance(ted["Alchemist's Shop"])
+        self.underbelly = Entrance(ted['underbelly'])
+        self.inn = Entrance(ted['Inn'])
+        self.shining_forest = Entrance(ted['shining_forest'])
+        self.build_interactables([ self.blacksmith, 
+        self.alchemist, self.inn, self.shining_forest 
+        , self.underbelly])
+
+        self.bg = Background(**background['town'])
+        Layer.back.append(self.bg)
+
 
         self.MOUSE_LOCATION = ''
 
@@ -87,7 +105,7 @@ class TownScreenState(GameState):
             self.blacksmith.intersection()
             if px.btn(px.MOUSE_BUTTON_LEFT):
                 px.text(1,1, "clicked", 7)
-                self._next_state = BlacksmithScreen(self.game) # add shoptoken to dictate which shop it is, also add self.pu.layer
+                self._next_state = BlacksmithScreen(self.game) # add shoptoken to dictate which shop it is, also add self.player
         if self.inn.intersects(self.MOUSE_LOCATION):
             self.inn.intersection()
             if px.btn(px.MOUSE_BUTTON_LEFT):
@@ -96,7 +114,7 @@ class TownScreenState(GameState):
         if self.alchemist.intersects(self.MOUSE_LOCATION):
             self.alchemist.intersection()
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                self._next_state = AlchemistScreen(self.game) # add shoptoken to dictate which shop it is, also add self.pu.layer
+                self._next_state = AlchemistScreen(self.game) # add shoptoken to dictate which shop it is, also add self.player
                 px.text(1,1, "clicked", 7)
         if self.underbelly.intersects(self.MOUSE_LOCATION):
             self.underbelly.intersection()
@@ -118,23 +136,22 @@ class BlacksmithScreen(GameState):
     def on_enter(self):
         self.clear_layers()
 
-        self.bg = IC.Background(**u.background['blacksmith'])
+        self.bg = Background(**background['blacksmith'])
         # self.items = []
         for num in range(6):
-            item = IC.ShopItem(**u.item_location[num])
-            u.Layer.main.append(item)
-        self.exit = Button(self)
-        u.Layer.main.append(self.exit)
+            item = ShopItem(**item_location[num])
+            Layer.main.append(item)
+        self.build_exit()
 
 
-        u.Layer.back.append(self.bg)
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
 
     def update(self):
         self.MOUSE_LOCATION = px.mouse_x, px.mouse_y 
 
     def check_mouse_position(self):
-        for item in u.Layer.main:
+        for item in Layer.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -146,22 +163,21 @@ class AlchemistScreen(GameState):
     def on_enter(self):
         self.clear_layers()
 
-        self.bg = IC.Background(**u.background['alchemist'])
+        self.bg = Background(**background['alchemist'])
         # self.items = []
         for num in range(8,11):
-            item = IC.ShopItem(**u.item_location[num])
-            u.Layer.main.append(item)
-        self.exit = Button(self)
-        u.Layer.main.append(self.exit)
+            item = ShopItem(**item_location[num])
+            Layer.main.append(item)
+        self.build_exit()
 
-        u.Layer.back.append(self.bg)
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
 
     def update(self):
         self.MOUSE_LOCATION = px.mouse_x, px.mouse_y 
  
     def check_mouse_position(self):
-        for item in u.Layer.main:
+        for item in Layer.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -174,11 +190,10 @@ class InnScreen(GameState):
     def on_enter(self):
         self.clear_layers()
 
-        self.bg = IC.Background(**u.background['inn'])
-        self.exit = Button(self)
-        u.Layer.main.append(self.exit)
+        self.bg = Background(**background['inn'])
+        self.build_exit()
 
-        u.Layer.back.append(self.bg)
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
         # self.bg_town = Town()
         pass
@@ -195,12 +210,11 @@ class ShiningForestMapState(GameState):
         self.clear_layers()
 
 
-        self.bg = IC.Background(**u.background['combat'])
+        self.bg = Background(**background['shining_forest'])
 
-        self.exit = Button(self)
-        u.Layer.main.append(self.exit)
+        self.build_buttons()
 
-        u.Layer.back.append(self.bg)
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
 
     def update(self):
@@ -214,11 +228,9 @@ class UnderbellyMapState(GameState):
     def on_enter(self):
         self.clear_layers()
 
-        self.bg = IC.Background(**u.background['underbelly'])
-        self.exit = Button(self)
-        u.Layer.main.append(self.exit)
-
-        u.Layer.back.append(self.bg)
+        self.bg = Background(**background['underbelly'])
+        self.build_buttons()
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
         # self.bg_town = Town()
         pass
@@ -234,15 +246,14 @@ class CombatState(GameState):
     def on_enter(self):
         self.clear_layers()
 
-        self.bg = IC.Background(**u.background['combat'])
+        self.bg = Background(**background['combat'])
         self.exit = Button(self)
-        u.Layer.main.append(self.exit)
+        Layer.main.append(self.exit)
 
-        # self.enemy = BrabaBat()
-        # u.Layer.main.append(self.enemy)
-        u.Layer.back.append(self.bg)
+        self.enemy = ShadeFireFox()
+        Layer.main.append(self.enemy)
+        Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
-        # self.bg_town = Town()
         pass
 
     def update(self):
@@ -253,7 +264,7 @@ class CombatState(GameState):
         self.check_mouse_position()
 
 
-class Button(IC.Clickable, IC.DisplayImage): 
+class Button(Clickable, DisplayImage): 
     def __init__(self, owner, x=152, y=127, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
         self.owner = owner
@@ -265,3 +276,15 @@ class Button(IC.Clickable, IC.DisplayImage):
     def intersection(self):
         if px.btn(px.MOUSE_BUTTON_LEFT):
             self.owner._next_state = TownScreenState(self.owner.game)
+
+class ExploreButton(Button):
+    def __init__(self, owner, x=120, y=72, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
+        super().__init__(owner, x, y, bank, u, v, w, h, colkey)
+    
+    def draw(self):
+        px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
+        px.text(self.x + 2, self.y +2, "Explore", 7)
+
+    def intersection(self):
+        if px.btn(px.MOUSE_BUTTON_LEFT):
+            self.owner._next_state = CombatState(self.owner.game)

@@ -1,8 +1,8 @@
 import pyxel as px 
-from abc import ABC, abstractclassmethod
-import time
+
 
 class DisplayImage:
+    """Parent class for all displayed objects"""
     def __init__(self, x, y, bank, u, v, w, h, colkey=7) -> None:
         self.x = x
         self.y = y
@@ -17,9 +17,11 @@ class DisplayImage:
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
 
 class Sprite(DisplayImage): 
-    def __init__(self, u, v, x=96, y=24, bank=2, w=16, h=16) -> None:
-        super().__init__(x, y, bank, u, v, w, h)
+    """Parent class for all objects that can move"""
+    def __init__(self, u, v, x=96, y=24, bank=2, w=16, h=16, colkey=7) -> None:
+        super().__init__(x, y, bank, u, v, w, h, colkey)
         self.running= False
+        print("sprite drawn")
 
     def run(self):
         if self.running == False:
@@ -34,6 +36,7 @@ class Sprite(DisplayImage):
             self.running = False
 
 class Background(DisplayImage):
+    """Class for all background images"""
     def __init__(self,  u, v, bank=0, x=72, y=8, w=128, h=128):
         self.x = x
         self.y = y
@@ -49,6 +52,7 @@ class Background(DisplayImage):
         px.bltm(self.x, self.y, tm=self.bank, u=self.u, v=self.v, w=self.w, h=self.h)
 
 class Clickable:
+    """"parent class for all objects that use hover or on click effects"""
     def intersects(self, mouse_location:tuple):
         is_intersected = False
         if (
@@ -62,6 +66,7 @@ class Clickable:
         pass
 
 class Sidebar(DisplayImage):
+    """Side bar images for character info and items."""
     def __init__(self, x, y, u, v, name, offset, w=64, h=128, bank=0) -> None:
         self.name =name
         self.offset = offset
@@ -72,6 +77,7 @@ class Sidebar(DisplayImage):
         px.text(self.x + self.offset, self.y+8, f'{self.name.title()}', 10)
 
 class Entrance(DisplayImage, Clickable):
+    """ Images that display and use hover/onflick to provide routing from the townscreen"""
     def __init__(self, entrance_dict:dict):
         self.name= entrance_dict['name']
         self.x = entrance_dict['x']
@@ -91,8 +97,6 @@ class Entrance(DisplayImage, Clickable):
         self.flag = Pointer(self.entrance_dict)
         self.flag.draw()
         px.text(self.x - self.offset, self.y - 24, self.name, self.color)
-        # px.blt(ted['Blacksmith']['x'], ted['Blacksmith']['y'] - 16, ted['Blacksmith']['bank'], 
-        # ted['Blacksmith']['u'], ted['Blacksmith']['v']-16, ted['Blacksmith']['w'], ted['Blacksmith']['h'], 0)
 
 # class Button(Clickable, DisplayImage): 
 #     def __init__(self, x, y, bank, u, v, w, h, owner) -> None:
@@ -101,6 +105,7 @@ class Entrance(DisplayImage, Clickable):
 #         owner._next_state = BlacksmithScreen(self.game)
 
 class ShopItem(Clickable, DisplayImage):
+    """Items to display in the shop that will (eventually) hook up to the items dictionary"""
     def __init__(self, x, y, u, v, w, h, name, bank=2, colkey=7,) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
 
@@ -128,6 +133,7 @@ class Mouse(Sprite):
 
     
 class Pointer(Sprite):
+    """A companion for the houses on the town screen to give info on what the house is."""
     def __init__(self, entrance_dict:dict) -> None:
         self.x = entrance_dict['x']
         self.y = entrance_dict['y'] - 16
@@ -137,4 +143,4 @@ class Pointer(Sprite):
         self.w = entrance_dict['w']
         self.h = entrance_dict['h']
         self.colkey = 0
-        super().__init__(x=self.x, y=self.y, bank=self.bank, u=self.u, v= self.v, w=self.w, h=self.h)
+        super().__init__(x=self.x, y=self.y, bank=self.bank, u=self.u, v= self.v, w=self.w, h=self.h, colkey=self.colkey)
