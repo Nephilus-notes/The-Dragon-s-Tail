@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 import pyxel as px
 
+
 class Updatable(ABC):
 
     updatables = []
@@ -17,8 +18,11 @@ class Updatable(ABC):
     def stop_update(self):
         self.updatables.remove(self)
 
+
 class Interactable:
     main = []
+    frozen = []
+
 
 class Layer:
     back = []  # background
@@ -46,41 +50,89 @@ class Drawable(ABC):
 
 # Entrance image dict
 ted = {
-    'Blacksmith': { 'x':112, 'y': 48, 'bank': 0, 'u': 0, 'v': 128, 'w':16, 'h':16, 'colkey': 0, 'name': 'Blacksmith', 'color': 8, "offset": 10},
-    "Alchemist's Shop": {'x':80, 'y': 80, 'bank': 0, 'u': 16, 'v': 128, 'w':16, 'h':16, 'colkey': 0, 'name': 'Alchemist', 'color': 3, "offset": 10},
-    "Inn": {'x':128, 'y': 80, 'bank': 0, 'u': 32, 'v': 128, 'w':16, 'h':16, 'colkey': 0, 'name': 'Inn', 'color': 10, "offset": -4},
-    "shining_forest": {'x':176, 'y': 32, 'bank': 0, 'u': 48, 'v': 128, 'w':16, 'h':16, 'colkey': 0, 'name': 'Shining Forest', 'color': 7, "offset": 32},
-    'underbelly': {'x':176, 'y': 96, 'bank': 0, 'u': 64, 'v': 128, 'w':16, 'h':16, 'colkey': 10, 'name': 'The Underbelly', 'color': 7, "offset": 32},
+    'Blacksmith': {'x': 112, 'y': 48, 'bank': 0, 'u': 0, 'v': 128, 'w': 16, 'h': 16, 'colkey': 0, 'name': 'Blacksmith', 'color': 8, "offset": 10},
+    "Alchemist's Shop": {'x': 80, 'y': 80, 'bank': 0, 'u': 16, 'v': 128, 'w': 16, 'h': 16, 'colkey': 0, 'name': 'Alchemist', 'color': 3, "offset": 10},
+    "Inn": {'x': 128, 'y': 80, 'bank': 0, 'u': 32, 'v': 128, 'w': 16, 'h': 16, 'colkey': 0, 'name': 'Inn', 'color': 10, "offset": -4},
+    "shining_forest": {'x': 176, 'y': 32, 'bank': 0, 'u': 48, 'v': 128, 'w': 16, 'h': 16, 'colkey': 0, 'name': 'Shining Forest', 'color': 7, "offset": 32},
+    'underbelly': {'x': 176, 'y': 96, 'bank': 0, 'u': 64, 'v': 128, 'w': 16, 'h': 16, 'colkey': 10, 'name': 'The Underbelly', 'color': 7, "offset": 32},
 }
 
 # Background location dict
 background = {
-    'town': {'u':256, 'v':0},
-    'blacksmith': {'u':0, 'v':0},
-    "alchemist": {'u':128, 'v':0},
-    'inn': {'u': 0, 'v': 384 },
+    'town': {'u': 256, 'v': 0},
+    'blacksmith': {'u': 0, 'v': 0},
+    "alchemist": {'u': 128, 'v': 0},
+    'inn': {'u': 0, 'v': 384},
     'shining_forest': {'u': 256, 'v': 128},
-    'underbelly':{'u': 384, 'v': 128},
+    'underbelly': {'u': 384, 'v': 128},
     'combat': {'u': 128, 'v': 128}
 }
 
 sidebar = {
-    'character_info': {'x':8, 'y': 8,  'u': 0, 'v': 256, 'name': 'Character Info', 'offset':4},
-    'items': {'x':200, 'y': 8,  'u': 64, 'v': 256, 'name': 'Backpack', 'offset': 16}
+    'character_info': {'x': 8, 'y': 8,  'u': 0, 'v': 256, 'name': 'Character Info', 'offset': 4},
+    'items': {'x': 200, 'y': 8,  'u': 64, 'v': 256, 'name': 'Backpack', 'offset': 16}
 }
 
-item_location = [
-     {'x': 88, 'y': 24, 'u':0, 'v':0, 'colkey': 7, 'name': 'Dagger', 'w': 16, 'h': 16},
-     {'x': 120, 'y': 24, 'u': 16, 'v':0, 'colkey': 7, 'name': 'Sword', 'w': 16, 'h':16 },
-     {'x': 152, 'y': 24, 'u': 32, 'v':0, 'colkey': 7, 'name': 'Axe', 'w':16 , 'h':16 },
-     {'x': 104, 'y': 40, 'u':0, 'v':16, 'colkey': 7, 'name': 'Leather Armor', 'w':16 , 'h': 16},
-     {'x': 136, 'y': 40, 'u': 16, 'v':16, 'colkey': 7, 'name': 'Chain Armor', 'w':16 , 'h':16 },
-     {'x': 168, 'y': 40, 'u': 32, 'v':16, 'colkey': 7, 'name': "Brigandine", 'w':16 , 'h':16 },
-     {'x': 1, 'y':3, 'u': 48, 'v':16, 'colkey': 7, 'name': 'Bone Mail' , 'w':16 , 'h': 16},
-     {'x': 1, 'y':3, 'u': 48, 'v':0, 'colkey': 7, 'name': "Death's Scythe", 'w':16 , 'h':16 },
-     {'x': 104, 'y': 40, 'u':0, 'v':32, 'colkey': 7, 'name': 'Small Health Potion', 'w':8 , 'h':8 },
-     {'x': 160, 'y': 40, 'u':0, 'v':40, 'colkey': 7, 'name': 'Medium Health Potion', 'w':8 , 'h':8 },
-     {'x': 132, 'y': 32, 'u':8, 'v':32, 'colkey': 7, 'name': 'Large Health Potion', 'w':8 , 'h':8 },
-]
+item_location = {
+    # // WEAPONS //
+    0: {'x': 88, 'y': 24, 'u': 0, 'v': 0, 'colkey': 7, 'name': 'Dagger',
+        'w': 16, 'h': 16, 'item_stat': 1, 'price': 10, "slot": "hand",
+        'description': """A simple dagger with a leatherwrapped bone hilt.
+It's good for cutting things and taking on large rodents"""},
+
+    1: {'x': 120, 'y': 24, 'u': 16, 'v': 0, 'colkey': 7,
+        'name': 'Sword', 'w': 16, 'h': 16,
+        'item_stat': 3, 'price': 30, "slot": "hand",
+        'description': """A well-made sword that can be used to fight against any foe."""},
+    2: {'x': 152, 'y': 24, 'u': 32, 'v': 0, 'colkey': 7,
+        'name': 'Axe', 'w': 16, 'h': 16,
+        'item_stat': 4, 'price': 45, "slot": "hand",
+        'description': """A polished axe that can easily take chunks out of full grown trees."""},
+    7: {'x': 1, 'y': 3, 'u': 48, 'v': 0, 'colkey': 7,
+        'name': "Death's Scythe", 'w': 16, 'h': 16,
+        'item_stat': 15, 'price': 1000, "slot": "hand",
+        'description': """A scythe stolen from Death himself.  Whenever you touch this 
+weapon you can hear faint whispers all around you."""},
+
+    # // ARMOR //
+    3: {'x': 104, 'y': 40, 'u': 0, 'v': 16, 'colkey': 7,
+        'name': 'Leather Armor', 'w': 16, 'h': 16,
+        'item_stat': 1, 'price': 10, "slot": "body",
+        'description': """A jacket made of toughened leather, 
+it provides some protection against the elements and enemies alike."""},
+    4: {'x': 136, 'y': 40, 'u': 16, 'v': 16, 'colkey': 7,
+        'name': 'Chain Armor', 'w': 16, 'h': 16,
+        'item_stat': 3, 'price': 50, "slot": "body",
+        'description': """A jacket made of steel rings.  
+It provides great protection without limiting your movement."""},
+    5: {'x': 168, 'y': 40, 'u': 32, 'v': 16, 'colkey': 7,
+        'name': "Brigandine", 'w': 16, 'h': 16,
+        'item_stat': 4, 'price': 75, "slot": "body",
+        'description': """Plates of steel bolted onto a leather and chain tunic, 
+this armor gives almost unparellelled protection 
+without sacrificing mobility or size."""},
+    6: {'x': 1, 'y': 3, 'u': 48, 'v': 16, 'colkey': 7,
+        'name': 'Bone Mail', 'w': 16, 'h': 16,
+        'item_stat': 6, 'price': 150, "slot": "body",
+        'description': """Someone's prized posession, 
+this armor is made of the the bones of their ancestors.
+The black bones are stronger than steel and you can almost feel a protective aura when you put it on."""},
+
+    # // POTIONS //
+    8: {'x': 104, 'y': 40, 'u': 0, 'v': 32, 'colkey': 7,
+        'name': 'Minor Health Potion', 'w': 8, 'h': 8,
+        'item_stat': 2, 'price': 10, 'slot': 'consumable', 'description':
+        """A small red potion that smells of cinnamon and nutmeg. 
+It heals a small amount of health."""},
+    9: {'x': 160, 'y': 40, 'u': 0, 'v': 40, 'colkey': 7,
+        'name': 'Health Potion', 'w': 8, 'h': 8,
+        'item_stat': 5,
+        'price': 20, 'slot': 'consumable', 'description': """A small orange potion that smells of mint 
+and orange.  It heals some health."""},
+    10: {'x': 132, 'y': 32, 'u': 8, 'v': 32, 'colkey': 7,
+         'name': 'Major Health Potion', 'w': 8, 'h': 8, 'item_stat': 8,
+         'price': 50, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
+fresh air. It heals a substantial amount of health."""},
+}
 
 # abstract check mouse position in town into a dictionary so check mouse position can stay the same.

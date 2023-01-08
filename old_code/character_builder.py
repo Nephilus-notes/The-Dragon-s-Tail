@@ -1,28 +1,27 @@
 from random import randint
 import json
+import pyxel as px
 
-from .dicts import items as itm
-from .dicts import *
-from .item_screen import EquippedItems, Backpack
-from pyxel_code.image_classes import Sprite
+from .dicts import items as itm # Application Imports
+from .dicts import * # Application Imports
+from .item_screen import EquippedItems, Backpack # Application Imports
+from pyxel_code.image_classes import Sprite # Application Imports
+
+# from ..pyxel_code.image_classes import Sprite # Test Import Path
+
+
+
+
+
 rirs = randint(0,1) # randint small (0,1)
 rirm = randint(-1,1) # randint medium (-1,1)
 nrn = randint(0,2)
-# starting combat would instantiate base classes and would include a method to determine how con affects hp
-#method = roll stats
-#character - class, race -
-# self.armor = platemail or other item
-# level ups = adding stats, figuring out 
-# 
-# add a level counter ( and xp)
-# if level >= (5), add ability #part of the level up ability 
 
 
 
-class Character(Sprite):
-    def __init__ (self, name, strength, dexterity, intelligence, constitution, armor=0, resistance=0, ):
+class Character():
+    def __init__ (self, name, strength, dexterity, intelligence, constitution, armor=0, resistance=0):
         self.name = name
-
         # Items
         self.lifetime_currency = 0
         self.currency = 0
@@ -41,10 +40,15 @@ class Character(Sprite):
         self.weapon = {}  if self.items_worn.placement['slot']['hand'] == {'nothing':'nothing'} else itm[self.items_worn.placement['slot']['hand']]
         self.weapon_damage = self.weapon['damage'] if 'damage' in self.weapon else 0
         self.damage = strength // 2 + self.weapon_damage if strength > 2 else 1 + self.weapon_damage
+        self.attribute_list = []
         # self.level = 1
 
         # Ability list
         self.abilities = []
+        self.abilities.append(self.attack)
+        self.abilities.append(self.dodge)
+        self.abilities.append(self.defend)
+        self.abilities.append(self.flee)
         
         # // Persistent changed stats //
         self.current_hp = self.hp
@@ -84,7 +88,7 @@ class Character(Sprite):
         self.dodge_round = 0
         self.defend_round = 0
         self.flee_count = 0
-
+        self.set_attribute_list()
         # self.set_currency()
 
 
@@ -223,14 +227,68 @@ class Character(Sprite):
         print(f"""\nCombat Attributes\n{"~"*10}\nHP: {self.current_hp}/{self.hp}\nMP:: {self.current_mp}/{self.max_mp}
 Attack: {self.att_val}\nDamage: {self.damage_val}\nDodge: {self.dodge_val}\nArmor: {self.armor_val}\nResist: {self.resist_val}""")
 
-    def level_attribute(self, stat_choice:str):
-        if stat_choice == 'strength':
-            self.strength += 1
-        elif stat_choice == 'dexterity':
-            self.dexterity += 1
-        elif stat_choice == 'intelligence':
-            self.intelligence += 1
-        elif stat_choice == 'constitution':
-            self.constitution += 1
+    def level_attribute(self, stat_choice:str, new_stat:int = 1):
+        if stat_choice == 'STR':
+            self.strength = new_stat
+        elif stat_choice == 'DEX':
+            self.dexterity = new_stat
+        elif stat_choice == 'INT':
+            self.intelligence = new_stat
+        elif stat_choice == 'CON':
+            self.constitution = new_stat
+        self.set_attribute_list()
+    
+
+    def set_attribute_list(self):
+        self.attribute_list= [
+            {'name': "STR", "att":self.strength}, {'name': "DEX", "att": self.dexterity}, 
+            {'name': "CON", "att": self.constitution}, {'name': "INT", "att": self.intelligence}
+        ]
+
+    def set_dependant_atts(self):
+        self.current_hp = self.hp
+        self.armor_val = self.armor
+        self.att_val = self.dexterity if self.dexterity > self.strength else self.strength  
+        self.damage = self.strength // 2 + self.weapon_damage if self.strength > 2 else 1 + self.weapon_damage
+        self.damage_val = self.damage
+        self.dodge_val = self.dexterity // 2 if self.dexterity > 2 else 1
+        self.resist_val = self.resistance
+
+    def change_outfit(self, outfit:tuple):
+        self.u = outfit[0]
+        self.v = outfit[1]
+
+class Player(Character, Sprite):
+    def __init__(self, name, strength, dexterity, intelligence, constitution, armor=0, resistance=0):
+        print('player started')
+        super().__init__(name, strength, dexterity, intelligence, constitution, armor, resistance)
+        self.u=0
+        self.v=64
+        self.x = 164
+        self.y= 64
+        self.w=8
+        self.h=8
+        self.bank = 2
+        self.colkey = 7
+        self.draw_sidebar()
 
 
+    def combat_draw(self):
+        self.draw()
+        px.text(168, 34, f"HP:{self.current_hp}/{self.hp}", 7)
+
+    def draw_sidebar(self):
+        px.text(12, 24, f"HP:{self.current_hp}/{self.hp}", 7)
+        px.text(12, 34, f"STR:{self.strength}", 7)
+        px.text(12, 42, f"DEX:{self.dexterity}", 7)
+        px.text(40, 34, f"CON:{self.constitution}", 7)
+        px.text(40, 42, f"INT:{self.intelligence}", 7)
+        px.text(12, 50, f"DEF:{self.armor}", 7)
+        px.text(40, 50, f"RESIST:{self.resistance}", 7)
+        px.text(40, 58, f"DODGE:{self.dodge_val}", 7)
+        px.text(12, 58, f"ATT:{self.intelligence}", 7)
+        px.text(12, 66, f"DAM:{self.intelligence}", 7)
+        px.text(40, 66, f"MON:{self.currency}", 7)
+
+        # placeholder
+        px.text(32, 122, "Quit", 0)

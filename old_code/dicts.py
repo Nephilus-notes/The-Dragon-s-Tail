@@ -56,44 +56,44 @@ items ={
 # price, health restore amount/ item effect, and flavor text
 
     'small_health_potion': {'name': 'small health potion', 
-'health restore': 2, 'price': 10, 'description': 
+'item_stat': 2, 'price': 10, 'slot': 'consumable', 'description': 
 """A small red potion that smells of cinnamon and nutmeg. 
 It heals a small amount of health."""}, 
-'medium_health_potion': {'name': 'medium health potion', 'health restore': 5,
+'medium_health_potion': {'name': 'medium health potion', 'item_stat': 5,
  'price': 20, 'description': """A small orange potion that smells of mint 
 and orange.  It heals some health."""},
-'large_health_potion': {'name': 'large health potion', 'health restore': 8, 
-'price': 50, 'description': """A small yellow potion that smells of lemon and 
+'large_health_potion': {'name': 'large health potion', 'item_stat': 8, 
+'price': 50, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
 fresh air. It heals a substantial amount of health."""},
 'amulet_of_health': {'name': 'amulet of health', 'hp add': 3, 
-'price': 150, 'description': """A small yellow potion that smells of lemon and 
+'price': 150, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
 fresh air. It heals a substantial amount of health."""},
 
 # weapons
-'dagger':{'name': 'dagger', 'damage': 1, 'price': 10, "slot": "hand",
+'dagger':{'name': 'dagger', 'item_stat': 1, 'price': 10, "slot": "hand",
     'description': """A simple dagger with a leatherwrapped bone hilt.
 It's good for cutting things and taking on large rodents"""}, 
-'sword': {'name': 'sword', 'damage': 3, 'price': 30, "slot": "hand",
+'sword': {'name': 'sword', 'item_stat': 3, 'price': 30, "slot": "hand",
 'description': """A well-made shortsword, that can be used to fight against any foe."""}, 
-'axe': {'name': 'axe', 'damage': 4, 'price': 45, "slot": "hand",
+'axe': {'name': 'axe', 'item_stat': 4, 'price': 45, "slot": "hand",
 'description': """A polished axe that can easily take chunks out of full grown trees."""}, 
-"death_scythe": { 'name': "Death's Scythe", 'damage': 15, 'price': 1000, "slot": "hand",
+"death_scythe": { 'name': "Death's Scythe", 'item_stat': 15, 'price': 1000, "slot": "hand",
 'description': """A scythe stolen from Death himself.  Whenever you touch this 
 weapon you can hear faint whispers all around you."""},
 
 # armor
-'bone_mail': {'name': 'bone mail', 'armor_value': 6, 'price': 150, "slot": "body",
+'bone_mail': {'name': 'bone mail', 'item_stat': 6, 'price': 150, "slot": "body",
 'description': """Someone's prized posession, 
 this armor is made of the the bones of their ancestors.
 The black bones are stronger than steel and you can almost feel a protective aura when you put it on."""}, 
-'brigandine_armor': {'name': 'brigandine armor', 'armor_value': 4, 'price': 75, "slot": "body",
+'brigandine_armor': {'name': 'brigandine armor', 'item_stat': 4, 'price': 75, "slot": "body",
 'description': """Plates of steel bolted onto a leather and chain tunic, 
 this armor gives almost unparellelled protection 
 without sacrificing mobility or size."""}, 
-'chain_armor': {'name': 'chain armor', 'armor_value': 3, 'price': 50, "slot": "body",
+'chain_armor': {'name': 'chain armor', 'item_stat': 3, 'price': 50, "slot": "body",
 'description': """A jacket made of steel rings.  
 It provides great protection without limiting your movement."""}, 
-'leather_armor': {'name': 'leather armor', 'armor_value': 1, 'price': 10, "slot": "body",
+'leather_armor': {'name': 'leather armor', 'item_stat': 1, 'price': 10, "slot": "body",
 'description': """A jacket made of toughened leather, 
 it provides some protection against the elements and enemies alike."""},
 }

@@ -22,8 +22,8 @@ class App:
         self.game = Game()
         self.paused = False
 
-        self.character_info = Sidebar(**sidebar['character_info'])
-        self.item_info = Sidebar(**sidebar['items'])
+
+        
 
         px.mouse(SHOW_CURSOR)
         px.run(self.update, self.draw)
@@ -50,8 +50,7 @@ class App:
         px.cls(0)
         if not self.paused:
             self.game.state.draw()
-        self.character_info.draw()
-        self.item_info.draw()
+
         
 
 
