@@ -4,6 +4,7 @@ import json
 from .dicts import items as itm
 from .dicts import *
 from .item_screen import EquippedItems, Backpack
+from pyxel_code.image_classes import Sprite
 rirs = randint(0,1) # randint small (0,1)
 rirm = randint(-1,1) # randint medium (-1,1)
 nrn = randint(0,2)
@@ -18,7 +19,7 @@ nrn = randint(0,2)
 
 
 
-class Character:
+class Character(Sprite):
     def __init__ (self, name, strength, dexterity, intelligence, constitution, armor=0, resistance=0, ):
         self.name = name
 

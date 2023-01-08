@@ -32,6 +32,7 @@ class GameState(ABC):
         Layer.back = []
         Layer.main = []
         Layer.fore = []
+        Interactable.main = []
 
     def get_next_state(self):
         return self._next_state
@@ -46,7 +47,7 @@ class GameState(ABC):
             item.draw()
     
     def check_mouse_position(self):
-        for item in Layer.main:
+        for item in Interactable.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -60,10 +61,13 @@ class GameState(ABC):
         self.explore = ExploreButton(self)
         Layer.main.append(self.exit)
         Layer.main.append(self.explore)
+        Interactable.main.append(self.exit)
+        Interactable.main.append(self.explore)
 
     def build_exit(self):
         self.exit = Button(self)
         Layer.main.append(self.exit)
+        Interactable.main.append(self.exit)
 
     def build_interactables(self, class_instances:list):
         for instance in class_instances:
@@ -137,10 +141,11 @@ class BlacksmithScreen(GameState):
         self.clear_layers()
 
         self.bg = Background(**background['blacksmith'])
-        # self.items = []
+        self.items = []
         for num in range(6):
             item = ShopItem(**item_location[num])
-            Layer.main.append(item)
+            self.items.append(item)
+        self.build_interactables(self.items)
         self.build_exit()
 
 
@@ -151,7 +156,7 @@ class BlacksmithScreen(GameState):
         self.MOUSE_LOCATION = px.mouse_x, px.mouse_y 
 
     def check_mouse_position(self):
-        for item in Layer.main:
+        for item in Interactable.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -164,10 +169,11 @@ class AlchemistScreen(GameState):
         self.clear_layers()
 
         self.bg = Background(**background['alchemist'])
-        # self.items = []
+        self.items = []
         for num in range(8,11):
             item = ShopItem(**item_location[num])
-            Layer.main.append(item)
+            self.items.append(item)
+        self.build_interactables(self.items)
         self.build_exit()
 
         Layer.back.append(self.bg)
@@ -177,7 +183,7 @@ class AlchemistScreen(GameState):
         self.MOUSE_LOCATION = px.mouse_x, px.mouse_y 
  
     def check_mouse_position(self):
-        for item in Layer.main:
+        for item in Interactable.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
 
@@ -192,6 +198,8 @@ class InnScreen(GameState):
 
         self.bg = Background(**background['inn'])
         self.build_exit()
+
+        # self.build_interactables()
 
         Layer.back.append(self.bg)
         self.MOUSE_LOCATION = ''    
@@ -247,8 +255,7 @@ class CombatState(GameState):
         self.clear_layers()
 
         self.bg = Background(**background['combat'])
-        self.exit = Button(self)
-        Layer.main.append(self.exit)
+        self.build_exit() # For debugging purposes, MUST DELETE PREPRODUCTION
 
         self.enemy = ShadeFireFox()
         Layer.main.append(self.enemy)
