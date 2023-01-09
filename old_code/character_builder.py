@@ -1,11 +1,14 @@
 from random import randint
+from time import time, sleep
 import json
 import pyxel as px
 
+
+from pyxel_code.combat_classes import CombatText
 from .dicts import items as itm # Application Imports
 from .dicts import * # Application Imports
 from .item_screen import EquippedItems, Backpack # Application Imports
-from pyxel_code.image_classes import Sprite # Application Imports
+from pyxel_code.image_classes import Sprite, DisplayText # Application Imports
 
 # from ..pyxel_code.image_classes import Sprite # Test Import Path
 
@@ -91,17 +94,21 @@ class Character():
         self.set_attribute_list()
         # self.set_currency()
 
+        self.game = None
+        self.combat_state = None
+        print(self.att_val, self.damage_val)
+
 
     def attack(self, target):
-        print(f'{self.name.title()} lashes out at {target.name.title()}!')
+        self.in_combat_text(f'{self.name.title()} lashes out at {target.name.title()}!')
 
         if self.dexterity > self.strength:
             if attack_randint['dex'] == 2:
                 damage_num = (self.damage + 2)
-                print('**Critical hit!**')
+                self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
             elif self.att_val + attack_randint['dex'] <= target.dodge_val:
-                print(f"{self.name.title()}'s missed!")
+                self.in_combat_text(f"{self.name.title()}'s missed!")
             elif self.att_val + attack_randint['dex'] > target.dodge_val:
                 damage_num = (self.damage + attack_randint['dex']) - target.armor_val
                 self.attack_damage(target, damage_num)
@@ -109,10 +116,10 @@ class Character():
         elif self.strength >= self.dexterity:
             if attack_randint['str'] == 4:
                 damage_num = (self.damage + 4) - target.armor_val
-                print('**Critical hit!**')
+                self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
             elif self.att_val + attack_randint['str'] <= target.dodge_val:
-                print (f'{self.name.title()} missed!')
+                self.in_combat_text (f'{self.name.title()} missed!')
             elif self.att_val + attack_randint['str'] > target.dodge_val:
                 damage_num = (self.damage + attack_randint['str']) - target.armor_val
                 self.attack_damage(target, damage_num)
@@ -120,16 +127,16 @@ class Character():
 
     def attack_damage(self, target, damage_num):
             if damage_num > 0:
-                print(f'{self.name.title()} has hit {target.name.title()} for {str(damage_num)} damage!')
+                CombatText(self.combat_state, f'{self.name.title()} has hit {target.name.title()} for {str(damage_num)} damage!', time())
                 target.current_hp -= damage_num
                 if target.current_hp <= 0:
                     target.current_hp = 0
-                    print(f"\n{target.name.title()} has been defeated.")
-                    # del target
+                #     self.in_combat_text(f"\n{target.name.title()} has been defeated.")
+                #     # del target
             elif damage_num <= 0 and target.name[-1] != "s":
-                print(f"{target.name.title()} blocks {self.name.title()}' strike.")
+                self.in_combat_text(f"{target.name.title()} blocks {self.name.title()}' strike.")
             elif damage_num <= 0 and target.name[-1] == "s":
-                print(target.name.title(), 'blocks', self.name.title() + "'s strike.")
+                self.in_combat_text(target.name.title(), 'blocks', self.name.title() + "'s strike.")
                 
 
     def wear_armor(self):
@@ -139,28 +146,36 @@ class Character():
     def defend(self):
         self.armor_val = self.armor + 2
         self.defended = True
-        print(f"You focus on defending. Armor: {self.armor_val}")
+        if self.class_name == 'player':
+            self.in_combat_text(f"""You focus on defending. Armor: {self.armor_val}""")
+        else:
+            self.in_combat_text(f'''The { self.combat_state.enemy} hunkers down to defend.''')
         # rnd_count = 2
 
     def undefend(self):
         self.armor_val = self.armor
+        if self.class_name != 'player':
+            self.in_combat_text(f'''The { self.combat_state.enemy} relaxes their guard.''')
 
     def dodge(self):
         self.dodging = True
         self.dodge_val = self.dexterity + 2
-        print(f'You focus on dodging. Dodge: {self.dodge_val}')
+        if self.class_name == 'player':
+            self.in_combat_text(f"""You focus on defending. dodging: {self.dodge_val}""")
+        else:
+            self.in_combat_text(f'''The { self.combat_state.enemy} hunkers down to defend.''')
         # rnd_count = 2
 
     def undodge(self):
         self.dodge_val = self.dexterity
 
     def flee(self, enemy):
-        if self.dexterity > enemy.dexterity or self.flee_count > 0:
+        if self.dexterity > enemy.dexterity or self.flee_count > 0:            
             self.fleeing = True
-            print(f"You run from {enemy}")
         else:
             self.flee_count += 1
-            print(f'You try to run from {enemy}')
+            self.in_combat_text(f'You try to run from {enemy}')
+            return False
 
     def __repr__(self):
         return self.name.title()
@@ -220,13 +235,6 @@ class Character():
     def stun(self):
         self.stunned = True
     
-    def show_stats(self):
-        print(f'\nAttributes\n{"~"*10}\nStrength: {self.strength}\nDexterity: {self.dexterity}\nIntelligence: {self.intelligence}\nConstitution: {self.constitution}\nArmor: {self.armor_val}\nResistance: {self.resist_val}')
-    
-    def show_combat_stats(self):
-        print(f"""\nCombat Attributes\n{"~"*10}\nHP: {self.current_hp}/{self.hp}\nMP:: {self.current_mp}/{self.max_mp}
-Attack: {self.att_val}\nDamage: {self.damage_val}\nDodge: {self.dodge_val}\nArmor: {self.armor_val}\nResist: {self.resist_val}""")
-
     def level_attribute(self, stat_choice:str, new_stat:int = 1):
         if stat_choice == 'STR':
             self.strength = new_stat
@@ -236,7 +244,13 @@ Attack: {self.att_val}\nDamage: {self.damage_val}\nDodge: {self.dodge_val}\nArmo
             self.intelligence = new_stat
         elif stat_choice == 'CON':
             self.constitution = new_stat
+            self.set_hp()
+            
         self.set_attribute_list()
+        self.set_dependant_atts()
+    
+    def set_hp(self):
+        self.hp = self.constitution * 2
     
 
     def set_attribute_list(self):
@@ -258,10 +272,16 @@ Attack: {self.att_val}\nDamage: {self.damage_val}\nDodge: {self.dodge_val}\nArmo
         self.u = outfit[0]
         self.v = outfit[1]
 
+    def in_combat_text(self, combat_text, display_time:int = 1):
+        CombatText(self.combat_state, combat_text, time(), display_time=display_time)
+        if self.game.text_timer >= display_time:
+            pass
+    
+
 class Player(Character, Sprite):
-    def __init__(self, name, strength, dexterity, intelligence, constitution, armor=0, resistance=0):
-        print('player started')
+    def __init__(self, name, strength, dexterity, intelligence, constitution, game:object, armor=0, resistance=0):
         super().__init__(name, strength, dexterity, intelligence, constitution, armor, resistance)
+        self.class_name = 'player'
         self.u=0
         self.v=64
         self.x = 164
@@ -278,6 +298,8 @@ class Player(Character, Sprite):
         px.text(168, 34, f"HP:{self.current_hp}/{self.hp}", 7)
 
     def draw_sidebar(self):
+        stat_list = []
+
         px.text(12, 24, f"HP:{self.current_hp}/{self.hp}", 7)
         px.text(12, 34, f"STR:{self.strength}", 7)
         px.text(12, 42, f"DEX:{self.dexterity}", 7)
@@ -286,8 +308,8 @@ class Player(Character, Sprite):
         px.text(12, 50, f"DEF:{self.armor}", 7)
         px.text(40, 50, f"RESIST:{self.resistance}", 7)
         px.text(40, 58, f"DODGE:{self.dodge_val}", 7)
-        px.text(12, 58, f"ATT:{self.intelligence}", 7)
-        px.text(12, 66, f"DAM:{self.intelligence}", 7)
+        px.text(12, 58, f"ATT:{self.att_val}", 7)
+        px.text(12, 66, f"DAM:{self.damage}", 7)
         px.text(40, 66, f"MON:{self.currency}", 7)
 
         # placeholder

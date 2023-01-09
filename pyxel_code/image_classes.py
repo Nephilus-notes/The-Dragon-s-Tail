@@ -1,6 +1,16 @@
 import pyxel as px 
 
 
+class DisplayText:
+    def __init__(self,x, y, stat_name, col=7, owner=None) -> None:
+        self.x = x
+        self.y = y
+        self.stat_name = stat_name
+        self.col = col
+
+    def draw(self):
+        px.text(self.x, self.y, f'{self.stat_name}:{self.owner} ', self.col)
+
 class DisplayImage:
     """Parent class for all displayed objects"""
     def __init__(self, x, y, bank, u, v, w, h, colkey=7) -> None:
@@ -37,6 +47,10 @@ class Sprite(DisplayImage):
             # // Transforming logic //
             # self.u -= 8
             self.running = False
+    
+    def combat_draw(self):
+        px.text(65, 1, f"{self.name}", 7)
+
 
 class Background(DisplayImage):
     """Class for all background images"""
@@ -206,25 +220,30 @@ class LevelUpStat(DisplayImage):
     def draw(self):
         px.text(self.x, self.y, F'{self.stat_name}:{self.stat}', 7)
             
+class AbilityButton(Button):
+    def __init__(self, combat_state:object, ability_index:str, owner:object=None, x=152, y=127, bank=1, u=0, v=32, w=48, h=16, colkey=10) -> None:
+        self.x= 80 if ability_index == 0 or ability_index == 2 else 144
+        self.y = 88 if ability_index == 0 or ability_index == 1 else 112
+        self.use = 'Attack' if ability_index == 0 else "Dodge" if ability_index == 1 else "Defend" if ability_index == 2 else 'Flee'
+        self.ability_index = ability_index
+        self.combat_state = combat_state
+        self.player=owner
 
-# class SaveStatsButton(Button):
-#     def __init__(self, player:object, stat_object:object, stat_object2:object, stat_object3:object, stat_object4:object, x=120, y=74, bank=1, u=0, v=0, w=32, h=8, colkey=10, use: str = "Save Stats") -> None:
-#         super().__init__(x, y, bank, u, v, w, h, colkey, use)
-#         self.player=player
-#         object_list = [stat_object, stat_object2, stat_object3,stat_object4]
-#         self.strength = [stat for stat in object_list if stat.stat_name =='STR'][0].stat
-#         self.dexterity = [stat for stat in object_list if stat.stat_name == 'DEX'][0].stat
-#         self.intelligence = [stat for stat in object_list if stat.stat_name =='INT'][0].stat
-#         self.constitution = [stat for stat in object_list if stat.stat_name =='CON'][0].stat
+        super().__init__(owner, self.x, self.y, bank, u, v, w, h, colkey, self.use)
 
-#     def intersection(self):
-#         if px.btn(px.MOUSE_BUTTON_LEFT):
-#             self.player.strength = self.strength
-#             self.player.dexterity = self.dexterity
-#             self.player.constitution = self.constitution
-#             self.player.intelligence = self.intelligence
-#             Interactible.main = []
-#             interactible.main += interactible.frozen
+    def intersection(self):
+        if px.btn(px.MOUSE_BUTTON_LEFT):
+
+            self.combat_state.player_action = self.ability_index
+            px.text(2,2, "ability clicked", 7)
+            self.combat_state.take_actions()
+
+    def draw(self):
+        px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
+        px.text(self.x + 16, self.y + 6, F'{self.use}', 7)
+
+
+
 
 class Rat(Sprite): 
     def __init__(self, x, y):

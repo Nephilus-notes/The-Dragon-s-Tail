@@ -10,7 +10,7 @@ from pyxel_code.utils import Interactable, Layer
 
 class Save(DisplayImage, Clickable):
 
-    def __init__(self, colkey=13) -> None:
+    def __init__(self, player:object, colkey=13) -> None:
         self.x=96
         self.y = 32
         self.bank = 0
@@ -19,10 +19,13 @@ class Save(DisplayImage, Clickable):
         self.w = 16 
         self.h = 16
         self.colkey = colkey
+        self.player = player
 
     def intersection(self):
         px.text(84, 84, "save", 7)
         if px.btn(px.MOUSE_BUTTON_LEFT):
+            px.text(108, 84, "api call, saved from save_heal_level", 7)
+
             # api call to save player state in the database
             # if successful px.text "saved" for 5 seconds (Integrate code to check the time)
             pass
@@ -52,7 +55,7 @@ class Level(DisplayImage, Clickable):
         if px.btn(px.MOUSE_BUTTON_LEFT):
             for item in Interactable.main:
                 Interactable.frozen.append(item)
-            Interactable.main = []
+            Interactable.main = [] # delete items
 
             stats = []
             for index, val in enumerate(self.player.attribute_list):
@@ -70,6 +73,7 @@ class Level(DisplayImage, Clickable):
                 Layer.fore.append(minus)
 
             self.save_stats = SaveStatsButton(self.player, *stats, self)
+            print(f'{self.save_stats} at instaniation')
             self.cancel = CancelButton(self)
             Layer.fore.append(self.cancel)
             Layer.fore.append(self.save_stats)
@@ -78,12 +82,13 @@ class Level(DisplayImage, Clickable):
 
             
     def clear_save_values(self):
+        print(self.save_stats, 'from clearing')
         del self.save_stats
 
 
 
 class Rest(DisplayImage, Clickable):
-    def __init__(self, colkey=13) -> None:
+    def __init__(self, player:object, colkey=13) -> None:
         self.x=160
         self.y = 32
         self.bank = 0
@@ -92,18 +97,26 @@ class Rest(DisplayImage, Clickable):
         self.w = 16 
         self.h = 16
         self.colkey = colkey
+        self.player = player
 
     def intersection(self):
         px.text(84, 84, "rest", 7)
+        if px.btn(px.MOUSE_BUTTON_LEFT):
+            self.player.current_hp = self.player.hp
+            self.player.current_mp = self.player.max_mp
+            px.text(108, 96, "Health restored", 7) # Add time function on this: 5 secs
+
 
 
 
 
 class SaveStatsButton(Button):
-    def __init__(self, player:object, stat_object:object, stat_object2:object, stat_object3:object, stat_object4:object, owner, x=112, y=74, bank=1, u=0, v=0, w=32, h=8, colkey=10, use: str = "Save Stats") -> None:
+    def __init__(self, player:object, stat_object:object, stat_object2:object, stat_object3:object, 
+    stat_object4:object, level_display , x=112, y=74, bank=1, u=0, v=0, w=32, h=8, 
+    colkey=10, use: str = "Save Stats") -> None:
         super().__init__(x=x, y=y, bank=bank, u=u, v=v, w=w, h=h, colkey=colkey, use=use)
         self.player=player
-        self.owner=owner
+        self.owner = level_display
         object_list = [stat_object, stat_object2, stat_object3,stat_object4]
         self.strength = [stat for stat in object_list if stat.stat_name =='STR'][0]
         self.dexterity = [stat for stat in object_list if stat.stat_name == 'DEX'][0]
@@ -112,10 +125,11 @@ class SaveStatsButton(Button):
 
     def intersection(self):
         if px.btn(px.MOUSE_BUTTON_LEFT):
+            print(f'str:{self.strength.stat} dex:{self.dexterity.stat} con {self.constitution.stat} int: {self.intelligence.stat}')
             self.player.level_attribute(self.strength.stat_name, self.strength.stat)  
-            self.player.dexterity = self.dexterity.stat
-            self.player.constitution = self.constitution.stat
-            self.player.intelligence = self.intelligence.stat
+            self.player.level_attribute(self.dexterity.stat_name, self.dexterity.stat)
+            self.player.level_attribute(self.constitution.stat_name, self.constitution.stat)
+            self.player.level_attribute(self.intelligence.stat_name, self.intelligence.stat)
             for item in Interactable.main:
                 if item != self:
                     del item

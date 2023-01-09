@@ -19,31 +19,6 @@ class NPC(Character):
         px.blt(x=self.x, y=self.y, img=self.bank, u=self.u, v=self.v, w=self.w, h=self.h, colkey= self.colkey)
         px.text(74, 10, f"HP:{self.current_hp}/{self.hp}", 7)
 
-
-
-class RogueGoblin(NPC):
-    def slink(self):
-        self.dex += 4
-    def __init__ (self):
-        self.name = "Rogue Goblin"
-        self.class_name = 'rogue_goblin'
-        self.strength = atb['strength_range']['weak']
-        self.dexterity = atb['dexterity_range']['average']
-        self.intelligence = atb['intelligence_range']['weak']
-        self.constitution = atb['constitution_range']['weak']
-        self.armor = itm['leather_armor']['armor_value']
-        self.resistance = atb['resist_range']['weak']
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        self.hp = (self.constitution * 3) 
-        self.set_dependant_atts()
-
-
-# Kratab = RogueGoblin()
-# print(Kratab.dexterity)
-# print(Kratab.strength)
-
-# ideas of different npc/monster classes
-# Graith'gesh lizard - high str, low dex, very low int, average con, hp based on con? con x 2
 class GraithLizard(NPC, Sprite):
     def __init__ (self, u=32, v=48):
         self.name = "Graith'Gesh Lizard"
@@ -89,7 +64,6 @@ class GraithQueen(NPC, Sprite):
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
-# Graith'gesh trees - high str, low dex, very low int, average to high con, hp x3?
 class GraithTree(NPC, Sprite):
     def __init__ (self, u=80, v=48):
         self.name = "Graith'Gesh Tree"
@@ -140,8 +114,6 @@ class GraithApple(NPC, Sprite):
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
-
-# Krakt Rat Stats - low str, average dex, very low int, low con, hp base
 class KraktRat(NPC, Sprite):
     def __init__(self, u=16, v=48):
         self.name = "Krakt Rat"
@@ -154,10 +126,6 @@ class KraktRat(NPC, Sprite):
         self.resistance = atb['resist_range']['average']
         self.u=u 
         self.v=v
-         # Krakt Rat - a rat that survived and fled down into the tunnels with the Goblins
-        # it actually merged with some of the native lizards and began to dominate it's size category
-        # growing more aggressive and larger as it did so. They came from the rats that 
-        # ate the Goblins' stores when they lived above ground, so had a much faster evolution because of their proximity to magic
         self.x=96
         self.y=24
         self.bank=2
@@ -166,7 +134,7 @@ class KraktRat(NPC, Sprite):
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
 
-#  Braba stats - vw str, low/mid dex, vw int, vw con, no extra hp
+
 class BrabaBat(NPC, Sprite):
     def __init__(self, u=0, v=48):
         self.name = "Braba Bat"
@@ -179,9 +147,6 @@ class BrabaBat(NPC, Sprite):
         self.resistance = atb['resist_range']['average']
         self.u=u 
         self.v=v
-        # Braba Bat - A vicious bat that lurks in the shadows, using its own brand of magic to avoid the light
-        # cast by Goblin skin, and it savagely bites its prey to mark it.  Once the prey is marked, it will often 
-        # return to its colony and bring them back to take down the marked prey as a group
         # If I have implimented multiple enemies, this is a great candidate for swarms of 3 +
         # if that's the case their stats have to be super low, but they will also try to flee if there is only one of them in the battle.
         self.x=96
@@ -196,7 +161,7 @@ class BrabaBat(NPC, Sprite):
         # an attack that heals them for half the amount of damage dealt
         pass
 
-# Shadefire Fox - low/mid str, high dex, mid int, mid con, +hp?
+
 class ShadeFireFox(NPC, Sprite):
     def __init__(self, u=112, v=48):
         self.name = "Shadefire Fox"
@@ -209,10 +174,6 @@ class ShadeFireFox(NPC, Sprite):
         self.resistance = atb['resist_range']['strong']
         self.u=u 
         self.v=v
-        # An incredibly rare creature of magic, this fox can utilize fire magic in addition
-        # to its fangs and claws when taking down prey. it can also use magic to make itself
-        # more stealthy, making it a terrifying foe
-
         self.x=96
         self.y=24
         self.bank=2
@@ -220,9 +181,6 @@ class ShadeFireFox(NPC, Sprite):
         self.h=16
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        # super(NPC, self).__init__(u=self.u, v =self.v, name=self.name, strength=self.strength, 
-        # dexterity=self.dexterity, intelligence=self.intelligence, 
-        # constitution=self.constitution, armor=self.armor, resistance=self.resistance, )
         self.hp = self.constitution * 4
         self.set_dependant_atts()
 
@@ -245,9 +203,6 @@ class GraktaWolf(NPC, Sprite):
         self.resistance = atb['resist_range']['weak']
         self.u=u 
         self.v=v
-        # Gratka wolves - wolves that adapted to the Graith'gesh trees, these wolves are seen as 
-        # plants by the trees and so are allowed to live. They are characterized by a mound of leaves growing from their shoulders
-        # falling like a mane around them. They are formidable foes, either alone or in groups
         self.x=96
         self.y=24
         self.bank=2
@@ -283,34 +238,7 @@ npc_class_dct = {
      'braba_bat': BrabaBat,
     'shadefire_fox': ShadeFireFox,
    'gratka_wolf': GraktaWolf,
-     'rogue_goblin': RogueGoblin,
+    #  'rogue_goblin': RogueGoblin,
     'graith_queen': GraithQueen,
     'graith_apple': GraithApple
 } 
-
-    # def attribute_gen(self):
-    #     self.name = "The goblin"
-    #     self.armor = armor_type['leather_armor']
-    #     self.resistance = resist_range['weak']
-    #     self.strength = strength_range['average']
-    #     self.dexterity = dexterity_range['strong']
-    #     self.intelligence = intelligence_range['weak']
-    #     self.constitution = constitution_range['weak']
-    #     self.hp = 4
-    #     # self.dodge_val = dexterity_range['strong']
-    #     # self.armor_val = armor_type['leather_armor']
-    #     # self.dodge_round = 0
-    #     # self.defend_round = 0
-    #     # self.defended = False
-    #     # self.dodging = False
-    #     # self.fleeing = False
-    #     # self.flee_count = 0
-
-        # if Goblin_warrior not in mob_list:
-        #     print("A goblin lunges out of the darkness!")
-        # elif mob_list.count(Goblin_warrior) == 1:
-
-        #     print("Another goblin leers from the shadows.")
-        # elif mob_list.count(Goblin_warrior) == 2:
-        #     print("Another goblin cackles as it draws near!")
-        # mob_list.append(Goblin_warrior)

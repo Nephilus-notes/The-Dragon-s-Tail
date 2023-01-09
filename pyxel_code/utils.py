@@ -23,12 +23,22 @@ class Interactable:
     main = []
     frozen = []
 
+    def freeze():
+        Interactable.frozen += Interactable.main
+        Interactable.main.clear()
+
+    def unfreeze():
+        Interactable.main += Interactable.frozen
+        Interactable.frozen.clear()
+
 
 class Layer:
     back = []  # background
     main = []  # Buildings, Characters
     fore = []  # Projectiles, on hit animations
 
+class SpriteRunners:
+    Runners = []
 
 class Drawable(ABC):
     @abstractmethod
