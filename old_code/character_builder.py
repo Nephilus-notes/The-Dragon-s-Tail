@@ -61,7 +61,7 @@ class Character():
 
         #  //  Temp Stat changes //
         self.armor_val = armor
-        self.att_val = self.dexterity // 2 if self.dexterity >= self.strength else self.strength // 2
+        self.att_val = self.dexterity // 2 if self.dexterity > self.strength else self.strength // 2
         self.damage_val = self.damage
         self.dodge_val = dexterity // 2 if dexterity > 2 else 1
         self.resist_val = self.resistance
@@ -96,7 +96,8 @@ class Character():
 
         self.game = None
         self.combat_state = None
-        print(self.att_val, self.damage_val)
+        print('attack, dexterity, and strength')
+        print(self.att_val, self.dexterity, self.strength)
 
 
     def attack(self, target):
@@ -147,6 +148,7 @@ class Character():
         self.armor_val = self.armor + 2
         self.defended = True
         if self.class_name == 'player':
+            print(f'you are defended: armor val = {self.armor_val} ')
             self.in_combat_text(f"""You focus on defending. Armor: {self.armor_val}""")
         else:
             self.in_combat_text(f'''The { self.combat_state.enemy} hunkers down to defend.''')
@@ -154,6 +156,8 @@ class Character():
 
     def undefend(self):
         self.armor_val = self.armor
+        self.defended = False
+        self.defend_round = 0
         if self.class_name != 'player':
             self.in_combat_text(f'''The { self.combat_state.enemy} relaxes their guard.''')
 
@@ -167,6 +171,8 @@ class Character():
         # rnd_count = 2
 
     def undodge(self):
+        self.dodging = False
+        self.dodge_round = 0
         self.dodge_val = self.dexterity
 
     def flee(self, enemy):
@@ -272,14 +278,30 @@ class Character():
         self.u = outfit[0]
         self.v = outfit[1]
 
+    def reset_flags(self):
+        print('reseting flags')
+        self.defended = False  #incrementer
+        self.dodging = False    # Incrementor
+        self.fleeing = False    # Incrementor
+        self.stone_armored = False  # Incrementor
+        self.slowed = False         # Incrementor
+        self.vulnerable = False     # Incrementor
+        self.double_armed = False  # Incrementor
+        self.burning_blades = False # Incrementor = damage = magic
+        self.stone_fists = False # Incrementor = Bonus damage
+        self.dodge_round = 0
+        self.defend_round = 0
+        self.flee_count = 0
+
+
     def in_combat_text(self, combat_text, display_time:int = 1):
         CombatText(self.combat_state, combat_text, time(), display_time=display_time)
-        if self.game.text_timer >= display_time:
-            pass
+        # if self.game.text_timer >= display_time:
+            # pass
     
 
 class Player(Character, Sprite):
-    def __init__(self, name, strength, dexterity, intelligence, constitution, game:object, armor=0, resistance=0):
+    def __init__(self, name, strength, dexterity, intelligence, constitution, game:object = None, armor=0, resistance=0):
         super().__init__(name, strength, dexterity, intelligence, constitution, armor, resistance)
         self.class_name = 'player'
         self.u=0
@@ -305,7 +327,7 @@ class Player(Character, Sprite):
         px.text(12, 42, f"DEX:{self.dexterity}", 7)
         px.text(40, 34, f"CON:{self.constitution}", 7)
         px.text(40, 42, f"INT:{self.intelligence}", 7)
-        px.text(12, 50, f"DEF:{self.armor}", 7)
+        px.text(12, 50, f"DEF:{self.armor_val}", 7)
         px.text(40, 50, f"RESIST:{self.resistance}", 7)
         px.text(40, 58, f"DODGE:{self.dodge_val}", 7)
         px.text(12, 58, f"ATT:{self.att_val}", 7)

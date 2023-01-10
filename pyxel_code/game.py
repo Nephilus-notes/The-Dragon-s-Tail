@@ -15,5 +15,7 @@ class Game:
         self.won_game = False
         self.text_timer = 0
 
+        
+
         self.state = TownScreenState(self)
 

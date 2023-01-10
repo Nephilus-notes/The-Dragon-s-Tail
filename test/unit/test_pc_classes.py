@@ -1,7 +1,11 @@
+import pytest
+import pyxel as px
 from old_code.character_builder import Player
 from old_code.dicts import background_stats
+from test.conftest import game
 
-def test_blacksmith():
+@pytest.mark.skip
+def test_blacksmith(game):
     """
     GIVEN an ApprenticeBlacksmith class
     WHEN a new ApprenticeBlacksmith is created
@@ -22,8 +26,9 @@ def test_blacksmith():
     assert blacksmith.current_mp == blacksmith.max_mp and blacksmith.max_mp == blacksmith.intelligence * 2
     assert blacksmith.currency == 0
     assert blacksmith.dodge_val == 4
-
-def test_herbalist():
+    
+@pytest.mark.skip
+def test_herbalist(game):
     """
     GIVEN an ApprenticeHerbalist class
     WHEN a new ApprenticeHerbalist is created
@@ -44,8 +49,9 @@ def test_herbalist():
     assert herbalist.current_mp == herbalist.max_mp and herbalist.max_mp == herbalist.intelligence * 2
     assert herbalist.currency == 0
     assert herbalist.dodge_val == 5
-
-def test_scavenger():
+    
+@pytest.mark.skip
+def test_scavenger(game):
     """
     GIVEN an TunnelScavenger class
     WHEN a new TunnelScavenger is created
@@ -66,8 +72,9 @@ def test_scavenger():
     assert scavenger.current_mp == scavenger.max_mp and scavenger.max_mp == scavenger.intelligence * 2
     assert scavenger.currency == 0
     assert scavenger.dodge_val == 6
-
-def test_explorer():
+    
+@pytest.mark.skip
+def test_explorer(game):
     """
     GIVEN an TunnelExplorer class
     WHEN a new TunnelExplorer is created

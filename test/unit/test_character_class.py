@@ -14,46 +14,25 @@ def test_bag_contents(end_game_character):
     assert end_game_character.bag.slots['leather_armor']
 
 def test_strength_level_up(end_game_character):
-    end_game_character.level_attribute('strength')
-    assert end_game_character.strength == 21
-    end_game_character.level_attribute('strength')
-    assert end_game_character.strength == 22
-    end_game_character.level_attribute('strength')
-    assert end_game_character.strength == 23
-    end_game_character.level_attribute('strength')
-    assert end_game_character.strength == 24
+    end_game_character.level_attribute('STR', 52)
+    assert end_game_character.strength == 52
+
 
 def test_dexterity_level_up(end_game_character):
-    end_game_character.level_attribute('dexterity')
-    assert end_game_character.dexterity == 21
-    end_game_character.level_attribute('dexterity')
-    assert end_game_character.dexterity == 22
-    end_game_character.level_attribute('dexterity')
-    assert end_game_character.dexterity == 23
-    end_game_character.level_attribute('dexterity')
-    assert end_game_character.dexterity == 24
+    end_game_character.level_attribute('DEX', 25)
+    assert end_game_character.dexterity == 25
+
 
 def test_intelligence_level_up(end_game_character):
-    end_game_character.level_attribute('intelligence')
-    assert end_game_character.intelligence == 21
-    end_game_character.level_attribute('intelligence')
-    assert end_game_character.intelligence == 22
-    end_game_character.level_attribute('intelligence')
-    assert end_game_character.intelligence == 23
-    end_game_character.level_attribute('intelligence')
-    assert end_game_character.intelligence == 24
+    end_game_character.level_attribute('INT', 74)
+    assert end_game_character.intelligence == 74
+
 
 def test_constitution_level_up(end_game_character):
-    end_game_character.level_attribute('constitution')
-    assert end_game_character.constitution == 21
-    end_game_character.level_attribute('constitution')
-    assert end_game_character.constitution == 22
-    end_game_character.level_attribute('constitution')
-    assert end_game_character.constitution == 23
-    end_game_character.level_attribute('constitution')
-    assert end_game_character.constitution == 24
+    end_game_character.level_attribute('CON', 13)
+    assert end_game_character.constitution == 13
 
 @pytest.mark.xfail
 def test_level_up_fail(end_game_character):
-    end_game_character.level_attribute('constitution')
-    assert end_game_character.constitution == 20
+    end_game_character.level_attribute('CON', 2)
+    assert end_game_character.constitution == 22

@@ -1,8 +1,9 @@
 from time import time
-
+from random import randint as RI
 
 import pyxel as px
 
+from old_code.dicts import *
 from .image_classes import *
 from .utils import *
 
@@ -30,6 +31,7 @@ class CombatText(DisplayImage):
 
         if self.combat_ongoing == False:
             Interactable.freeze()
+            self.game.player.reset_flags()
             if self.combat_won == False:
                 # if self.combat_state.game.player.current_hp > 0:
                 #     print('fleeing')
@@ -41,22 +43,27 @@ class CombatText(DisplayImage):
                     px.cls(0)
                 if self.game.text_timer >= self.display_time:
                     self.game.player.current_hp = self.game.player.hp
+                    self.game.player.fleeing = False
                     self.combat_state.to_town()
 
             if self.combat_won:
                 if px.btn(px.MOUSE_BUTTON_LEFT):
-                    self.combat_state.go_back()
+                    print(f'CombatText: game explored {self.game.explored} ')
+                    if self.game.explored >= 10:
+                        self.combat_state.to_town()
+                    else:
+                        self.combat_state.go_back()
 
         elif self.combat_ongoing == True:
             Interactable.freeze()
             if self.game.text_timer >= self.display_time:
-                print('2seconds passed')
+                # print('2seconds passed')
                 self.stop_draw()
                 Interactable.unfreeze()
 
 
     def stop_draw(self):
-        print('removing')
+        # print('removing')
         self.layer.remove(self)
 
     # def update(self):

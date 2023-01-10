@@ -1,4 +1,4 @@
-from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, RogueGoblin, KraktRat, npc_class_choice, npc_class_dct
+# from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, RogueGoblin, KraktRat, npc_class_choice, npc_class_dct
 import pytest
 
 def test_always_passes():

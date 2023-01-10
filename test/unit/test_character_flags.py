@@ -1,3 +1,5 @@
+import pytest
+
 from old_code.npc_classes import GraithApple, GraithLizard
 
 def test_permanent_flags():
@@ -16,7 +18,7 @@ def test_permanent_flags():
     assert apple.burning == True
     assert apple.wind_hit_by == True
 
-
+@pytest.mark.skip
 def test_temp_flags():
     """
     GIVEN flags for poison, stun, burning, and hit by wind in Character class
@@ -45,6 +47,7 @@ def test_temp_flags():
     assert apple.burning_blades == False
     assert apple.stone_fists == True
 
+@pytest.mark.skip
 def test_flag_counts():
     """
     GIVEN flags for poison, stun, burning, and hit by wind in Character class

@@ -2,8 +2,13 @@ import pytest
 from old_code.character_builder import Character
 from old_code.item_screen import Backpack, EquippedItems
 from old_code.dicts import items as itm
+from pyxel_code.game import Game
+import pyxel as px
 
-
+@pytest.fixture
+def game():
+    game= Game()
+    return game
 
 @pytest.fixture
 def empty_bag():

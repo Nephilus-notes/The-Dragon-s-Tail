@@ -1,8 +1,8 @@
-from random import randint
+from random import randint as RI
 import pyxel as px
 
 from .character_builder import Character
-from .dicts import items as itm, attributes as atb, lvl_dict, currency_tiers
+from .dicts import items as itm, attributes as atb, lvl_dict, currency_tiers, encounter_dict
 from pyxel_code.image_classes import Sprite
 
 class NPC(Character):
@@ -12,7 +12,7 @@ class NPC(Character):
         self.set_currency()
 
     def set_currency(self):
-        self.currency = currency_tiers[lvl_dict[self.class_name]] + randint(- lvl_dict[self.class_name], 2* lvl_dict[self.class_name])
+        self.currency = currency_tiers[lvl_dict[self.class_name]] + RI(- lvl_dict[self.class_name], 2* lvl_dict[self.class_name])
 
     
     def draw(self):
@@ -132,8 +132,9 @@ class KraktRat(NPC, Sprite):
         self.w=16
         self.h=16
         self.colkey=7
+        print(self.name)
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-
+        print(f'dex = {self.dexterity}')
 
 class BrabaBat(NPC, Sprite):
     def __init__(self, u=0, v=48):
@@ -156,6 +157,10 @@ class BrabaBat(NPC, Sprite):
         self.h=16
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        print(self.name)
+
+        print(f'dex = {self.dexterity}')
+
 
     def feed(self, target):
         # an attack that heals them for half the amount of damage dealt
@@ -242,3 +247,57 @@ npc_class_dct = {
     'graith_queen': GraithQueen,
     'graith_apple': GraithApple
 } 
+
+
+def lvl1_encounter(location:str):
+    percentile_roll = RI(1,100)
+    if percentile_roll == 100:
+        enemy_class = npc_class_dct['shadefire_fox']
+    elif percentile_roll <= 50:
+        enemy_class = npc_class_dct[encounter_dict[location][1]]
+    elif percentile_roll > 50 and percentile_roll <= 95:
+        enemy_class = npc_class_dct[encounter_dict[location][2]]
+    elif percentile_roll > 95:
+        enemy_class = npc_class_dct[encounter_dict[location][3]]
+    return enemy_class()
+
+def lvl2_encounter(location:str):
+    percentile_roll = RI(1,100)
+    if percentile_roll == 100:
+        enemy_class = npc_class_dct['shadefire_fox']
+    elif percentile_roll <= 30:
+        enemy_class = npc_class_dct[encounter_dict[location][1]]
+    elif percentile_roll > 30 and percentile_roll <= 60:
+        enemy_class = npc_class_dct[encounter_dict[location][2]]
+    elif percentile_roll > 60:
+        enemy_class = npc_class_dct[encounter_dict[location][3]]
+
+    return enemy_class()
+
+def lvl3_encounter(location:str):
+    percentile_roll = RI(1,100)
+    if percentile_roll == 100:
+        enemy_class = npc_class_dct['shadefire_fox']
+    elif percentile_roll <= 10:
+        enemy_class = npc_class_dct[encounter_dict[location][1]]
+    elif percentile_roll > 10 and percentile_roll <= 25:
+        enemy_class = npc_class_dct[encounter_dict[location][2]]
+    elif percentile_roll > 25:
+        enemy_class = npc_class_dct[encounter_dict[location][3]]
+
+    return enemy_class()
+
+def lvl4_encounter(location:str):
+    percentile_roll = RI(1,100)
+    if percentile_roll == 100:
+        enemy_class = npc_class_dct['shadefire_fox']
+    elif percentile_roll <= 1:
+        enemy_class = npc_class_dct[encounter_dict[location][2]]
+    elif percentile_roll > 1 and percentile_roll <= 80:
+        enemy_class = npc_class_dct[encounter_dict[location][4]]
+    elif percentile_roll > 80:
+        enemy_class = npc_class_dct[encounter_dict[location][6]]
+
+    return enemy_class()
+
+encounter_function_list = [lvl1_encounter, lvl2_encounter, lvl3_encounter, lvl4_encounter]

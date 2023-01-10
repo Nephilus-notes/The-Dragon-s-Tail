@@ -73,7 +73,6 @@ class Level(DisplayImage, Clickable):
                 Layer.fore.append(minus)
 
             self.save_stats = SaveStatsButton(self.player, *stats, self)
-            print(f'{self.save_stats} at instaniation')
             self.cancel = CancelButton(self)
             Layer.fore.append(self.cancel)
             Layer.fore.append(self.save_stats)
@@ -82,7 +81,6 @@ class Level(DisplayImage, Clickable):
 
             
     def clear_save_values(self):
-        print(self.save_stats, 'from clearing')
         del self.save_stats
 
 
@@ -125,7 +123,6 @@ class SaveStatsButton(Button):
 
     def intersection(self):
         if px.btn(px.MOUSE_BUTTON_LEFT):
-            print(f'str:{self.strength.stat} dex:{self.dexterity.stat} con {self.constitution.stat} int: {self.intelligence.stat}')
             self.player.level_attribute(self.strength.stat_name, self.strength.stat)  
             self.player.level_attribute(self.dexterity.stat_name, self.dexterity.stat)
             self.player.level_attribute(self.constitution.stat_name, self.constitution.stat)

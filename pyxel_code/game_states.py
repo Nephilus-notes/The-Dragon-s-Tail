@@ -18,7 +18,7 @@ class GameState(ABC):
         self.game = game
         self._next_state = self
         # self.trans_state = self
-        # self.game._previous_screen = self
+        # self.game._previous_state = self
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.MOUSE_LOCATION = ''
@@ -77,35 +77,17 @@ class GameState(ABC):
         for item in Interactable.main:
             if item.intersects(self.MOUSE_LOCATION):
                 item.intersection()
-                if item == self.exit and px.btn(px.MOUSE_BUTTON_LEFT):
-                    # self.go_back()
-                    self._next_state = TownScreenState(self.game)
 
+                if self.name != 'Combat':
+                    if item == self.exit and px.btn(px.MOUSE_BUTTON_LEFT):
+                        # self.go_back()
+                        self._next_state = TownScreenState(self.game)
 
-                # if self.name == "Inn":
-                #     if px.btn(px.MOUSE_BUTTON_LEFT):
-                #         print("in the inn")
-                #         if item == self.rest:
-                #             self.game.player.current_hp = self.game.player.hp
-                #             self.game.player.current_mp = self.game.player.max_mp
-                #             px.text(108, 96, "Health restored", 7) # Add time function on this: 5 secs
-
-                #         elif item == self.level:
-                #             self.strength = self.game.player.strength
-                #             self.dex = self.game.player.dex
-                #             self.intelligence = self.game.player.intelligence
-                #             self.con = self.game.player.constitution
-                            
-                #             px.text(128, 84, "change interactables to frozen, add new interactables", 10) 
-
-                #         elif item == self.save:
-                #             px.text(108, 84, "api call, saved", 7) 
-
-                if self.name == "The Shining Forest" or self.name == "The Underbelly":
-                    if item == self.explore and px.btn(px.MOUSE_BUTTON_LEFT):
-                        self.game._previous_screen = self
-                        print(f"Entering combat state: {self.game._previous_screen.name}")
-                        self._next_state = CombatState(self.game)
+                    if self.name == "The Shining Forest" or self.name == "The Underbelly":
+                        if item == self.explore and px.btn(px.MOUSE_BUTTON_LEFT):
+                            self.game._previous_state = self
+                            print(f"Entering combat state: {self.game._previous_state.name}")
+                            self._next_state = CombatState(self.game)
 
 
     def draw_hud(self):
@@ -136,20 +118,18 @@ class GameState(ABC):
             Layer.main.append(sprite)
 
     def go_back(self):
-        # print(self.game._previous_screen.name)
+        # print(self.game._previous_state.name)
         # print(f'next state {self._next_state.name}')
-        if self.name == "Combat" and self.game._previous_screen.name == 'Shining Forest':
-            # print('back from shining forest')
+        if self.name == "Combat" and self.game._previous_state.name == 'The Shining Forest':
             self.set_previous_state()
             self._next_state = ShiningForestMapState(self.game)
-        elif self.name == "Combat" and self.game._previous_screen.name == 'The Underbelly':
-            # print('back from underbelly')
+        elif self.name == "Combat" and self.game._previous_state.name == 'The Underbelly':
             self.set_previous_state()
             self._next_state = UnderbellyMapState(self.game)
 
 
-        # self.trans_state= self.game._previous_screen
-        # self.game._previous_screen = self._next_state
+        # self.trans_state= self.game._previous_state
+        # self.game._previous_state = self._next_state
         # self._next_state = self.trans_state
 
     def to_town(self):
@@ -162,12 +142,14 @@ class GameState(ABC):
         self.game.player.draw_sidebar()
 
     def set_previous_state(self):
-        self.game._previous_screen = self
+        self.game._previous_state = self
 
 class TownScreenState(GameState):
     def on_enter(self):
         self.name = "Town"
         self.clear_layers()
+
+        self.game.player.exploring = False
 
         self.blacksmith = Entrance(ted['Blacksmith'])
         self.alchemist = Entrance(ted["Alchemist's Shop"])
@@ -249,7 +231,6 @@ class AlchemistScreen(GameState):
 class InnScreen(GameState):
     def on_enter(self):
         self.name = "Inn"
-        print(self.name)
         self.clear_layers()
 
         self.bg = Background(**background['inn'])
@@ -270,9 +251,7 @@ class ShiningForestMapState(GameState):
 
 
         self.bg = Background(**background['shining_forest'])
-
         self.build_buttons()
-
         Layer.back.append(self.bg)
 
 
@@ -293,16 +272,33 @@ class CombatState(GameState):
         self.bg = Background(**background['combat'])
         self.round_count = 0
         self.initiative_list = []
-        self.build_exit() # For debugging purposes, MUST DELETE PREPRODUCTION
+        # self.build_exit() # For debugging purposes, MUST DELETE PREPRODUCTION
         self.player = self.game.player
         self.player_action = ''
         self.player_abilities = []
-        self.enemy = KraktRat()
-        self.time_hook()
-        Layer.main.append(self.enemy)
         Layer.back.append(self.bg)    
-        self.check_init()
 
+        if self.player.exploring == False:
+            self.game.explored = 0
+            self.player.exploring = True
+
+        self.game.explored += 1
+        print(f"exploring: {self.game.explored}")
+
+
+        if self.game.explored == 1 or self.game.explored % 3 == 0:
+            # text for new areas
+            pass
+
+        if self.game.explored == 10 and self.game._previous_state.name == 'The Shining Forest':
+            self.enemy = GraithApple()
+        else:
+            self.enemy = self.choose_enemy()
+
+        Layer.main.append(self.enemy)
+
+        self.check_init()
+        self.time_hook()
         self.build_action_buttons()
         
     def clear_action_list(self):
@@ -321,7 +317,7 @@ class CombatState(GameState):
                 if self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
-                        return CombatText(self, "You retreat in character.", time(), combat_won=False, combat_ongoing=False)
+                        return CombatText(self, "You retreat.", time(), combat_won=False, combat_ongoing=False)
             
                     
                 else:
@@ -334,13 +330,13 @@ class CombatState(GameState):
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
-                print('enemy action')
-                sleep(1)
+                # sleep(1)
             if self.player.current_hp <= 0:
                 return CombatText(self, """You lost the battle
 Return to town for healing...""", time(), combat_ongoing=False, combat_won=False)
             elif self.enemy.current_hp<= 0:
                 return self.player_reward()
+            self.check_status()
             
 
 
@@ -363,8 +359,6 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
         self.round_count += 1
 
     def player_reward(self):
-        # display how much you got and increment player currency and lifetime_currency
-        # print(f"You found trophies worth { self.enemy.currency } ")
         self.player.currency += self.enemy.currency
         self.player.lifetime_currency += self.enemy.currency
         return CombatText(self, f"""Found trophies: {self.enemy.currency}
@@ -373,27 +367,22 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
     def check_status(self):
         self.round_inc()
         for player in self.initiative_list:
-            while player.dodging == True:
-                if player.dodge >= 2:
-                    player.dodging = False
+            if player.dodging == True:
+                if player.dodge_round >= 2:
                     player.undodge()
-        # reset the player.dodge so that dodge can be used again.
-                    break
+                            # reset the player.dodge so that dodge can be used again.
                 else:
                     player.dodge_round += 1
-                    # print("dodge + 1!")
-                    # print(player.dodge_round)
+                    print(f'dodging for {player.dodge_round} rounds')
                     break
-            while player.defended == True:
+            if player.defended == True:
                 if player.defend_round >= 2:
-                    player.defended = False
                     player.undefend()
                     break
                 else:
+                    print(f'defended {player.defend_round}')
                     player.defend_round += 1
                     break
-            # while player.fleeing == True:
-            #     return CombatText(self, "You run away in game states", time(), combat_won=False, combat_ongoing=False)
 
     def draw(self):
         self.draw_layers()
@@ -402,3 +391,5 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
         self.check_mouse_position()
         self.player.draw_sidebar()
 
+    def choose_enemy(self):
+        return encounter_function_list[self.game.explored//3](self.game._previous_state.name)

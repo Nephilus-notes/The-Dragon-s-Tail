@@ -164,18 +164,18 @@ shining_forest = {
 
 
 encounter_dict = {
-    'underbelly': {
+    'The Underbelly': {
         1: 'krakt_rat', 
         2: 'braba_bat',
-        3: 'rogue_goblin',
+        3: 'gratka_wolf',
         4: 'graith_lizard',
         5: 'shadefire_fox',
         6: 'graith_queen'
     },
-    'shining_forest': {
+    'The Shining Forest': {
         1: 'krakt_rat', 
         2: 'gratka_wolf',
-        3: 'rogue_goblin',
+        3: 'braba_bat',
         4: 'graith_tree',
         5: 'shadefire_fox',
         6: 'graith_apple'
@@ -215,3 +215,29 @@ background_options = """(B) Blacksmith's Apprentice
 (T) Tunnel Forager
 (E) Explorer
 (A) Alchemist's Apprentice """
+
+
+
+npc_class_choice = {
+    1: 'graith_lizard',
+    2: 'graith_tree',
+    3: 'krakt_rat', 
+    4: 'braba_bat',
+    5: 'shadefire_fox',
+    6: 'gratka_wolf',
+    7: 'rogue_goblin',
+    8: 'graith_queen',
+    9: 'graith_apple'
+}
+
+# npc_class_dct = {
+#    'graith_lizard': GraithLizard,
+#      'graith_tree': GraithTree,
+#     'krakt_rat': KraktRat, 
+#      'braba_bat': BrabaBat,
+#     'shadefire_fox': ShadeFireFox,
+#    'gratka_wolf': GraktaWolf,
+#     #  'rogue_goblin': RogueGoblin,
+#     'graith_queen': GraithQueen,
+#     'graith_apple': GraithApple
+# } 

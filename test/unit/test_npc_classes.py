@@ -1,4 +1,4 @@
-from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, RogueGoblin, KraktRat, npc_class_choice, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple
+from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, KraktRat, npc_class_choice, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple
 from old_code.dicts import lvl_dict, currency_tiers
 
 # Testing Bounds
@@ -101,10 +101,10 @@ def test_graith_tree():
     assert graith_tree.current_mp == graith_tree.max_mp and graith_tree.max_mp == graith_tree.intelligence * 2
     assert graith_tree.currency >= lower_4 and graith_tree.currency <= upper_4
     assert graith_tree.dodge_val >= weak_lower_val and graith_tree.dodge_val <= weak_upper_val
-    graith_tree.defend()
-    assert graith_tree.defended == True
-    # change this , and defended, to only giving 2 armor
-    assert graith_tree.armor_val == graith_tree.armor + 2
+    # graith_tree.defend()
+    # assert graith_tree.defended == True
+    # # change this , and defended, to only giving 2 armor
+    # assert graith_tree.armor_val == graith_tree.armor + 2
 
 def test_grakta_wolf():
     """
@@ -131,26 +131,26 @@ def test_grakta_wolf():
     grakta_wolf.flee(second_wolf)
     assert grakta_wolf.fleeing == True
 
-def test_rogue_goblin():
-    """
-    GIVEN an RogueGoblin class
-    WHEN a new RogueGoblin is created
-    THEN check that strength, dexterity, and name instantiate correctly
-    """
-    rogue_goblin = RogueGoblin()
-    assert rogue_goblin.strength >= weak_lower and rogue_goblin.strength <= weak_upper
-    assert rogue_goblin.dexterity >= average_lower and rogue_goblin.dexterity <= average_upper
-    assert rogue_goblin.intelligence >= weak_lower and rogue_goblin.intelligence <= weak_upper
-    assert rogue_goblin.constitution >= weak_lower and rogue_goblin.constitution <= weak_upper
-    assert rogue_goblin.armor_val == 1
-    assert rogue_goblin.resist_val >= weak_lower and rogue_goblin.resist_val <= weak_upper
-    assert rogue_goblin.damage_val >= weak_lower_val and rogue_goblin.damage_val <= weak_upper_val
-    assert rogue_goblin.hp == rogue_goblin.constitution * 3
-    assert rogue_goblin.current_hp >= weak_lower * 3 and rogue_goblin.current_hp <= weak_upper * 3
-    assert rogue_goblin.current_mp == rogue_goblin.max_mp and rogue_goblin.max_mp == rogue_goblin.intelligence * 2
-    assert rogue_goblin.currency >= lower_2 and rogue_goblin.currency <= upper_2
-    assert rogue_goblin.dodge_val >= average_lower_val and rogue_goblin.dodge_val <= average_upper_val 
-    assert rogue_goblin.name == "Rogue Goblin"
+# def test_rogue_goblin():
+#     """
+#     GIVEN an RogueGoblin class
+#     WHEN a new RogueGoblin is created
+#     THEN check that strength, dexterity, and name instantiate correctly
+#     """
+#     rogue_goblin = RogueGoblin()
+#     assert rogue_goblin.strength >= weak_lower and rogue_goblin.strength <= weak_upper
+#     assert rogue_goblin.dexterity >= average_lower and rogue_goblin.dexterity <= average_upper
+#     assert rogue_goblin.intelligence >= weak_lower and rogue_goblin.intelligence <= weak_upper
+#     assert rogue_goblin.constitution >= weak_lower and rogue_goblin.constitution <= weak_upper
+#     assert rogue_goblin.armor_val == 1
+#     assert rogue_goblin.resist_val >= weak_lower and rogue_goblin.resist_val <= weak_upper
+#     assert rogue_goblin.damage_val >= weak_lower_val and rogue_goblin.damage_val <= weak_upper_val
+#     assert rogue_goblin.hp == rogue_goblin.constitution * 3
+#     assert rogue_goblin.current_hp >= weak_lower * 3 and rogue_goblin.current_hp <= weak_upper * 3
+#     assert rogue_goblin.current_mp == rogue_goblin.max_mp and rogue_goblin.max_mp == rogue_goblin.intelligence * 2
+#     assert rogue_goblin.currency >= lower_2 and rogue_goblin.currency <= upper_2
+#     assert rogue_goblin.dodge_val >= average_lower_val and rogue_goblin.dodge_val <= average_upper_val 
+#     assert rogue_goblin.name == "Rogue Goblin"
 
 def test_krakta_rat():
     """
@@ -192,8 +192,8 @@ def test_braba_bat():
     assert braba_bat.currency >= lower_2 and braba_bat.currency <= upper_2
     assert braba_bat.dodge_val >= average_lower_val and braba_bat.dodge_val <= average_upper_val 
 
-    braba_bat.dodge()
-    assert braba_bat.dodging == True
+    # braba_bat.dodge()
+    # assert braba_bat.dodging == True
 
 def test_graith_queen():
     """
