@@ -2,7 +2,7 @@ from random import randint as RI
 import pyxel as px
 
 from .character_builder import Character
-from .dicts import attributes as atb, lvl_dict, currency_tiers, encounter_dict
+from .dicts import attributes as atb, lvl_dict, currency_tiers, encounter_dict, npc_classes_attributes as npca, attribute_range as AR
 from pyxel_code.utils import items as itm
 from pyxel_code.image_classes import Sprite
 
@@ -20,16 +20,19 @@ class NPC(Character):
         px.blt(x=self.x, y=self.y, img=self.bank, u=self.u, v=self.v, w=self.w, h=self.h, colkey= self.colkey)
         px.text(74, 10, f"HP:{self.current_hp}/{self.hp}", 7)
 
+    def generate_stats(self):
+        self.strength = atb['attribute'][npca[self.class_name]['strength']] + RI(*AR[npca[self.class_name]['strength']])
+        self.dexterity = atb['attribute'][npca[self.class_name]['dexterity']] + RI(*AR[npca[self.class_name]['dexterity']])
+        self.intelligence = atb['attribute'][npca[self.class_name]['intelligence']] + RI(*AR[npca[self.class_name]['intelligence']])
+        self.constitution = atb['attribute'][npca[self.class_name]['constitution']] + RI(*AR[npca[self.class_name]['constitution']])
+        self.armor = atb['armor_type'][npca[self.class_name]['armor']] + RI(-1, 1)
+        self.resistance = atb['attribute'][npca[self.class_name]['resistance']] + RI(*AR[npca[self.class_name]['resistance']])
+
 class GraithLizard(NPC, Sprite):
     def __init__ (self, u=32, v=48):
         self.name = "Graith'Gesh Lizard"
         self.class_name = 'graith_lizard'
-        self.strength = atb['strength_range']['strong']
-        self.dexterity = atb['dexterity_range']['weak']
-        self.intelligence = atb['intelligence_range']['very_weak']
-        self.constitution = atb['constitution_range']['average']
-        self.armor = atb['armor_type']['brigandine']
-        self.resistance = atb['resist_range']['weak']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -47,12 +50,7 @@ class GraithQueen(NPC, Sprite):
     def __init__ (self, u=48, v=48):
         self.class_name = 'graith_queen'
         self.name = "Graith'Gesh Queen"
-        self.strength = atb['strength_range']['very_strong']
-        self.dexterity = atb['dexterity_range']['strong']
-        self.intelligence = atb['intelligence_range']['very_weak']
-        self.constitution = atb['constitution_range']['strong']
-        self.armor = atb['armor_type']['bone']
-        self.resistance = atb['resist_range']['average']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -69,12 +67,7 @@ class GraithTree(NPC, Sprite):
     def __init__ (self, u=80, v=48):
         self.name = "Graith'Gesh Tree"
         self.class_name = 'graith_tree'
-        self.strength = atb['strength_range']['strong']
-        self.dexterity = atb['dexterity_range']['weak']
-        self.intelligence = atb['intelligence_range']['very_weak']
-        self.constitution = atb['constitution_range']['strong']
-        self.armor = atb['armor_type']['brigandine']
-        self.resistance = atb['resist_range']['weak']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -97,12 +90,7 @@ class GraithApple(NPC, Sprite):
      def __init__ (self, u=96, v=48):
         self.class_name = 'graith_apple'
         self.name = "Graith'Gesh Apple Tree"
-        self.strength = atb['strength_range']['strong']
-        self.dexterity = atb['dexterity_range']['very_strong']
-        self.intelligence = atb['intelligence_range']['average']
-        self.constitution = atb['constitution_range']['very_strong']
-        self.armor = atb['armor_type']['brigandine']
-        self.resistance = atb['resist_range']['weak']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -119,12 +107,7 @@ class KraktRat(NPC, Sprite):
     def __init__(self, u=16, v=48):
         self.name = "Krakt Rat"
         self.class_name = 'krakt_rat'
-        self.strength = atb['strength_range']['very_weak']
-        self.dexterity = atb['dexterity_range']['average']
-        self.intelligence = atb['intelligence_range']['very_weak']
-        self.constitution = atb['constitution_range']['weak']
-        self.armor = atb['armor_type']['none']
-        self.resistance = atb['resist_range']['average']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -141,12 +124,7 @@ class BrabaBat(NPC, Sprite):
     def __init__(self, u=0, v=48):
         self.name = "Braba Bat"
         self.class_name = 'braba_bat'
-        self.strength = atb['strength_range']['very_weak']
-        self.dexterity = atb['dexterity_range']['average']
-        self.intelligence = atb['intelligence_range']['very_weak']
-        self.constitution = atb['constitution_range']['weak']
-        self.armor = atb['armor_type']['none']
-        self.resistance = atb['resist_range']['average']
+        self.generate_stats()
         self.u=u 
         self.v=v
         # If I have implimented multiple enemies, this is a great candidate for swarms of 3 +
@@ -172,12 +150,7 @@ class ShadeFireFox(NPC, Sprite):
     def __init__(self, u=112, v=48):
         self.name = "Shadefire Fox"
         self.class_name = 'shadefire_fox'
-        self.strength = atb['strength_range']['average']
-        self.dexterity = atb['dexterity_range']['very_strong']
-        self.intelligence = atb['intelligence_range']['average']
-        self.constitution = atb['constitution_range']['average']
-        self.armor = atb['armor_type']['chain']
-        self.resistance = atb['resist_range']['strong']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96
@@ -201,12 +174,7 @@ class GraktaWolf(NPC, Sprite):
     def __init__(self, u=64, v=48):
         self.name = "Gratka Wolf"
         self.class_name = 'gratka_wolf'
-        self.strength = atb['strength_range']['weak']
-        self.dexterity = atb['dexterity_range']['average']
-        self.intelligence = atb['intelligence_range']['weak']
-        self.constitution = atb['constitution_range']['average']
-        self.armor = atb['armor_type']['leather']
-        self.resistance = atb['resist_range']['weak']
+        self.generate_stats()
         self.u=u 
         self.v=v
         self.x=96

@@ -33,20 +33,21 @@ class CombatText(DisplayImage):
 
         if self.combat_ongoing == False:
             Interactable.freeze()
-            self.game.player.reset_flags()
 
             if self.combat_won == False:
+                self.game.player.reset_flags()
                 if self.game.text_timer >= self.display_time:
                     px.cls(0)
 
                 # if self.game.text_timer >= self.display_time + .2:
-                self.flee()
+                self.to_town()
 
 
             if self.combat_won:
-                if self.game.text_timer > self.display_time and px.btn(px.MOUSE_BUTTON_LEFT):
+                print('combat won!')
+                if self.game.text_timer >= self.display_time and px.btn(px.MOUSE_BUTTON_LEFT):
                     print(f'CombatText: game explored {self.game.explored} ')
-                    if self.game.explored >= 10:
+                    if self.game.explored >= 11:
                         print('to the trees')
                         self.combat_state.to_town()
                     else:
@@ -72,7 +73,7 @@ class CombatText(DisplayImage):
     def reset_timer(self):
         self.game.text_timer = 0
 
-    def flee(self):
+    def to_town(self):
         print('running')
         self.game.player.current_hp = self.game.player.hp
         self.game.player.fleeing = False
@@ -80,7 +81,7 @@ class CombatText(DisplayImage):
         Interactable.unfreeze()
 
     def clear_message(self):
-        print('trying to clear')
+        # print('trying to clear')
         self.remove_draw()
         # Layer.fore.clear()
         Interactable.unfreeze()

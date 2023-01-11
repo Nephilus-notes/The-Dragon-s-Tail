@@ -103,7 +103,7 @@ class Character():
 
 
     def attack(self, target):
-        self.in_combat_text(f'{self.name.title()} lashes out at {target.name.title()}!')
+        self.in_combat_text(f'{self.name.title()} attacks {target.name.title()}!')
 
         if self.dexterity > self.strength:
             if RI(*dex) == 2:
@@ -130,16 +130,18 @@ class Character():
 
     def attack_damage(self, target, damage_num):
             if damage_num > 0:
-                CombatText(self.combat_state, f'{self.name.title()} has hit {target.name.title()} for {str(damage_num)} damage!', time())
+                CombatText(self.combat_state, f'''{self.name.title()} hit {target.name.title()}. 
+{str(damage_num)} damage!''', time())
                 target.current_hp -= damage_num
                 if target.current_hp <= 0:
                     target.current_hp = 0
                 #     self.in_combat_text(f"\n{target.name.title()} has been defeated.")
                 #     # del target
             elif damage_num <= 0 and target.name[-1] != "s":
-                self.in_combat_text(f"{target.name.title()} blocks {self.name.title()}' strike.")
+                self.in_combat_text(f"""{target.name.title()} blocks 
+{self.name.title()}' strike.""")
             elif damage_num <= 0 and target.name[-1] == "s":
-                self.in_combat_text(target.name.title(), 'blocks', self.name.title() + "'s strike.")
+                self.in_combat_text(target.name.title(), 'blocks\n', self.name.title() + "'s strike.")
                 
 
     def wear_armor(self):
@@ -150,10 +152,12 @@ class Character():
         self.armor_val = self.armor + 2
         self.defended = True
         if self.class_name == 'player':
-            print(f'you are defended: armor val = {self.armor_val} ')
-            self.in_combat_text(f"""You focus on defending. Armor: {self.armor_val}""")
+            print(f'You are defended: Armor val = {self.armor_val} ')
+            self.in_combat_text(f"""You focus on defending. 
+Armor: {self.armor_val}""")
         else:
-            self.in_combat_text(f'''The { self.combat_state.enemy} hunkers down to defend.''')
+            self.in_combat_text(f'''The { self.combat_state.enemy} 
+hunkers down to defend.''')
         # rnd_count = 2
 
     def undefend(self):
@@ -161,15 +165,18 @@ class Character():
         self.defended = False
         self.defend_round = 0
         if self.class_name != 'player':
-            self.in_combat_text(f'''The { self.combat_state.enemy} relaxes their guard.''')
+            self.in_combat_text(f'''The { self.combat_state.enemy} 
+relaxes their guard.''')
 
     def dodge(self):
         self.dodging = True
         self.dodge_val = self.dexterity + 2
         if self.class_name == 'player':
-            self.in_combat_text(f"""You focus on defending. dodging: {self.dodge_val}""")
+            self.in_combat_text(f"""You focus on dodging. 
+Dodge: {self.dodge_val}""")
         else:
-            self.in_combat_text(f'''The { self.combat_state.enemy} hunkers down to defend.''')
+            self.in_combat_text(f'''The { self.combat_state.enemy} 
+dances about nimbly.''')
         # rnd_count = 2
 
     def undodge(self):
@@ -182,7 +189,7 @@ class Character():
             self.fleeing = True
         else:
             self.flee_count += 1
-            self.in_combat_text(f'You try to run from {enemy}')
+            self.in_combat_text(f'You try to run')
             return False
 
     def __repr__(self):
@@ -281,7 +288,7 @@ class Character():
         self.v = outfit[1]
 
     def reset_flags(self):
-        print('reseting flags')
+        # print('reseting flags')
         self.defended = False  #incrementer
         self.dodging = False    # Incrementor
         self.fleeing = False    # Incrementor
@@ -344,4 +351,4 @@ class Player(Character, Sprite):
         px.text(40, 66, f"DODGE:{self.dodge_val}", 7)
 
         # placeholder
-        px.text(32, 122, "Quit", 0)
+        px.text(32, 118, "Quit", 0)

@@ -80,12 +80,12 @@ class GameState(ABC):
                 item.intersection()
 
                 if self.name != 'Combat':
-                    if item == self.exit and px.btn(px.MOUSE_BUTTON_LEFT):
+                    if item == self.exit and px.btnr(px.MOUSE_BUTTON_LEFT):
                         # self.go_back()
                         self._next_state = TownScreenState(self.game)
 
                     if self.name == "The Shining Forest" or self.name == "The Underbelly":
-                        if item == self.explore and px.btn(px.MOUSE_BUTTON_LEFT):
+                        if item == self.explore and px.btnr(px.MOUSE_BUTTON_LEFT):
                             self.game._previous_state = self
                             print(f"Entering combat state: {self.game._previous_state.name}")
                             self._next_state = CombatState(self.game)
@@ -158,9 +158,41 @@ class GameState(ABC):
         self.draw_layers()
         self.check_mouse_position()
         self.game.player.draw_sidebar()
+        self.draw_name()
+        self.draw_explorer()
 
     def set_previous_state(self):
         self.game._previous_state = self
+
+    def draw_name(self):
+        if self.name != 'Combat':
+            px.text(73, 1, f"{self.name}", 7)
+        
+        if self.game.player.exploring == True:
+            if self.name == "The Underbelly" or self.name == "The Shining Forest":
+                if self.game.explored > 0 and self.game.explored < 3:
+                    name = location_names[self.name][0]
+                elif self.game.explored >= 3 and self.game.explored < 6:
+                    name = location_names[self.name][1]
+                elif self.game.explored >= 6 and self.game.explored < 9:
+                    name = location_names[self.name][2].format(player = self.game.player.name)
+                elif self.game.explored >= 9:
+                    name = location_names[self.name][3]
+            px.text(168, 1, f"{name}", 7)
+
+    def draw_explorer(self):
+        if self.game.player.exploring == True:
+            if self.name == "The Underbelly" or self.name == "The Shining Forest":
+                if self.game.explored > 0 and self.game.explored < 3:
+                    x, y = player_sprite_locations[self.name][0]
+                elif self.game.explored >= 3 and self.game.explored < 6:
+                    x, y = player_sprite_locations[self.name][1]
+                elif self.game.explored >= 6 and self.game.explored < 9:
+                    x, y = player_sprite_locations[self.name][2]
+                elif self.game.explored >= 9:
+                    x, y = player_sprite_locations[self.name][3]
+                px.blt(x, y, 2, 8, 64, 8, 8, 7)
+
 
 class TownScreenState(GameState):
     def on_enter(self):
@@ -169,11 +201,11 @@ class TownScreenState(GameState):
 
         self.game.player.exploring = False
 
-        self.blacksmith = Entrance(ted['Blacksmith'])
-        self.alchemist = Entrance(ted["Alchemist's Shop"])
-        self.underbelly = Entrance(ted['underbelly'])
-        self.inn = Entrance(ted['Inn'])
-        self.shining_forest = Entrance(ted['shining_forest'])
+        self.blacksmith = Entrance(self, ted['Blacksmith'])
+        self.alchemist = Entrance(self, ted["Alchemist's Shop"])
+        self.underbelly = Entrance(self, ted['underbelly'])
+        self.inn = Entrance(self, ted['Inn'])
+        self.shining_forest = Entrance(self, ted['shining_forest'])
         self.build_interactables([ self.blacksmith, 
         self.alchemist, self.inn, self.shining_forest 
         , self.underbelly])
@@ -183,31 +215,23 @@ class TownScreenState(GameState):
 
     
     def check_mouse_position(self):
-        if self.blacksmith.intersects(self.MOUSE_LOCATION):
-            self.blacksmith.intersection()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
-                px.text(1,1, "clicked", 7)
-                self._next_state = BlacksmithScreen(self.game) 
-        if self.inn.intersects(self.MOUSE_LOCATION):
-            self.inn.intersection()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
-                px.text(1,1, "clicked", 7)
-                self._next_state = InnScreen(self.game)
-        if self.alchemist.intersects(self.MOUSE_LOCATION):
-            self.alchemist.intersection()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
-                self._next_state = AlchemistScreen(self.game) 
-                px.text(1,1, "clicked", 7)
-        if self.underbelly.intersects(self.MOUSE_LOCATION):
-            self.underbelly.intersection()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
-                px.text(1,1, "clicked", 7)
-                self._next_state = UnderbellyMapState(self.game)
-        if self.shining_forest.intersects(self.MOUSE_LOCATION):
-            self.shining_forest.intersection()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
-                px.text(1,1, "clicked", 7)
-                self._next_state = ShiningForestMapState(self.game)
+         for item in Interactable.main:
+            if item.intersects(self.MOUSE_LOCATION):
+                item.intersection()
+            if self.blacksmith.intersects(self.MOUSE_LOCATION) and px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self._next_state = BlacksmithScreen(self.game) 
+
+            if self.inn.intersects(self.MOUSE_LOCATION) and px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self._next_state = InnScreen(self.game)
+
+            if self.alchemist.intersects(self.MOUSE_LOCATION) and px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self._next_state = AlchemistScreen(self.game) 
+
+            if self.underbelly.intersects(self.MOUSE_LOCATION) and px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self._next_state = UnderbellyMapState(self.game)
+
+            if self.shining_forest.intersects(self.MOUSE_LOCATION) and px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self._next_state = ShiningForestMapState(self.game)
 
 
 
@@ -343,7 +367,7 @@ class CombatState(GameState):
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = 0 # RI(0,2)
+                ability_index = RI(0,2)
                 if ability_index == 0:
                     combatant.abilities[ability_index](self.player)
                 else:
@@ -377,9 +401,25 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
         self.round_count += 1
 
     def player_reward(self):
-        self.player.currency += self.enemy.currency
-        self.player.lifetime_currency += self.enemy.currency
-        return CombatText(self, f"""Found trophies: {self.enemy.currency}
+        if self.enemy.class_name == 'graith_queen':
+            self.player.currency += self.enemy.currency
+            self.player.lifetime_currency += self.enemy.currency
+            scythe = PlayerEquippableItem(self.player, **items[7], id = 7)
+            self.player.bag.add_item(scythe)
+            return CombatText(self, f"""Found trophies: {self.enemy.currency}
+Death's Scythe!""", time(), combat_ongoing=False)
+
+        elif self.enemy.class_name == 'shadefire_fox':
+            self.player.currency += self.enemy.currency
+            self.player.lifetime_currency += self.enemy.currency
+            bonemail = PlayerEquippableItem(self.player, **items[6], id = 6)
+            self.player.bag.add_item(bonemail)
+            return CombatText(self, f"""Found trophies: {self.enemy.currency}
+Bone Armor!""", time(), combat_ongoing=False)
+        else:
+            self.player.currency += self.enemy.currency
+            self.player.lifetime_currency += self.enemy.currency
+            return CombatText(self, f"""Found trophies: {self.enemy.currency}
 [Click to continue]""", time(), combat_ongoing=False)
 
     def check_status(self):

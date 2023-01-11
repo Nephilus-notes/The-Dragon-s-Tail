@@ -5,7 +5,9 @@ from pyxel_code.constants import WIDTH, HEIGHT
 from pyxel_code.game_states import TownScreenState
 from old_code.character_builder import Player
 from old_code.dicts import background_stats
+bad_stats = [8,8,4,2]
 
+game_stats = [background_stats['b']['stats']]
 class Game:
     def __init__(self):
 

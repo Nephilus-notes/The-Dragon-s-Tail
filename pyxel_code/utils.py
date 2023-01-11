@@ -4,7 +4,8 @@ from threading import Timer
 
 import pyxel as px
 
-
+class Runners:
+    main = []
 
 
 class Updatable(ABC):
@@ -90,87 +91,130 @@ items = {
     # // WEAPONS //
     0: {'x': 88, 'y': 24, 'u': 0, 'v': 0, 'colkey': 7, 'name': 'Dagger',
         'w': 16, 'h': 16, 'item_stat': 1, 'price': 10, "slot": "hand",
-        'description': """A simple dagger with a leatherwrapped bone hilt.
-It's good for cutting things and taking on large rodents"""},
+        'description': 
+"""          Small dagger
+
+Good for cutting things and 
+taking on large rodents."""},
 
     1: {'x': 120, 'y': 24, 'u': 16, 'v': 0, 'colkey': 7,
         'name': 'Sword', 'w': 16, 'h': 16,
         'item_stat': 3, 'price': 30, "slot": "hand",
-        'description': """A well-made sword that can be used to fight against any foe."""},
+        'description': 
+"""          Well-made sword 
+
+Used to fight 
+many foes."""},
     2: {'x': 152, 'y': 24, 'u': 32, 'v': 0, 'colkey': 7,
         'name': 'Axe', 'w': 16, 'h': 16,
         'item_stat': 4, 'price': 45, "slot": "hand",
-        'description': """A polished axe that can easily take chunks out of full grown trees."""},
+        'description': 
+"""          Polished axe 
+
+Can easily take chunks 
+out of full grown trees."""},
     7: {'x': 1, 'y': 3, 'u': 48, 'v': 0, 'colkey': 7,
         'name': "Death's Scythe", 'w': 16, 'h': 16,
         'item_stat': 15, 'price': 1000, "slot": "hand",
-        'description': """A scythe stolen from Death himself.  Whenever you touch this 
-weapon you can hear faint whispers all around you."""},
+        'description': 
+"""          Magical scythe 
+Whenever you touch this weapon 
+you can hear faint whispers 
+all around you."""},
 
     # // ARMOR //
     3: {'x': 104, 'y': 40, 'u': 0, 'v': 16, 'colkey': 7,
         'name': 'Leather Armor', 'w': 16, 'h': 16,
         'item_stat': 1, 'price': 10, "slot": "body",
-        'description': """A jacket made of toughened leather, 
-it provides some protection against the elements and enemies alike."""},
+        'description': 
+"""         Toughened leather 
+
+Protects against
+both elements and enemies."""},
     4: {'x': 136, 'y': 40, 'u': 16, 'v': 16, 'colkey': 7,
         'name': 'Chain Armor', 'w': 16, 'h': 16,
         'item_stat': 3, 'price': 50, "slot": "body",
-        'description': """A jacket made of steel rings.  
-It provides great protection without limiting your movement."""},
+        'description': 
+"""           Long steel shirt  
+
+Great protection 
+without limiting movement."""},
     5: {'x': 168, 'y': 40, 'u': 32, 'v': 16, 'colkey': 7,
         'name': "Brigandine", 'w': 16, 'h': 16,
         'item_stat': 4, 'price': 75, "slot": "body",
-        'description': """Plates of steel bolted onto a leather and chain tunic, 
-this armor gives almost unparellelled protection 
-without sacrificing mobility or size."""},
+        'description': 
+"""           Steel leather 
+
+Unparellelled protection.
+Great mobility."""},
     6: {'x': 1, 'y': 3, 'u': 48, 'v': 16, 'colkey': 7,
         'name': 'Bone Mail', 'w': 16, 'h': 16,
         'item_stat': 6, 'price': 150, "slot": "body",
-        'description': """Someone's prized posession, 
-this armor is made of the the bones of their ancestors.
-The black bones are stronger than steel and you can almost feel a protective aura when you put it on."""},
+        'description':
+"""     Someone's prized posession, 
+Armor made from the the bones 
+of their ancestors. Stronger than steel 
+and very intimidating."""},
 
     # // POTIONS //
     8: {'x': 104, 'y': 40, 'u': 0, 'v': 32, 'colkey': 7,
         'name': 'Minor Health Potion', 'w': 8, 'h': 8,
         'item_stat': 2, 'price': 10, 'slot': 'consumable', 'description':
-        """A small red potion that smells of cinnamon and nutmeg. 
-It heals a small amount of health."""},
+"""             Red potion 
+
+Smells of cinnamon and 
+nutmeg. Heals a little."""},
     9: {'x': 160, 'y': 40, 'u': 0, 'v': 40, 'colkey': 7,
         'name': 'Health Potion', 'w': 8, 'h': 8,
         'item_stat': 5,
-        'price': 20, 'slot': 'consumable', 'description': """A small orange potion that smells of mint 
-and orange.  It heals some health."""},
+        'price': 20, 'slot': 'consumable', 'description': 
+"""             Orange potion 
+
+Smells of mint and orange.  
+Heals some health."""},
     10: {'x': 132, 'y': 32, 'u': 8, 'v': 32, 'colkey': 7,
          'name': 'Major Health Potion', 'w': 8, 'h': 8, 'item_stat': 8,
-         'price': 50, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
-fresh air. It heals a substantial amount of health."""},
+         'price': 50, 'slot': 'consumable', 'description': 
+"""             Yellow potion 
+
+Smells of lemon and fresh 
+air. Heals a lot!"""},
 }
 
-# abstract check mouse position in town into a dictionary so check mouse position can stay the same.
-class GameTimer(object):
-    def __init__(self, interval, function):
-        self._timer     = None
-        self.interval   = interval
-        self.function   = function
-        self.start()
+location_names = {
+    'The Underbelly': ["Thagrag's Hope", "Web of Depths", "Graith's Grotto", "Graith Queen's Lair"],
+    'The Shining Forest': ["Kratab's Folly", "Dripping Death", "{player}'s Respite", 'Tail Of The Dragon']
+}
 
-    def start(self):
-        self._timer = Timer(self.interval, self.function)
-        self._timer.start()
+player_sprite_locations = {
+    'The Underbelly': [(96, 32), (152, 32), (152, 92), (88, 112)],
+    'The Shining Forest': [(128, 88), (144, 48), (168, 16), (184, 16)]
+}
 
-    # def _run(self):
-    #     self.is_running = False
-    #     self.start()
-    #     self.function(*self.args, **self.kwargs)
 
-    # def Repeat_start(self):
-    #     if not self.is_running:
-    #         self._timer = Timer(self.interval, self._run)
-    #         self._timer.start()
-    #         self.is_running = True
+# # abstract check mouse position in town into a dictionary so check mouse position can stay the same.
+# class GameTimer(object):
+#     def __init__(self, interval, function):
+#         self._timer     = None
+#         self.interval   = interval
+#         self.function   = function
+#         self.start()
 
-    def stop(self):
-        self._timer.cancel()
-        self.is_running = False
+#     def start(self):
+#         self._timer = Timer(self.interval, self.function)
+#         self._timer.start()
+
+#     # def _run(self):
+#     #     self.is_running = False
+#     #     self.start()
+#     #     self.function(*self.args, **self.kwargs)
+
+#     # def Repeat_start(self):
+#     #     if not self.is_running:
+#     #         self._timer = Timer(self.interval, self._run)
+#     #         self._timer.start()
+#     #         self.is_running = True
+
+#     def stop(self):
+#         self._timer.cancel()
+#         self.is_running = False

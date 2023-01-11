@@ -1,5 +1,5 @@
 import pyxel as px 
-from pyxel_code.utils import Interactable, Layer
+from pyxel_code.utils import Interactable, Layer, Runners
 
 
 class DisplayText:
@@ -50,8 +50,12 @@ class Sprite(DisplayImage):
             # self.u -= 8
             self.running = False
     
+    def start_running(self):
+        Runners.main.append(self)
+
+    
     def combat_draw(self):
-        px.text(65, 1, f"{self.name}", 7)
+        px.text(73, 1, f"{self.name}", 7)
 
 
 class Background(DisplayImage):
@@ -112,7 +116,7 @@ class Sidebar(DisplayImage):
 
 class Entrance(DisplayImage, Clickable):
     """ Images that display and use hover/onflick to provide routing from the townscreen"""
-    def __init__(self, entrance_dict:dict):
+    def __init__(self, game_state:object, entrance_dict:dict):
         self.name= entrance_dict['name']
         self.x = entrance_dict['x']
         self.y = entrance_dict['y']
@@ -125,12 +129,16 @@ class Entrance(DisplayImage, Clickable):
         self.entrance_dict = entrance_dict
         self.color = entrance_dict['color']
         self.offset = entrance_dict['offset']
-
+        self.owner = game_state
     
     def intersection(self):
         self.flag = Pointer(self.entrance_dict)
         self.flag.draw()
         px.text(self.x - self.offset, self.y - 24, self.name, self.color)
+        # if px.btn(px.MOUSE_BUTTON_LEFT):
+        #     if self == self.owner.blacksmith:
+        #             px.text(1,1, "clicked", 7)
+        #             self._next_state = BlacksmithScreen(self.game) 
 
 # class Button(Clickable, DisplayImage): 
 #     def __init__(self, x, y, bank, u, v, w, h, owner) -> None:
@@ -153,7 +161,7 @@ class ShopItem(Clickable, DisplayImage):
 
     def intersection(self):
             self.item_text()
-            if px.btn(px.MOUSE_BUTTON_LEFT):
+            if px.btnr(px.MOUSE_BUTTON_LEFT):
                 self.freeze()
                 
                 Layer.main.remove(self)
@@ -183,16 +191,16 @@ class ShopItem(Clickable, DisplayImage):
 
 
     def item_text(self):
-            px.text(84, 88, self.name, 7)
+            px.text(84, 84, self.name, 7)
             px.text(84, 96, f"Price: {self.price} ", 7)
             px.text(127, 96, f'Slot: {self.slot}', 7)
-            px.text(127, 104, f'{self.description}', 7)
+            px.text(83, 103, f'{self.description}', 7)
             if self.id in range(3):
-                px.text(84, 104, f'DAM: {self.item_stat}', 7)
+                px.text(84, 103, f'DAM: {self.item_stat}', 7)
             elif self.id in range(3, 6):
-                px.text(84, 104, f"DEF: {self.item_stat}", 7)
+                px.text(84, 103, f"DEF: {self.item_stat}", 7)
             elif self.id in range(8,11):
-                px.text(84, 104, f'HEAL: {self.item_stat}', 7)
+                px.text(84, 103, f'HEAL: {self.item_stat}', 7)
             
     def on_creation(self):
         pass
@@ -212,7 +220,13 @@ class PlayerEquippableItem(ShopItem):
     def intersection(self):
         px.blt(76, 84, 1, 0, 192, 120, 48)
         self.item_text()
+
         if self.player.game_state.is_clicking():
+            if self.y == 88 or self.y == 112:
+                self.player.bag.add_item(self)
+                self.player.bag.equipped.slot[self.slot] = {'nothing':'nothing'}
+                return
+
             print('equip clicked')
             self.player.bag.equip(self)
             self.is_interacting = True
@@ -235,14 +249,17 @@ class PlayerConsumableItem(ShopItem):
         px.blt(76, 84, 1, 0, 192, 120, 48)
         self.item_text()
         if px.btnr(px.MOUSE_BUTTON_LEFT):
-            try:
-                self.freeze()
-                print('potion clicked')
-                print(self)
-                print(self.player.bag.potion_slots)
-                self.player.bag.use_potion(self)
-            except:
-                print('tried to drink potion')
+            if self.player.current_hp == self.player.hp:
+                pass
+            else:
+                try:
+                    self.freeze()
+                    print('potion clicked')
+                    print(self)
+                    print(self.player.bag.potion_slots)
+                    self.player.bag.use_potion(self)
+                except:
+                    print('tried to drink potion')
 
 
 
@@ -258,7 +275,7 @@ class Button(Clickable, DisplayImage):
 
 
 class ExploreButton(Button):
-    def __init__(self, owner, x=120, y=72, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
+    def __init__(self, owner, x=88, y=127, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
         super().__init__(owner, x, y, bank, u, v, w, h, colkey)
     
     def draw(self):
@@ -266,7 +283,7 @@ class ExploreButton(Button):
         px.text(self.x + 2, self.y +2, "Explore", 7)
 
 class AddStat(Button):
-    def __init__(self, player:object, stat:object, stat_location_x:int, stat_location_y:int, bank=1, colkey=10, use='+') -> None:
+    def __init__(self, player:object, stat:object, stat_location_x:int, stat_location_y:int, bank=0, colkey=10, use='+') -> None:
         self.stat_object = stat
         self.stat = stat.stat
         self.min = stat.stat
@@ -331,7 +348,7 @@ class AbilityButton(Button):
         super().__init__(owner, self.x, self.y, bank, u, v, w, h, colkey, self.use)
 
     def intersection(self):
-        if px.btn(px.MOUSE_BUTTON_LEFT):
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
 
             self.combat_state.player_action = self.ability_index
             px.text(2,2, "ability clicked", 7)
