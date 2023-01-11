@@ -22,7 +22,7 @@ class CombatText(DisplayImage):
         self.text = combat_text
         self.layer = Layer.fore
         self.display_time = display_time
-        self.end = display_time + self.start
+        # self.end = display_time + self.start
         self.start_draw()
         self.reset_timer()
         # pass in the combat state, the combat end text, and whether the battle was won or not (bool)
@@ -34,23 +34,17 @@ class CombatText(DisplayImage):
         if self.combat_ongoing == False:
             Interactable.freeze()
             self.game.player.reset_flags()
+
             if self.combat_won == False:
-                if self.game.text_timer >= self.end:
+                if self.game.text_timer >= self.display_time:
                     px.cls(0)
 
-                # clear = Timer(2, px.cls,[0])
-                # clear.start()
-                if self.game.text_timer >= self.end + 1:
-                    self.flee()
-                # flee = Timer(1, self.flee)
-                # flee.start()
+                # if self.game.text_timer >= self.display_time + .2:
+                self.flee()
+
 
             if self.combat_won:
-                Interactable.freeze()
-                # text = Timer(self.display_time, Interactable.unfreeze)
-                # text.start()
-                # if self.game.text_timer > self.end and 
-                if px.btn(px.MOUSE_BUTTON_LEFT):
+                if self.game.text_timer > self.display_time and px.btn(px.MOUSE_BUTTON_LEFT):
                     print(f'CombatText: game explored {self.game.explored} ')
                     if self.game.explored >= 10:
                         print('to the trees')
@@ -58,28 +52,19 @@ class CombatText(DisplayImage):
                     else:
                         print("going back")
                         self.combat_state.go_back()
-                #     print('missed')
-                # print('no click')
+
 
 
         elif self.combat_ongoing == True:
             Interactable.freeze()
-            if 
+            if self.game.text_timer > self.display_time:
+                self.clear_message()
             # message = Timer(1, self.clear_message)
             # message.start()
 
     def remove_draw(self):
         # print('removing')
         self.layer.remove(self)
-
-    # def update(self):
-    #     Interactable.freeze()
-    #     if self.combat_state.text_timer >= 4 and self.combat_ongoing:
-    #         Interactable.unfreeze()
-    #         self.stop_draw()
-        
-        # elif self.combat_ongoing == False:
-
 
     def start_draw(self):
         self.layer.append(self)
@@ -95,7 +80,7 @@ class CombatText(DisplayImage):
         Interactable.unfreeze()
 
     def clear_message(self):
-        # print('trying to clear')
-        # self.remove_draw()
-        Layer.fore.clear()
+        print('trying to clear')
+        self.remove_draw()
+        # Layer.fore.clear()
         Interactable.unfreeze()

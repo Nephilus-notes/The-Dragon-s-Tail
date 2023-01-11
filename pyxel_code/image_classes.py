@@ -91,10 +91,12 @@ class Clickable:
 
     def freeze(self):
         Interactable.main.remove(self)
+        print('freeze')
         Interactable.frozen.append(self)
 
     def unfreeze(self):
         Interactable.frozen.remove(self)
+        print('unfreeze')
         Interactable.main.append(self)
 
 class Sidebar(DisplayImage):

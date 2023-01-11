@@ -18,14 +18,13 @@ class GameState(ABC):
         self.game = game
         self._next_state = self
         self.game.player.game_state = self
-        # self.trans_state = self
-        # self.game._previous_state = self
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.MOUSE_LOCATION = ''
-        self.dt = 0
-        # self.time_since_last_move = 0
         self.text_timer = 0
+        self.speed = 1.5
+        self.time_last_frame = time()
+        self.dt = 0
         self._is_clicking = False
         self._register_click = False
         self.on_enter()

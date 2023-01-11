@@ -112,7 +112,8 @@ class Backpack(DragonItem):
 
         # remove item from backpack and slots used
         self.slots_used.remove(item.bag_id)
-        self.slots.remove(item)
+        if item in self.slots:
+            self.slots.remove(item)
 
     def equip(self, item:object):
         if self.equipped.slot[item.slot] == {'nothing':'nothing'}:
