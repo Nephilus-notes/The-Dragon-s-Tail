@@ -10,7 +10,9 @@
 # will allow you to equip things. but... perhaps the full dictionary entry for the item
 # will dictate which slot it can go into? more information about it!
 
-from .dicts import items as itm
+from threading import Timer
+
+from pyxel_code.utils import items as itm, Layer, Interactable
 from .text import text as txt
 
 
@@ -21,181 +23,142 @@ class DragonItem:
         pass
 
 class Backpack(DragonItem):
-    def __init__(self, size=5):
+    def __init__(self, player:object, size=9):
+        self.owner = player
         self.size = size
-        self.slots = {}
+        self.slots = []
+        self.slots_used = []
+        self.potion_slots = {}
+        self.potion_slots_used = []
+        self.equipped = EquippedItems(self)
 
 # add an item to your bag, or give you the chance to replace an item in your bag with something else.
-    def add_item(self, item_name:str):
-        if len(self.slots) <= self.size:
-            self.slots[item_name] = itm[item_name]
-        else:
-            print(txt['full_pack'].format(item=itm[item_name]['name'].title()))
-            switch_choice = input("(Y/N)").lower()
-            if switch_choice == 'y':
-                self.swap_items(item_name)
-            elif switch_choice == 'n':
-                drop_choice = input(txt['drop_prompt'].format(item=item_name))
-                if drop_choice == 'y':
-                    # add different verbiage
-                    self.drop_item(item_name)
-                elif drop_choice == 'n':
-                    # self.add_item(item)
-                    pass
-
-
-    def show_items(self,):
-        print(txt['item_show'].format(bar='~'*15))
-        for slot in self.slots.keys():
-            if True:
-                print(itm[slot]['name'].title())
-
-    def drop_item(self, item):
-        if item in self.slots.keys():
-            # print(item)
-            del self.slots[item]
-            print(txt["drop_success"].format(item=itm[item]['name'].title()))
-            # print(itm[item]['name'].title())
-        else:
-            print(item)
-            print(txt['drop_fail'])
-
-    def examine_item(self, item):
-        # allows the player to look at specific items, and equip or drop them from there.
-        for key, value in itm[item].items():
-            print("{key}: {value}".format(key=key.title(), value=value))
-        exa_task = input("What would you like to do with this item? (Equip/Drop/Go back)").lower().strip()
-        if exa_task == 'go' or exa_task == 'go back':
+    def add_item(self, item:object):
+        print('adding item')
+        try:
+            item.freeze()
+        except:
             pass
-        elif exa_task == 'd' or exa_task == 'drop':
-            self.slots.drop_item(item)
-        elif exa_task == 'e' or exa_task == 'equip':
-            # pack.equip_item will be an equip inventory function, similar to add_item
+        if len(self.slots) < self.size:
+            key = self.new_key(self.slots_used)
+            print('got new key')
+
+        if key <=2:
+            item.y = 24
+        elif key  >= 3 and key  <= 5:
+            item.y = 40
+        elif key  >= 6 and key  <= 8:
+            item.y = 56
+
+        if key == 0 or key == 3 or key == 6:
+            item.x = 208
+        elif key == 1 or key == 4 or key == 7:
+            item.x = 224
+        elif key == 2 or key == 5 or key == 8:
+            item.x = 240
+
+        item.bag_id = key
+        self.slots.append(item)
+        self.slots_used.append(key)
+        try:
+            melt = Timer(1, item.unfreeze)
+            melt.start()
+        except:
             pass
 
-    def equip_call(self, item):
+    def add_potion(self, item:object):
+        if len(self.slots) < self.size:
+            key = self.new_key(self.potion_slots_used)
+            print('got new key')
+
+        if key == 0:
+            item.y = 88
+        elif key == 1:
+            item.y = 104
+        elif key == 2:
+            item.y = 120
+
+        item.bag_id = key
+        self.potion_slots[key] = item
+        self.potion_slots_used.append(key)
+        print("key ", key)
+        print(self.potion_slots[key])
+        print(self.potion_slots)
+
+    def use_potion(self, potion:object):
+        print(potion.bag_id)
+        print(self.potion_slots)
+        self.owner.current_hp += potion.item_stat
+        if self.owner.current_hp > self.owner.hp:
+            self.owner.current_hp = self.owner.hp
+        del self.potion_slots[potion.bag_id]
+
+    # def drop_item(self, item):
+    #     if item in self.slots:
+    #         del self.slots[item]
+    #     else:
+    #         print('drop failed')
+
+
+    def equip_item(self, item:object):
+        self.equipped.slot[item.slot] = item
+        self.owner.equip()
+
+        item.x = 240
+        if item.slot == "hand":
+            item.y = 88
+        elif item.slot == 'body':
+            item.y = 112
+
+        # remove item from backpack and slots used
+        self.slots_used.remove(item.bag_id)
+        self.slots.remove(item)
+
+    def equip(self, item:object):
+        if self.equipped.slot[item.slot] == {'nothing':'nothing'}:
+            print('nothing here')
+            return self.equip_item(item)
+        unequipped = self.equipped.slot[item.slot]
+        self.equip_item(item)
+        self.add_item(unequipped)
+
+    def new_key(self, slots_used:list):
+        min = 0
+        if slots_used:
+            print('checking slots used')
+            print(self.slots_used)
+            for num in sorted(slots_used):
+                if min == num:
+                    min += 1
+                elif min < num:
+                    return min
+        return min
+                
+
+    def draw(self):
+        for item in self.slots:
+            Layer.main.append(item)
+            Interactable.main.append(item)
+
+        for item in self.equipped.slot.values():
+            if item != {'nothing':'nothing'}:
+                Layer.main.append(item)
+                Interactable.main.append(item)
+        
+        for item in self.potion_slots.values():
+            Layer.main.append(item)
+            Interactable.main.append(item)
         pass
 
-    def swap_items(self, new_item):
-        print(txt['item_show'])
-        swap_items = {}
-        cnt = 1
-        for item in self.slots.keys():
-            print('({cnt}) {item}'.format(cnt=cnt, item =itm[item]['name'].title()))
-            swap_items[cnt] = itm[item]
-            cnt += 1
-        swap_choice = input(txt['swap_prompt'])
-        while True:
-            try:
-                swap_choice = int(swap_choice)
-                if swap_choice > len(swap_items):
-                    raise ValueError
-                elif swap_choice <= len(swap_items):
-                    break
-        
-            except (ValueError):
-                    swap_choice = input(txt['swap_wrong'])
-                    if swap_choice.lower() == 'q' or swap_choice.lower() == 'quit':
-                        break
-            
-        for num, value in swap_items.items():
-            if swap_choice == num:
-                print(value['name'])
-                self.drop_item(value['name'])
-                swap_choice = 0
-                self.add_item(new_item)
+
 
 class EquippedItems():
-    def __init__(self, owner: Backpack, size=3, head_item:dict={'nothing':'nothing'}, body_item:dict={'nothing':'nothing'}, hand_item:dict={'nothing':'nothing'}):
+    def __init__(self, owner: Backpack, head_item:dict={'nothing':'nothing'}, body_item:dict={'nothing':'nothing'}, hand_item:dict={'nothing':'nothing'}):
         # I had empty slots as a dictionary nothing: empty. if  I want to return to that I can.
-        self.placement = {'slot':{'head':head_item,'body':body_item,'hand':hand_item}}
-        self.size = size
+        self.slot = {'head':head_item,'body':body_item,'hand':hand_item}
         self.owner = owner
 
-    def equip_item(self, item:str):
-        # refactor to use item['slot'] 
-        for key, value in self.placement['slot'].items():
-            if key == itm[item]['slot']:
-                if value == {'nothing':'nothing'}:
-                    self.placement['slot'][key] = itm[item]
-                    print(txt['equip_sucess'].format(item=itm[item]['name']))
-                else:
-                    choice = input(txt['equip_replace'].format(value=value)).lower().strip()
-                    if choice == 'y':
-                        self.owner.add_item(value)
-                        self.placement['slot'][key] = itm[item]
-                        self.owner.drop_item(itm[item]['name'])
-                        print(txt['equip_sucess'].format(item=itm[item]['name']))
-                    elif choice == 'n':
-                        print(choice)
-                        
-                        pass
-                    else:
-                        print(choice + "damn")
-
-    def show_equipped_items(self):
-        print(txt['item_show'])
-        for key, value in self.placement['slot'].items():
-            if key == 'nothing' and key == "hand":
-                print(txt['wield_nothing'].format(value=value))
-            elif key == 'nothing' and key != "hand":
-                print(txt['wear'].format(value=value, key=key))
-            elif key == "hand" and value['name'][0] == 'a':
-                # line above breaks sometimes TypeError, string indeces must be integers
-                print(txt['wield_a'].format(value=value['name']))
-            elif key == "hand" and value['name'][0] != 'a':
-                print(txt['wield_not_a'].format(value=value['name']))
-            else:
-                print(txt['wear'].format(value=value['name'].title(), key=key))
-
-    def unequip(self, item: dict):
-        # rework this 
-        print('da fuq')
-        if self.placement['slot'][item['slot']] == item:
-            self.placement['slot'][item['slot']] = {'nothing':'nothing'}
-            print('success')
-
-        # while True:
-        #     try:
-        #         for key, value in self.placement['slot'].items():
-        #             # print(value['name'])
-        #             if value == itm[item]:
-        #                 print(item)
-        #                 self.owner.add_item(item)
-        #                 print(item)
-        #                 self.placement['slot'][key] = {'nothing':'nothing'}
-        #                 break
-        #     except (TypeError):
-        #         continue
-
-
-
-# c_pack = Backpack()
-# c_equip = EquippedItems(c_pack, hand_item='dagger')
-
-# c_equip.equip_item('axe')
-# c_equip.equip_item('bone_mail')
-# c_equip.show_equipped_items()
-
-# c_equip.unequip('axe')
-# c_equip.show_items()
-
-
-
-# c_pack.add_item("bone_mail")
-# c_pack.add_item("dagger")
-# c_pack.add_item("axe")
-# c_pack.add_item("leather_armor")
-# c_pack.add_item("sword")
-# c_pack.add_item("chain_armor")
-# c_pack.add_item("small_health_potion")
-
-
-# c_pack.show_items()
-# pack.drop_item("axe")
-# pack.show_items()
-
-# pack.examine_item("bone_mail")
+       
 
 
 equipped_items = {"head":'', "body":'chain armor', "hand":''}

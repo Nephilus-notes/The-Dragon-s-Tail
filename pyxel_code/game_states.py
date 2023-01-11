@@ -17,16 +17,17 @@ class GameState(ABC):
     def __init__(self, game):
         self.game = game
         self._next_state = self
+        self.game.player.game_state = self
         # self.trans_state = self
         # self.game._previous_state = self
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.MOUSE_LOCATION = ''
-        self.speed = 1.5
-        self.time_last_frame = time()
         self.dt = 0
         # self.time_since_last_move = 0
         self.text_timer = 0
+        self._is_clicking = False
+        self._register_click = False
         self.on_enter()
 
 
@@ -42,7 +43,6 @@ class GameState(ABC):
         self.dt = time_this_frame - self.time_last_frame
         self.time_last_frame = time_this_frame
         self.game.text_timer += self.dt
-
 
         # add sprites to running class list and check to make them move
 
@@ -65,6 +65,8 @@ class GameState(ABC):
     def draw_layers(self):
         Layer.back.append(self.character_info)
         Layer.back.append(self.item_info)
+        self.game.player.bag.draw()
+
         # px.cls(Background.color)
         for item in Layer.back:
             item.draw()
@@ -135,7 +137,24 @@ class GameState(ABC):
     def to_town(self):
         self._next_state= TownScreenState(self.game)
 
+    def is_clicking(self):
+        return self._register_click
+
+    def update_clicking_state(self):
+        # If not is clicking and mouse is down update is clicking
+        if not self._is_clicking and px.btnr(px.MOUSE_BUTTON_LEFT):
+            self._is_clicking = True
+            self._register_click = True
+        # If is clicking and mouse is down should not register as click
+        elif self._is_clicking and px.btnr(px.MOUSE_BUTTON_LEFT):
+            self._register_click = False
+        # Otherwise if is clicking and mouse is not down set is_clicking to false
+        else:
+            self._is_clicking = False
+            self._register_click = False
+
     def draw(self):
+        self.update_clicking_state()
         # px.cls(0)
         self.draw_layers()
         self.check_mouse_position()
@@ -202,7 +221,7 @@ class BlacksmithScreen(GameState):
         self.bg = Background(**background['blacksmith'])
         self.items = []
         for num in range(6):
-            item = ShopItem(**item_location[num], id=num)
+            item = ShopItem(self.game.player, **items[num], id=num)
             self.items.append(item)
         self.build_interactables(self.items)
         self.build_exit()
@@ -219,7 +238,7 @@ class AlchemistScreen(GameState):
         self.bg = Background(**background['alchemist'])
         self.items = []
         for num in range(8,11):
-            item = ShopItem(**item_location[num], id=num)
+            item = ShopItem(self.game.player, **items[num], id=num)
             self.items.append(item)
         self.build_interactables(self.items)
         self.build_exit()
@@ -325,7 +344,7 @@ class CombatState(GameState):
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = RI(0,2)
+                ability_index = 0 # RI(0,2)
                 if ability_index == 0:
                     combatant.abilities[ability_index](self.player)
                 else:
@@ -362,7 +381,7 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
         self.player.currency += self.enemy.currency
         self.player.lifetime_currency += self.enemy.currency
         return CombatText(self, f"""Found trophies: {self.enemy.currency}
-[Press Enter]""", time(), combat_ongoing=False)
+[Click to continue]""", time(), combat_ongoing=False)
 
     def check_status(self):
         self.round_inc()

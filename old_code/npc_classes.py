@@ -2,7 +2,8 @@ from random import randint as RI
 import pyxel as px
 
 from .character_builder import Character
-from .dicts import items as itm, attributes as atb, lvl_dict, currency_tiers, encounter_dict
+from .dicts import attributes as atb, lvl_dict, currency_tiers, encounter_dict
+from pyxel_code.utils import items as itm
 from pyxel_code.image_classes import Sprite
 
 class NPC(Character):

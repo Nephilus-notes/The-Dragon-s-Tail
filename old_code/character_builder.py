@@ -1,11 +1,11 @@
-from random import randint
+from random import randint as RI
 from time import time, sleep
 import json
 import pyxel as px
 
 
 from pyxel_code.combat_classes import CombatText
-from .dicts import items as itm # Application Imports
+from pyxel_code.utils import items as itm # Application Imports
 from .dicts import * # Application Imports
 from .item_screen import EquippedItems, Backpack # Application Imports
 from pyxel_code.image_classes import Sprite, DisplayText # Application Imports
@@ -13,7 +13,9 @@ from pyxel_code.image_classes import Sprite, DisplayText # Application Imports
 # from ..pyxel_code.image_classes import Sprite # Test Import Path
 
 
-
+dex = [-1, 2]
+strength = [-3, 4]
+int = [-1, 1]
 
 
 rirs = randint(0,1) # randint small (0,1)
@@ -28,8 +30,8 @@ class Character():
         # Items
         self.lifetime_currency = 0
         self.currency = 0
-        self.bag = Backpack()
-        self.items_worn = EquippedItems(self.bag)
+        self.bag = Backpack(self)
+        self.items_worn = self.bag.equipped
 
     #    Stats and whatnot
         self.armor = armor # 0 if self.items_worn.placement['slot']['body'] == {'nothing':'nothing'} else itm[self.items_worn.placement['slot']['body']['armor_value']]
@@ -40,7 +42,7 @@ class Character():
         self.constitution = constitution
         self.hp = self.constitution * 2
         self.max_mp = self.intelligence * 2
-        self.weapon = {}  if self.items_worn.placement['slot']['hand'] == {'nothing':'nothing'} else itm[self.items_worn.placement['slot']['hand']]
+        self.weapon = {}  if self.items_worn.slot['hand'] == {'nothing':'nothing'} else itm[self.items_worn.slot['hand']]
         self.weapon_damage = self.weapon['damage'] if 'damage' in self.weapon else 0
         self.damage = strength // 2 + self.weapon_damage if strength > 2 else 1 + self.weapon_damage
         self.attribute_list = []
@@ -104,25 +106,25 @@ class Character():
         self.in_combat_text(f'{self.name.title()} lashes out at {target.name.title()}!')
 
         if self.dexterity > self.strength:
-            if attack_randint['dex'] == 2:
+            if RI(*dex) == 2:
                 damage_num = (self.damage + 2)
                 self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
-            elif self.att_val + attack_randint['dex'] <= target.dodge_val:
+            elif self.att_val + RI(*dex) <= target.dodge_val:
                 self.in_combat_text(f"{self.name.title()}'s missed!")
-            elif self.att_val + attack_randint['dex'] > target.dodge_val:
-                damage_num = (self.damage + attack_randint['dex']) - target.armor_val
+            elif self.att_val + RI(*dex) > target.dodge_val:
+                damage_num = (self.damage + RI(*dex)) - target.armor_val
                 self.attack_damage(target, damage_num)
 
         elif self.strength >= self.dexterity:
-            if attack_randint['str'] == 4:
+            if RI(*strength) == 4:
                 damage_num = (self.damage + 4) - target.armor_val
                 self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
-            elif self.att_val + attack_randint['str'] <= target.dodge_val:
+            elif self.att_val + RI(*strength) <= target.dodge_val:
                 self.in_combat_text (f'{self.name.title()} missed!')
-            elif self.att_val + attack_randint['str'] > target.dodge_val:
-                damage_num = (self.damage + attack_randint['str']) - target.armor_val
+            elif self.att_val + RI(*strength) > target.dodge_val:
+                damage_num = (self.damage + RI(*strength)) - target.armor_val
                 self.attack_damage(target, damage_num)
 
 
@@ -296,9 +298,16 @@ class Character():
 
     def in_combat_text(self, combat_text, display_time:int = 1):
         CombatText(self.combat_state, combat_text, time(), display_time=display_time)
-        # if self.game.text_timer >= display_time:
-            # pass
+        if self.game.text_timer >= display_time:
+            pass
     
+    def equip(self):
+        self.armor = 0 if self.items_worn.slot['body'] == {'nothing':'nothing'} else self.items_worn.slot['body'].item_stat
+        self.weapon = {}  if self.items_worn.slot['hand'] == {'nothing':'nothing'} else self.items_worn.slot['hand']
+        self.weapon_damage = self.weapon.item_stat if self.weapon else 0
+        self.damage = self.strength // 2 + self.weapon_damage if self.strength > 2 else 1 + self.weapon_damage
+        self.armor_val = self.armor
+
 
 class Player(Character, Sprite):
     def __init__(self, name, strength, dexterity, intelligence, constitution, game:object = None, armor=0, resistance=0):
@@ -325,14 +334,14 @@ class Player(Character, Sprite):
         px.text(12, 24, f"HP:{self.current_hp}/{self.hp}", 7)
         px.text(12, 34, f"STR:{self.strength}", 7)
         px.text(12, 42, f"DEX:{self.dexterity}", 7)
+        px.text(12, 50, f"ATT:{self.att_val}", 7)
+        px.text(12, 58, f"DAM:{self.damage}", 7)
+        px.text(12, 66, f"MON:{self.currency}", 7)
         px.text(40, 34, f"CON:{self.constitution}", 7)
         px.text(40, 42, f"INT:{self.intelligence}", 7)
-        px.text(12, 50, f"DEF:{self.armor_val}", 7)
-        px.text(40, 50, f"RESIST:{self.resistance}", 7)
-        px.text(40, 58, f"DODGE:{self.dodge_val}", 7)
-        px.text(12, 58, f"ATT:{self.att_val}", 7)
-        px.text(12, 66, f"DAM:{self.damage}", 7)
-        px.text(40, 66, f"MON:{self.currency}", 7)
+        px.text(40, 50, f"DEF:{self.armor_val}", 7)
+        px.text(40, 58, f"RESIST:{self.resistance}", 7)
+        px.text(40, 66, f"DODGE:{self.dodge_val}", 7)
 
         # placeholder
         px.text(32, 122, "Quit", 0)

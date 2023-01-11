@@ -1,5 +1,7 @@
 from random import randint
-# from npc_classes import GraithLizard, GraithTree, GraktaWolf, RogueGoblin, BrabaBat, ShadeFireFox, KraktRat
+
+# DELETE ALL RANDINT IN THIS FILE, REPLACE WITH RANDINT WHERE RANDOM IS NEEDED
+
 rirs = randint(0,1) # randint small (0,1)
 rirm = randint(-1,1) # randint medium (-1,1)
 
@@ -50,53 +52,6 @@ attributes = {
 gob_war_name =['kikta', 'graga', 'kratab',]
 
 
-items ={
-    # potions and amulets 
-    # the alchemy store's items, including name
-# price, health restore amount/ item effect, and flavor text
-
-    'small_health_potion': {'name': 'small health potion', 
-'item_stat': 2, 'price': 10, 'slot': 'consumable', 'description': 
-"""A small red potion that smells of cinnamon and nutmeg. 
-It heals a small amount of health."""}, 
-'medium_health_potion': {'name': 'medium health potion', 'item_stat': 5,
- 'price': 20, 'description': """A small orange potion that smells of mint 
-and orange.  It heals some health."""},
-'large_health_potion': {'name': 'large health potion', 'item_stat': 8, 
-'price': 50, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
-fresh air. It heals a substantial amount of health."""},
-'amulet_of_health': {'name': 'amulet of health', 'hp add': 3, 
-'price': 150, 'slot': 'consumable', 'description': """A small yellow potion that smells of lemon and 
-fresh air. It heals a substantial amount of health."""},
-
-# weapons
-'dagger':{'name': 'dagger', 'item_stat': 1, 'price': 10, "slot": "hand",
-    'description': """A simple dagger with a leatherwrapped bone hilt.
-It's good for cutting things and taking on large rodents"""}, 
-'sword': {'name': 'sword', 'item_stat': 3, 'price': 30, "slot": "hand",
-'description': """A well-made shortsword, that can be used to fight against any foe."""}, 
-'axe': {'name': 'axe', 'item_stat': 4, 'price': 45, "slot": "hand",
-'description': """A polished axe that can easily take chunks out of full grown trees."""}, 
-"death_scythe": { 'name': "Death's Scythe", 'item_stat': 15, 'price': 1000, "slot": "hand",
-'description': """A scythe stolen from Death himself.  Whenever you touch this 
-weapon you can hear faint whispers all around you."""},
-
-# armor
-'bone_mail': {'name': 'bone mail', 'item_stat': 6, 'price': 150, "slot": "body",
-'description': """Someone's prized posession, 
-this armor is made of the the bones of their ancestors.
-The black bones are stronger than steel and you can almost feel a protective aura when you put it on."""}, 
-'brigandine_armor': {'name': 'brigandine armor', 'item_stat': 4, 'price': 75, "slot": "body",
-'description': """Plates of steel bolted onto a leather and chain tunic, 
-this armor gives almost unparellelled protection 
-without sacrificing mobility or size."""}, 
-'chain_armor': {'name': 'chain armor', 'item_stat': 3, 'price': 50, "slot": "body",
-'description': """A jacket made of steel rings.  
-It provides great protection without limiting your movement."""}, 
-'leather_armor': {'name': 'leather armor', 'item_stat': 1, 'price': 10, "slot": "body",
-'description': """A jacket made of toughened leather, 
-it provides some protection against the elements and enemies alike."""},
-}
 
 currency_tiers = {
     1: 3 ,

@@ -1,7 +1,10 @@
 from time import time
 from abc import ABC, abstractmethod
+from threading import Timer
 
 import pyxel as px
+
+
 
 
 class Updatable(ABC):
@@ -83,7 +86,7 @@ sidebar = {
     'items': {'x': 200, 'y': 8,  'u': 64, 'v': 256, 'name': 'Backpack', 'offset': 16}
 }
 
-item_location = {
+items = {
     # // WEAPONS //
     0: {'x': 88, 'y': 24, 'u': 0, 'v': 0, 'colkey': 7, 'name': 'Dagger',
         'w': 16, 'h': 16, 'item_stat': 1, 'price': 10, "slot": "hand",
@@ -146,3 +149,28 @@ fresh air. It heals a substantial amount of health."""},
 }
 
 # abstract check mouse position in town into a dictionary so check mouse position can stay the same.
+class GameTimer(object):
+    def __init__(self, interval, function):
+        self._timer     = None
+        self.interval   = interval
+        self.function   = function
+        self.start()
+
+    def start(self):
+        self._timer = Timer(self.interval, self.function)
+        self._timer.start()
+
+    # def _run(self):
+    #     self.is_running = False
+    #     self.start()
+    #     self.function(*self.args, **self.kwargs)
+
+    # def Repeat_start(self):
+    #     if not self.is_running:
+    #         self._timer = Timer(self.interval, self._run)
+    #         self._timer.start()
+    #         self.is_running = True
+
+    def stop(self):
+        self._timer.cancel()
+        self.is_running = False

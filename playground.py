@@ -16,19 +16,19 @@ from pyxel_code.game_states import TownScreenState
 class App:
     def __init__(self):
         px.init(WIDTH, HEIGHT, title="From the Dragon's Tail", capture_sec=0)
-        px.load(path_join("assets", "dragons_tail.pyxres"))
+        px.load("dragons_tail.pyxres")
         # px.fullscreen(True)
         self.MOUSE_LOCATION = ''
+        self.player = Player('Crae', **background_stats['b']['stats'])
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
-        self.leather = ShopItem(**item_location[3], id =3)
+        self.leather = ShopItem(self.player,**items[3], id =3)
         self.enemy = ShadeFireFox()
         Layer.main.append(self.enemy)
-
-        self.player = Player('Crae', **background_stats['b']['stats'])
+        self.MOUSE_CLICK = px.btn(px.MOUSE_BUTTON_LEFT)
         # Layer.main.append(self.player)
         # for num in range(6):
-            # item = ShopItem(**item_location[num])
+            # item = ShopItem(**items[num])
             # Layer.main.append(item)
 
         px.mouse(SHOW_CURSOR)
@@ -36,6 +36,7 @@ class App:
 
     def update(self):
         self.MOUSE_LOCATION = px.mouse_x, px.mouse_y
+        # if MOUSE_CLICK:
 
     def draw(self):
         px.cls(0)
@@ -43,6 +44,9 @@ class App:
         bg.draw()
         self.character_info.draw()
         self.item_info.draw()
+        if self.MOUSE_CLICK:
+            px.text(1,2, "clicked", 7)
+            
         # px.bltm(8, 8, 0, 0, 256, 64, 128)
         # px.bltm(192, 8, 0, 64, 256, 64, 128)
 

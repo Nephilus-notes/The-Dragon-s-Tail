@@ -1,5 +1,6 @@
 from time import time
 from random import randint as RI
+from threading import Timer
 
 import pyxel as px
 
@@ -11,7 +12,7 @@ from .utils import *
 class CombatText(DisplayImage):
     def __init__(self, combat_state:object, combat_text:str, start_time: float, display_time =2,
     combat_ongoing:bool=True, combat_won:bool = True, x=76, y=84, bank=1, u=0, 
-    v=192, w=120, h=56, colkey=7 ) -> None:
+    v=192, w=120, h=48, colkey=7 ) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
         self.combat_won = combat_won
         self.combat_ongoing = combat_ongoing
@@ -21,6 +22,7 @@ class CombatText(DisplayImage):
         self.text = combat_text
         self.layer = Layer.fore
         self.display_time = display_time
+        self.end = display_time + self.start
         self.start_draw()
         self.reset_timer()
         # pass in the combat state, the combat end text, and whether the battle was won or not (bool)
@@ -33,36 +35,40 @@ class CombatText(DisplayImage):
             Interactable.freeze()
             self.game.player.reset_flags()
             if self.combat_won == False:
-                # if self.combat_state.game.player.current_hp > 0:
-                #     print('fleeing')
-                # else:
-                #     print('lost')
-                
-                if self.game.text_timer >= self.display_time:
-                        # self.reset_timer()
+                if self.game.text_timer >= self.end:
                     px.cls(0)
-                if self.game.text_timer >= self.display_time:
-                    self.game.player.current_hp = self.game.player.hp
-                    self.game.player.fleeing = False
-                    self.combat_state.to_town()
+
+                # clear = Timer(2, px.cls,[0])
+                # clear.start()
+                if self.game.text_timer >= self.end + 1:
+                    self.flee()
+                # flee = Timer(1, self.flee)
+                # flee.start()
 
             if self.combat_won:
+                Interactable.freeze()
+                # text = Timer(self.display_time, Interactable.unfreeze)
+                # text.start()
+                # if self.game.text_timer > self.end and 
                 if px.btn(px.MOUSE_BUTTON_LEFT):
                     print(f'CombatText: game explored {self.game.explored} ')
                     if self.game.explored >= 10:
+                        print('to the trees')
                         self.combat_state.to_town()
                     else:
+                        print("going back")
                         self.combat_state.go_back()
+                #     print('missed')
+                # print('no click')
+
 
         elif self.combat_ongoing == True:
             Interactable.freeze()
-            if self.game.text_timer >= self.display_time:
-                # print('2seconds passed')
-                self.stop_draw()
-                Interactable.unfreeze()
+            if 
+            # message = Timer(1, self.clear_message)
+            # message.start()
 
-
-    def stop_draw(self):
+    def remove_draw(self):
         # print('removing')
         self.layer.remove(self)
 
@@ -80,3 +86,16 @@ class CombatText(DisplayImage):
 
     def reset_timer(self):
         self.game.text_timer = 0
+
+    def flee(self):
+        print('running')
+        self.game.player.current_hp = self.game.player.hp
+        self.game.player.fleeing = False
+        self.combat_state.to_town()
+        Interactable.unfreeze()
+
+    def clear_message(self):
+        # print('trying to clear')
+        # self.remove_draw()
+        Layer.fore.clear()
+        Interactable.unfreeze()

@@ -1,4 +1,5 @@
 import pyxel as px 
+from pyxel_code.utils import Interactable, Layer
 
 
 class DisplayText:
@@ -10,6 +11,7 @@ class DisplayText:
 
     def draw(self):
         px.text(self.x, self.y, f'{self.stat_name}:{self.owner} ', self.col)
+
 
 class DisplayImage:
     """Parent class for all displayed objects"""
@@ -82,6 +84,19 @@ class Clickable:
     def intersection(self):
         pass
 
+    def interact(self):
+        Interactable.main.append(self)
+        if self in Interactable.frozen:
+            Interactable.frozen.remove(self)
+
+    def freeze(self):
+        Interactable.main.remove(self)
+        Interactable.frozen.append(self)
+
+    def unfreeze(self):
+        Interactable.frozen.remove(self)
+        Interactable.main.append(self)
+
 class Sidebar(DisplayImage):
     """Side bar images for character info and items."""
     def __init__(self, x, y, u, v, name, offset, w=64, h=128, bank=0) -> None:
@@ -123,7 +138,7 @@ class Entrance(DisplayImage, Clickable):
 
 class ShopItem(Clickable, DisplayImage):
     """Items to display in the shop that will (eventually) hook up to the items dictionary"""
-    def __init__(self, x, y, u, v, w, h, name, item_stat, price, slot, id, description, bank=2, colkey=7) -> None:
+    def __init__(self, player:object, x, y, u, v, w, h, name, item_stat, price, slot, id, description, bank=2, colkey=7) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
         self.item_stat = item_stat
         self.price = price
@@ -131,19 +146,101 @@ class ShopItem(Clickable, DisplayImage):
         self.slot = slot
         self.description =description
         self.id = id
-
+        self.player = player
+        self.on_creation()
 
     def intersection(self):
-        px.text(84, 84, self.name, 7)
-        px.text(84, 92, f"Price: {self.price} ", 7)
-        px.text(127, 92, f'Slot: {self.slot}', 7)
-        px.text(84, 108, f'{self.description}', 7)
-        if self.id in range(3):
-            px.text(84, 100, f'DAM: {self.item_stat}', 7)
-        elif self.id in range(3, 6):
-            px.text(84, 100, f"DEF: {self.item_stat}", 7)
-        elif self.id in range(8,11):
-            px.text(84, 100, f'HEAL: {self.item_stat}', 7)
+            self.item_text()
+            if px.btn(px.MOUSE_BUTTON_LEFT):
+                self.freeze()
+                
+                Layer.main.remove(self)
+                
+                if self.id in range(0, 8):
+                    print("id = ", self.id)
+
+                    self.player.bag.add_item(PlayerEquippableItem(self.player,
+                        self.x, self.y, self.u, self.v, self.w, self.h, 
+                        self.name, self.item_stat, self.price, self.slot, 
+                        self.id, self.description
+                    ))
+
+                elif self.id in range(8, 11):
+
+                    x = 208
+
+                    new_potion = PlayerConsumableItem(self.player,
+                        x, self.y, self.u, self.v, self.w, self.h, 
+                        self.name, self.item_stat, self.price, self.slot, 
+                        self.id, self.description
+                    )
+
+                    self.player.bag.add_potion(new_potion)
+
+                    print(new_potion.name)
+
+
+    def item_text(self):
+            px.text(84, 88, self.name, 7)
+            px.text(84, 96, f"Price: {self.price} ", 7)
+            px.text(127, 96, f'Slot: {self.slot}', 7)
+            px.text(127, 104, f'{self.description}', 7)
+            if self.id in range(3):
+                px.text(84, 104, f'DAM: {self.item_stat}', 7)
+            elif self.id in range(3, 6):
+                px.text(84, 104, f"DEF: {self.item_stat}", 7)
+            elif self.id in range(8,11):
+                px.text(84, 104, f'HEAL: {self.item_stat}', 7)
+            
+    def on_creation(self):
+        pass
+                # add a conditional to instantiation to check if something with 
+                # the same id exists in the player inventory
+    
+
+
+class PlayerEquippableItem(ShopItem):
+    def on_creation(self):
+        self.start_drawing()
+        self.bag_id = 0
+
+    def start_drawing(self):
+        Layer.main.append(self)
+
+    def intersection(self):
+        px.blt(76, 84, 1, 0, 192, 120, 48)
+        self.item_text()
+        if self.player.game_state.is_clicking():
+            print('equip clicked')
+            self.player.bag.equip(self)
+            self.is_interacting = True
+
+
+
+
+
+
+class PlayerConsumableItem(ShopItem):
+    def on_creation(self):
+        self.quantity = 0
+        if self.quantity> 1:
+            self.start_drawing()
+
+    def start_drawing(self):
+        Layer.main.append(self)
+
+    def intersection(self):
+        px.blt(76, 84, 1, 0, 192, 120, 48)
+        self.item_text()
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
+            try:
+                self.freeze()
+                print('potion clicked')
+                print(self)
+                print(self.player.bag.potion_slots)
+                self.player.bag.use_potion(self)
+            except:
+                print('tried to drink potion')
 
 
 
