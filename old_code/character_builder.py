@@ -1,6 +1,5 @@
 from random import randint as RI
 from time import time, sleep
-import json
 import pyxel as px
 
 
@@ -304,7 +303,7 @@ dances about nimbly.''')
 
 
     def in_combat_text(self, combat_text, display_time:int = 1):
-        CombatText(self.combat_state, combat_text, time(), display_time=display_time)
+        CombatText(self.combat_state, combat_text, display_time=display_time)
         if self.game.text_timer >= display_time:
             pass
     

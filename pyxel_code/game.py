@@ -16,6 +16,7 @@ class Game:
         self.player = Player("Crae", **background_stats['b']['stats'], game=self)
         self.won_game = False
         self.text_timer = 0
+        self.text = []
 
         
 
