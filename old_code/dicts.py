@@ -14,12 +14,12 @@ attributes = {
 attribute_range = {'very_weak': [1,3], 'weak': [0, 3], 'average': [-2, 3], 'strong': [0, 3], 'very_strong': [0, 3]}
 
 currency_tiers = {
-    1: 3 ,
-    2: 8 ,
-    3: 16 ,
-    4: 27 ,
-    5: 41 ,
-    6: 58
+    1: 5 ,
+    2: 12 ,
+    3: 20 ,
+    4: 30 ,
+    5: 45 ,
+    6: 70
 }
 
 lvl_dict = {
