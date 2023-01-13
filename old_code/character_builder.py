@@ -182,7 +182,7 @@ dances about nimbly.''')
     def undodge(self):
         self.dodging = False
         self.dodge_round = 0
-        self.dodge_val = self.dexterity
+        self.dodge_val = self.dexterity / 2
 
     def flee(self, enemy):
         if self.dexterity > enemy.dexterity or self.flee_count > 0:            

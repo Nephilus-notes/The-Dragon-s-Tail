@@ -197,7 +197,7 @@ player_sprite_locations = {
 
 game_text = {
     'intro_screen': 
-    '''Centuries ago the Graith'gesh trees appeared and slaughtered us,
+'''Centuries ago the Graith'gesh trees appeared and slaughtered us,
 
 forcing us to take refuge underground and lose touch with our 
 
@@ -226,5 +226,27 @@ and finally...
     Chris Hudson
     Lucas Lang
     Dylan Smith''',
-    'class_choice_screen': ''''''
+    'end_game_story': 
+'''Past the Graith Apple's now lifeless limbs and through
+
+the pass you see gentle, rolling hills and smoke.
+
+You crest the hill and see a small circle of wagons with
+
+strange people moving, dancing within.  They look nothing like
+
+goblins yet their pink and lightless skin makes you think of 
+
+a name the elders mentioned long ago.
+
+
+
+                Human.  Your brethren.
+
+    '''
 }
+""" Gentle, rolling hills dot the plain and you see smoke coming from the other side of a 
+nearby hill. You hurry, excitement giving wings to your leaden body.  You crest the hill
+and see a small circle of wooden wagons with strange people moving, dancing within.
+They look nothing like Goblins! Yet their pink skin and tall frames remind you of something 
+the elders spoke of."""

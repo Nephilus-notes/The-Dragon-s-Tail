@@ -138,6 +138,9 @@ class GameState(ABC):
     def to_town(self):
         self._next_state= TownScreenState(self.game)
 
+    def end_game(self):
+        self._next_state = EndGameScreen(self.game)
+
     def is_clicking(self):
         return self._register_click
 
@@ -278,7 +281,6 @@ class ClassChoiceScreen(GameState):
         self.bg.draw()
         self.update_clicking_state()
         self.check_mouse_position()
-        px.text(4, 12, game_text['class_choice_screen'], 7)
         for item in Layer.main:
             item.draw()
         # self.game.player.draw_sidebar()
@@ -287,9 +289,28 @@ class EndGameScreen(GameState):
     def on_enter(self):
         self.clear_layers()
         px.cls(0)
+        px.play(1, 4)
+        self.game.text_timer = 0
 
     def check_mouse_position(self):
-        if px.btnr(px.MOUSE_BUTTON_LEFT):
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
+            self._next_state = CreditsScreen(self.game)
+
+    def draw(self):
+        self.update_clicking_state()
+        # self.draw_layers()
+        self.check_mouse_position()
+        px.text(4, 12, game_text['end_game_story'], 7)
+        # self.game.player.draw_sidebar()
+
+class CreditsScreen(GameState):
+    def on_enter(self):
+        self.clear_layers()
+        px.cls(0)
+        self.game.text_timer = 0
+
+    def check_mouse_position(self):
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
             self._next_state = TownScreenState(self.game)
 
     def draw(self):
@@ -300,10 +321,14 @@ class EndGameScreen(GameState):
         # self.game.player.draw_sidebar()
 
 
+
 class TownScreenState(GameState):
     def on_enter(self):
         self.name = "Town"
         self.clear_layers()
+
+        px.play(1, 0, loop=True)
+
 
         self.game.player.exploring = False
         self.bg = Background(**background['town'])
@@ -396,6 +421,7 @@ class ShiningForestMapState(GameState):
     def on_enter(self):
         self.name = "The Shining Forest"
         self.clear_layers()
+        px.play(1, 3, loop=True)
 
 
         self.bg = Background(**background['shining_forest'])
@@ -407,6 +433,7 @@ class UnderbellyMapState(GameState):
     def on_enter(self):
         self.name = "The Underbelly"
         self.clear_layers()
+        px.play(1, 1, loop=True)
 
         self.bg = Background(**background['underbelly'])
         self.build_buttons()
@@ -417,11 +444,12 @@ class CombatState(GameState):
     def on_enter(self):
         self.name = "Combat"
         self.clear_layers()
+        self.player = self.game.player
         self.bg = Background(**background['combat'])
+        px.play(1, 2, loop=True)
         self.round_count = 0
         self.initiative_list = []
         # self.build_exit() # For debugging purposes, MUST DELETE PREPRODUCTION
-        self.player = self.game.player
         self.player_action = ''
         self.player_abilities = []
         Layer.back.append(self.bg)    
@@ -431,6 +459,8 @@ class CombatState(GameState):
             self.player.exploring = True
 
         self.game.explored += 1
+        if self.game.explored == 11 and self.game._previous_state.name == 'The Shining Forest':
+            self._next_state = EndGameScreen(self.game)
         print(f"exploring: {self.game.explored}")
 
 
@@ -444,6 +474,7 @@ class CombatState(GameState):
             self.enemy = self.choose_enemy()
 
         Layer.main.append(self.enemy)
+
 
         self.check_init()
         self.time_hook()

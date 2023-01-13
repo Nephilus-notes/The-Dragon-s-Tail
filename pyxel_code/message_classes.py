@@ -35,6 +35,8 @@ class CombatText(DisplayImage):
             Interactable.freeze()
 
             if self.combat_won == False:
+                if self.game.player.current_hp == 0:
+                    px.play(1, 1)
                 self.game.player.reset_flags()
                 if self.game.text_timer >= self.display_time:
                     px.cls(0)
@@ -47,9 +49,9 @@ class CombatText(DisplayImage):
                 print('combat won!')
                 if self.game.text_timer >= self.display_time and px.btn(px.MOUSE_BUTTON_LEFT):
                     print(f'CombatText: game explored {self.game.explored} ')
-                    if self.game.explored >= 11:
+                    if self.game.explored >= 10:
                         print('to the trees')
-                        self.combat_state.to_town()
+                        self.combat_state.end_game()
                     else:
                         print("going back")
                         self.combat_state.go_back()
