@@ -275,6 +275,9 @@ class Button(Clickable, DisplayImage):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
         px.text(self.x + 8, self.y +2, F'{self.use}', 7)
 
+class StartGameButton(Button):
+    def __init__(self, owner=None, x=120, y=88, bank=0, u=40, v=144, w=64, h=16, colkey=10, use: str = "Start Game") -> None:
+        super().__init__(owner, x, y, bank, u, v, w, h, colkey, use)
 
 class ExploreButton(Button):
     def __init__(self, owner, x=88, y=127, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
@@ -362,26 +365,6 @@ class AbilityButton(Button):
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
         px.text(self.x + 16, self.y + 6, F'{self.use}', 7)
-
-
-
-
-class Rat(Sprite): 
-    def __init__(self, x, y):
-        
-        self.x = x
-        self.y = y
-        self.u = 32
-        self.v = 0
-        self.w = 16
-        self.h = 16
-        super().__init__(x=self.x, y=self.y, bank=0, u=self.u, v= self.v, w=self.w, h=self.h)
-
-class Mouse(Sprite):
-    def __init__(self, x, y,u=0) -> None:
-        self.u = 8
-        super().__init__(x, y, 0, 0, 16, 8, 8)
-
     
 class Pointer(Sprite):
     """A companion for the houses on the town screen to give info on what the house is."""
@@ -395,3 +378,4 @@ class Pointer(Sprite):
         self.h = entrance_dict['h']
         self.colkey = 0
         super().__init__(x=self.x, y=self.y, bank=self.bank, u=self.u, v= self.v, w=self.w, h=self.h, colkey=self.colkey)
+
