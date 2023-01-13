@@ -74,24 +74,38 @@ encounter_dict = {
 
 # Character Builder dicts
 background_stats = {
-    'b' :{
+    "Nakat'th" :{
         'stats': {
-            'strength': 12, 'dexterity':  8, 'intelligence': 8, 'constitution': 10},
-        'name': "Apprentice Blacksmith"
+            'strength': 12, 'dexterity':  8, 'intelligence': 8, 'constitution': 10, 'x': 96, 'y': 24,
+            'name': "Nakat'th", 'v': 64,  'job': 'Apprentice Blacksmith', },
+         "description": '''Increased Strength 
+         
+and Constitution''', 
         },
-    't': {
+    "Clichtka": {
         'stats': {
-            'strength': 8, 'dexterity':  12, 'intelligence': 8, 'constitution': 10},
-        'name': "Tunnel Scavenger"},
-    'e':{
+            'strength': 8, 'dexterity':  12, 'intelligence': 8, 'constitution': 10, 'x': 96, 'y': 42,
+            'name': "Clichtka", 'v': 88, 'job': "Tunnel Scavenger"},
+        'description': '''Increased Dexterity 
+        
+and Constitution''', 
+        },
+    "Bortorb":{
         'stats' :{
-            'strength': 8, 'dexterity': 10, 'intelligence': 8, 'constitution': 12},
-        'name': 'Explorer'
+            'strength': 8, 'dexterity': 10, 'intelligence': 8, 'constitution': 12, 'x': 156, 'y': 24,
+            'name': "Bortorb", 'v': 80,'job': 'Explorer'},
+         'description': '''Increased Constitution 
+         
+and Dexterity '''
     },
-    'a': { 
+    "Gragta'th": { 
         'stats':{
-            'strength': 8, 'dexterity':  10, 'intelligence': 12, 'constitution': 8},
-         'name': 'Apprentice Herbalist' }
+            'strength': 8, 'dexterity':  10, 'intelligence': 12, 'constitution': 8, 'x': 156, 'y': 42,
+            'name': "Gragta'th",  'v': 72, 'job': 'Apprentice Herbalist'},
+         "description": '''Increased Intelligence 
+         
+and Dexterity''', 
+         }
 
 }
 

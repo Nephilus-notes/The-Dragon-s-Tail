@@ -9,9 +9,11 @@ from pyxel_code.constants import *
 from pyxel_code.utils import *
 
 from old_code.npc_classes import *
+from old_code.character_builder import Player
 from .image_classes import *
 from pyxel_code.save_level_heal import Save, Level, Rest
-from .combat_classes import CombatText
+from .message_classes import CombatText
+from old_code.dicts import background_stats
 
 class GameState(ABC):
     def __init__(self, game):
@@ -191,7 +193,109 @@ class GameState(ABC):
                     x, y = player_sprite_locations[self.name][2]
                 elif self.game.explored >= 9:
                     x, y = player_sprite_locations[self.name][3]
-                px.blt(x, y, 2, 8, 64, 8, 8, 7)
+                px.blt(x, y, 2, 8, self.game.player.v, 8, 8, 7)
+
+class TitleScreen(GameState):
+    def on_enter(self):
+        self.clear_layers()
+        self.bg = Background(**background['title'])
+        Layer.back.append(self.bg)
+
+    def check_mouse_position(self):
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
+            self._next_state = IntroScreen(self.game)
+
+
+    def draw(self):
+        self.update_clicking_state()
+        # self.draw_layers()
+        self.bg.draw()
+        self.check_mouse_position()
+        # self.game.player.draw_sidebar()
+
+
+class IntroScreen(GameState):
+    def on_enter(self):
+        self.clear_layers()
+        px.cls(0)
+
+    def check_mouse_position(self):
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
+            self._next_state = ClassChoiceScreen(self.game)    
+
+    def draw(self):
+        self.update_clicking_state()
+        # self.draw_layers()
+        self.check_mouse_position()
+        px.text(4, 12, game_text['intro_screen'], 7)
+        # self.game.player.draw_sidebar()
+
+class ClassChoiceScreen(GameState):
+    def on_enter(self):
+        self.clear_layers()
+        px.cls(0)
+        self.bg = Background(**background['class_choice'])
+        self.blacksmith = Player(**background_stats["Nakat'th"]['stats'], game=self.game)
+        self.alchemist = Player(**background_stats["Gragta'th"]['stats'], game=self.game)
+        self.scavenger = Player(**background_stats[ "Clichtka"]['stats'], game=self.game)
+        self.explorer = Player(**background_stats["Bortorb"]['stats'], game=self.game)
+
+        self.options = [self.alchemist, self.blacksmith, self.explorer, self.scavenger]
+
+        for item in self.options:
+            Layer.main.append(item)
+            Interactable.main.append(item)
+
+    def check_mouse_position(self):
+         for item in Interactable.main:
+            if item.intersects(self.MOUSE_LOCATION):
+                item.intersection()
+
+            if px.btnr(px.MOUSE_BUTTON_LEFT):
+                if (self.blacksmith.intersects(self.MOUSE_LOCATION)
+                 or self.alchemist.intersects(self.MOUSE_LOCATION)
+                 or self.explorer.intersects(self.MOUSE_LOCATION)
+                 or self.scavenger.intersects(self.MOUSE_LOCATION)):
+                    if self.blacksmith.intersects(self.MOUSE_LOCATION):
+                        self.game.player = self.blacksmith
+                    if self.alchemist.intersects(self.MOUSE_LOCATION):
+                        self.game.player = self.alchemist
+                    if self.scavenger.intersects(self.MOUSE_LOCATION):
+                        self.game.player = self.scavenger
+                    if self.explorer.intersects(self.MOUSE_LOCATION):
+                        self.game.player = self.explorer
+
+                    px.cls(0)
+                    self.game.player.x = 164
+                    self.game.player.y = 64
+                    self.game.player.u = 0
+                    self._next_state = TownScreenState(self.game) 
+
+
+    def draw(self):
+        self.bg.draw()
+        self.update_clicking_state()
+        self.check_mouse_position()
+        px.text(4, 12, game_text['class_choice_screen'], 7)
+        for item in Layer.main:
+            item.draw()
+        # self.game.player.draw_sidebar()
+
+class EndGameScreen(GameState):
+    def on_enter(self):
+        self.clear_layers()
+        px.cls(0)
+
+    def check_mouse_position(self):
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
+            self._next_state = TownScreenState(self.game)
+
+    def draw(self):
+        self.update_clicking_state()
+        # self.draw_layers()
+        self.check_mouse_position()
+        px.text(4, 12, game_text['credit_screen'], 7)
+        # self.game.player.draw_sidebar()
 
 
 class TownScreenState(GameState):
@@ -200,6 +304,8 @@ class TownScreenState(GameState):
         self.clear_layers()
 
         self.game.player.exploring = False
+        self.bg = Background(**background['town'])
+        Layer.back.append(self.bg)
 
         self.blacksmith = Entrance(self, ted['Blacksmith'])
         self.alchemist = Entrance(self, ted["Alchemist's Shop"])
@@ -210,8 +316,6 @@ class TownScreenState(GameState):
         self.alchemist, self.inn, self.shining_forest 
         , self.underbelly])
 
-        self.bg = Background(**background['town'])
-        Layer.back.append(self.bg)
 
     
     def check_mouse_position(self):

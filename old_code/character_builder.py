@@ -4,7 +4,7 @@ import json
 import pyxel as px
 
 
-from pyxel_code.combat_classes import CombatText
+from pyxel_code.message_classes import CombatText
 from pyxel_code.utils import items as itm # Application Imports
 from .dicts import * # Application Imports
 from .item_screen import EquippedItems, Backpack # Application Imports
@@ -317,18 +317,19 @@ dances about nimbly.''')
 
 
 class Player(Character, Sprite):
-    def __init__(self, name, strength, dexterity, intelligence, constitution, game:object = None, armor=0, resistance=0):
+    def __init__(self, name, strength, dexterity, intelligence, constitution, v, job, x=164, y=64, game:object = None, armor=0, resistance=0):
         super().__init__(name, strength, dexterity, intelligence, constitution, armor, resistance)
         self.class_name = 'player'
-        self.u=0
-        self.v=64
-        self.x = 164
-        self.y= 64
+        self.job = job
+        self.u=8
+        self.v=v
+        self.x = x
+        self.y= y
         self.w=8
         self.h=8
         self.bank = 2
         self.colkey = 7
-        self.draw_sidebar()
+        # self.draw_sidebar()
 
 
     def combat_draw(self):
@@ -338,17 +339,36 @@ class Player(Character, Sprite):
     def draw_sidebar(self):
         stat_list = []
 
-        px.text(12, 24, f"HP:{self.current_hp}/{self.hp}", 7)
-        px.text(12, 34, f"STR:{self.strength}", 7)
-        px.text(12, 42, f"DEX:{self.dexterity}", 7)
-        px.text(12, 50, f"ATT:{self.att_val}", 7)
-        px.text(12, 58, f"DAM:{self.damage}", 7)
-        px.text(12, 66, f"MON:{self.currency}", 7)
-        px.text(40, 34, f"CON:{self.constitution}", 7)
-        px.text(40, 42, f"INT:{self.intelligence}", 7)
-        px.text(40, 50, f"DEF:{self.armor_val}", 7)
-        px.text(40, 58, f"RESIST:{self.resistance}", 7)
-        px.text(40, 66, f"DODGE:{self.dodge_val}", 7)
+        px.text(12, 24, f"HP: {self.current_hp}/{self.hp}", 7)
+        px.text(12, 34, f"STR: {self.strength}", 7)
+        px.text(12, 42, f"DEX: {self.dexterity}", 7)
+        px.text(12, 50, f"CON: {self.constitution}", 7)
+        px.text(12, 58, f"INT: {self.intelligence}", 7)
+        px.text(12, 68, f"Attack: {self.att_val}", 7)
+        px.text(12, 76, f"Damage: {self.damage}", 7)
+        px.text(12, 84, f"Defense: {self.armor_val}", 7)
+        px.text(12, 92, f"Resistance: {self.resistance}", 7)
+        px.text(12, 100, f"Dodge: {self.dodge_val}", 7)
+        px.text(12, 110, f"Trophies: {self.currency}", 7)
 
         # placeholder
-        px.text(32, 118, "Quit", 0)
+        # px.text(32, 118, "Quit", 0)
+
+    def intersects(self, mouse_location:tuple):
+        is_intersected = False
+        if (
+            px.mouse_x > self.x and px.mouse_x < self.x + self.w
+            and px.mouse_y > self.y and px.mouse_y < self.y + self.h + 2
+        ):
+            is_intersected = True
+            return is_intersected
+
+    def intersection(self):
+        self.character_choice_text()
+    
+    def character_choice_text(self):
+            px.text(116, 84, self.name, 7)
+            px.text(84, 92, f"Job: {self.job} ", 7)
+            px.text(86, 102, f'{background_stats[self.name]["description"]}', 7)
+
+        # if px.btnr()

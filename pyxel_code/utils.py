@@ -79,7 +79,9 @@ background = {
     'inn': {'u': 0, 'v': 384},
     'shining_forest': {'u': 256, 'v': 128},
     'underbelly': {'u': 384, 'v': 128},
-    'combat': {'u': 128, 'v': 128}
+    'combat': {'u': 128, 'v': 128},
+    'title': {'u': 384, 'v': 0},
+    'class_choice': {'u': 0, 'v': 512}
 }
 
 sidebar = {
@@ -192,29 +194,37 @@ player_sprite_locations = {
 }
 
 
-# # abstract check mouse position in town into a dictionary so check mouse position can stay the same.
-# class GameTimer(object):
-#     def __init__(self, interval, function):
-#         self._timer     = None
-#         self.interval   = interval
-#         self.function   = function
-#         self.start()
 
-#     def start(self):
-#         self._timer = Timer(self.interval, self.function)
-#         self._timer.start()
+game_text = {
+    'intro_screen': 
+    '''Centuries ago the Graith'gesh trees appeared and slaughtered us,
 
-#     # def _run(self):
-#     #     self.is_running = False
-#     #     self.start()
-#     #     self.function(*self.args, **self.kwargs)
+forcing us to take refuge underground and lose touch with our 
 
-#     # def Repeat_start(self):
-#     #     if not self.is_running:
-#     #         self._timer = Timer(self.interval, self._run)
-#     #         self._timer.start()
-#     #         self.is_running = True
+brethren.
 
-#     def stop(self):
-#         self._timer.cancel()
-#         self.is_running = False
+    
+Now you have chosen a task for your Enlightening:
+
+Grow stronger by fighting creatures of the dark in The Underbelly.
+
+Fight your way through Graith'Gesh trees and many other creatures 
+
+in The Shining Forest.
+
+and finally...
+
+
+        Reunite with our brethren above the Dragon's Tail''',
+    'credit_screen': '''
+
+    Game by Charles McCall
+    
+    Art Constultant: Cat Lovejoy
+    
+    Technical Constultants:
+    Chris Hudson
+    Lucas Lang
+    Dylan Smith''',
+    'class_choice_screen': ''''''
+}
