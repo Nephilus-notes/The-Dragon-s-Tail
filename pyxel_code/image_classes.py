@@ -166,6 +166,7 @@ class ShopItem(Clickable, DisplayImage):
                     return px.text(144, 64, "More Mon", 7)
                     
                 self.freeze()
+                self.player.currency -= self.price
                 
                 Layer.main.remove(self)
                 
@@ -313,12 +314,12 @@ class AddStat(Button):
             px.text(120, 86, f"Cost: {self.stat*4}", 7)
             px.text(120, 94, f"MON: {self.player.currency}", 7)
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                # if self.player.currency >= self.stat * 4:
-                #     self.player.currency -= self.stat * 4
-                self.stat_object.stat +=1
-                self.stat = self.stat_object.stat
-                # else:
-                #     px.text(90, 56, "Not enough Mon", 7)
+                if self.player.currency >= self.stat * 4:
+                    self.player.currency -= self.stat * 4
+                    self.stat_object.stat +=1
+                    self.stat = self.stat_object.stat
+                else:
+                    px.text(90, 56, "Not enough Mon", 7)
 
         if self.name == "Reduce":
             if self.stat_object.stat > self.min:
