@@ -224,8 +224,7 @@ class IntroScreen(GameState):
         px.cls(0)
 
     def check_mouse_position(self):
-        if (px.btnr(px.MOUSE_BUTTON_LEFT) and px.mouse_x > 120 
-        and px.mouse_x < 152 and px.mouse_y > 88 and px.mouse_y < 104):
+        if px.btnr(px.MOUSE_BUTTON_LEFT):
             self._next_state = ClassChoiceScreen(self.game)    
 
     def draw(self):

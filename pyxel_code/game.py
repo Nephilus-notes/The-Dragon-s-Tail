@@ -10,13 +10,14 @@ bad_stats = [8,8,4,2]
 game_stats = [background_stats["Nakat'th"]['stats']]
 class Game:
     def __init__(self):
-
+        
         self.score = 0
         self.lives = 3
         self.player =  Player(**background_stats["Nakat'th"]['stats'], game=self)
         self.won_game = False
         self.text_timer = 0
 
+        px.Sound(1)
         
 
         self.state = TitleScreen(self)
