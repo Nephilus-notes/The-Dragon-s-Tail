@@ -20,7 +20,7 @@ jobs:
       - run: git config --global user.name "Nephilus-notes"
       - run: git config --global user.email "cmhmcc@gmail.com"
       
-      - run: git mv options Dragon-Pyxel-Tail.html index.html
+      - run: git mv -f Dragon-Pyxel-Tail.html index.html
       - run: git add index.html 
       - run: git commit -m "updating html"
       - run: git push -u origin bare-bones
