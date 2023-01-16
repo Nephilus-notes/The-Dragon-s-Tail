@@ -4,7 +4,7 @@ from old_code.character_builder import Player
 from old_code.dicts import background_stats
 from test.conftest import game
 
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_blacksmith(game):
     """
     GIVEN an ApprenticeBlacksmith class
@@ -13,7 +13,7 @@ def test_blacksmith(game):
         combat stats (armor, resist, damage, and dodge values), hp, mp
         and currency instantiate correctly
     """
-    blacksmith = Player('Kratab', **background_stats['b']['stats'])
+    blacksmith = Player( **background_stats["Nakat'th"]['stats'])
     assert blacksmith.strength == 12
     assert blacksmith.dexterity == 8
     assert blacksmith.intelligence == 8
@@ -27,7 +27,7 @@ def test_blacksmith(game):
     assert blacksmith.currency == 0
     assert blacksmith.dodge_val == 4
     
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_herbalist(game):
     """
     GIVEN an ApprenticeHerbalist class
@@ -36,7 +36,7 @@ def test_herbalist(game):
         combat stats (armor, resist, damage, and dodge values), hp, mp
         and currency instantiate correctly
     """
-    herbalist = Player('Kratab', **background_stats['a']['stats'])
+    herbalist = Player(**background_stats["Gragta'th"]['stats'])
     assert herbalist.strength == 8
     assert herbalist.dexterity == 10
     assert herbalist.intelligence == 12
@@ -50,7 +50,7 @@ def test_herbalist(game):
     assert herbalist.currency == 0
     assert herbalist.dodge_val == 5
     
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_scavenger(game):
     """
     GIVEN an TunnelScavenger class
@@ -59,7 +59,7 @@ def test_scavenger(game):
         combat stats (armor, resist, damage, and dodge values), hp, mp
         and currency instantiate correctly
     """
-    scavenger = Player('Kratab', **background_stats['t']['stats'])
+    scavenger = Player(**background_stats["Clichtka"]['stats'])
     assert scavenger.strength == 8
     assert scavenger.dexterity == 12
     assert scavenger.intelligence == 8
@@ -73,7 +73,7 @@ def test_scavenger(game):
     assert scavenger.currency == 0
     assert scavenger.dodge_val == 6
     
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_explorer(game):
     """
     GIVEN an TunnelExplorer class
@@ -82,7 +82,7 @@ def test_explorer(game):
         combat stats (armor, resist, damage, and dodge values), hp, mp
         and currency instantiate correctly
     """
-    explorer = Player('Kratab', **background_stats['e']['stats'])
+    explorer = Player(**background_stats["Bortorb"]['stats'])
     assert explorer.strength == 8
     assert explorer.dexterity == 10
     assert explorer.intelligence == 8

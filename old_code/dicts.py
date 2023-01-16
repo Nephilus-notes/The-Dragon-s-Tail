@@ -14,12 +14,12 @@ attributes = {
 attribute_range = {'very_weak': [1,3], 'weak': [0, 3], 'average': [-2, 3], 'strong': [0, 3], 'very_strong': [0, 3]}
 
 currency_tiers = {
-    1: 3 ,
-    2: 8 ,
-    3: 16 ,
-    4: 27 ,
-    5: 41 ,
-    6: 58
+    1: 5 ,
+    2: 12 ,
+    3: 20 ,
+    4: 30 ,
+    5: 45 ,
+    6: 70
 }
 
 lvl_dict = {
@@ -74,24 +74,38 @@ encounter_dict = {
 
 # Character Builder dicts
 background_stats = {
-    'b' :{
+    "Nakat'th" :{
         'stats': {
-            'strength': 12, 'dexterity':  8, 'intelligence': 8, 'constitution': 10},
-        'name': "Apprentice Blacksmith"
+            'strength': 12, 'dexterity':  8, 'intelligence': 8, 'constitution': 10, 'x': 96, 'y': 24,
+            'name': "Nakat'th", 'v': 64,  'job': 'Apprentice Blacksmith', },
+         "description": '''Increased Strength 
+         
+and Constitution''', 
         },
-    't': {
+    "Clichtka": {
         'stats': {
-            'strength': 8, 'dexterity':  12, 'intelligence': 8, 'constitution': 10},
-        'name': "Tunnel Scavenger"},
-    'e':{
+            'strength': 8, 'dexterity':  12, 'intelligence': 8, 'constitution': 10, 'x': 96, 'y': 42,
+            'name': "Clichtka", 'v': 88, 'job': "Tunnel Scavenger"},
+        'description': '''Increased Dexterity 
+        
+and Constitution''', 
+        },
+    "Bortorb":{
         'stats' :{
-            'strength': 8, 'dexterity': 10, 'intelligence': 8, 'constitution': 12},
-        'name': 'Explorer'
+            'strength': 8, 'dexterity': 10, 'intelligence': 8, 'constitution': 12, 'x': 156, 'y': 24,
+            'name': "Bortorb", 'v': 80,'job': 'Explorer'},
+         'description': '''Increased Constitution 
+         
+and Dexterity '''
     },
-    'a': { 
+    "Gragta'th": { 
         'stats':{
-            'strength': 8, 'dexterity':  10, 'intelligence': 12, 'constitution': 8},
-         'name': 'Apprentice Herbalist' }
+            'strength': 8, 'dexterity':  10, 'intelligence': 12, 'constitution': 8, 'x': 156, 'y': 42,
+            'name': "Gragta'th",  'v': 72, 'job': 'Apprentice Herbalist'},
+         "description": '''Increased Intelligence 
+         
+and Dexterity''', 
+         }
 
 }
 
@@ -102,8 +116,8 @@ npc_classes_attributes = {
     'braba_bat': {'strength': 'very_weak', 'dexterity': 'average', 'constitution': 'weak', 'intelligence': 'very_weak', 'armor': 'none', 'resistance': 'average'},
     'shadefire_fox': {'strength': 'average', 'dexterity': 'very_strong', 'constitution': 'average', 'intelligence': 'average', 'armor': 'chain', 'resistance': 'strong'},
     'gratka_wolf': {'strength': 'average', 'dexterity': 'average', 'constitution': 'average', 'intelligence': 'weak', 'armor':'leather', 'resistance': 'average'},
-    'graith_queen': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'very_strong', 'intelligence': 'very_weak', 'armor':'bone', 'resistance': 'average'},
-    'graith_apple': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
+    'graith_queen': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'strong', 'intelligence': 'very_weak', 'armor':'bone', 'resistance': 'average'},
+    'graith_apple': {'strength': 'very_strong', 'dexterity': 'very_strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
 }
 
 

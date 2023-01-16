@@ -163,8 +163,10 @@ class ShopItem(Clickable, DisplayImage):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
                 if self.player.currency < self.price:
-                    return px.text(144, 64, "More Mon", 7)
+                    return px.text(144, 64, "More Trophies", 7)
+                    
                 self.freeze()
+                self.player.currency -= self.price
                 
                 Layer.main.remove(self)
                 
@@ -229,7 +231,7 @@ class PlayerEquippableItem(ShopItem):
                 self.player.bag.equipped.slot[self.slot] = {'nothing':'nothing'}
                 return
 
-            print('equip clicked')
+            # print('equip clicked')
             self.player.bag.equip(self)
             self.is_interacting = True
 
@@ -256,7 +258,7 @@ class PlayerConsumableItem(ShopItem):
             else:
                 try:
                     self.freeze()
-                    print('potion clicked')
+                    # print('potion clicked')
                     print(self)
                     print(self.player.bag.potion_slots)
                     self.player.bag.use_potion(self)
@@ -275,6 +277,9 @@ class Button(Clickable, DisplayImage):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
         px.text(self.x + 8, self.y +2, F'{self.use}', 7)
 
+class StartGameButton(Button):
+    def __init__(self, owner=None, x=120, y=88, bank=0, u=40, v=144, w=64, h=16, colkey=10, use: str = "Start Game") -> None:
+        super().__init__(owner, x, y, bank, u, v, w, h, colkey, use)
 
 class ExploreButton(Button):
     def __init__(self, owner, x=88, y=127, bank=1, u=0, v=0, w=32, h=8, colkey=10) -> None:
@@ -307,23 +312,23 @@ class AddStat(Button):
     def intersection(self):
         if self.name == 'Plus':
             px.text(120, 86, f"Cost: {self.stat*4}", 7)
-            px.text(120, 94, f"MON: {self.player.currency}", 7)
+            px.text(120, 94, f"Trophies: {self.player.currency}", 7)
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                if self.player.currency >= self.stat * 4:
-                    self.player.currency -= self.stat * 4
+                if self.player.currency >= self.stat * 3:
+                    self.player.currency -= self.stat * 3
                     self.stat_object.stat +=1
                     self.stat = self.stat_object.stat
                 else:
-                    px.text(90, 56, "Not enough Mon", 7)
+                    px.text(90, 56, "Not enough Trophies", 7)
 
         if self.name == "Reduce":
             if self.stat_object.stat > self.min:
                 px.text(120, 86, "Click to reduce", 7)
                 px.text(120, 94, f"Refund: {(self.stat_object.stat -1) *4}", 7)
-                if px.btn(px.MOUSE_BUTTON_LEFT):
+                if px.btnr(px.MOUSE_BUTTON_LEFT):
                     self.stat_object.stat -=1
                     self.stat = self.stat_object.stat
-                    self.player.currency += (self.stat_object.stat -1) *4
+                    self.player.currency += (self.stat_object.stat -1) *3
 
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
@@ -362,26 +367,6 @@ class AbilityButton(Button):
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
         px.text(self.x + 16, self.y + 6, F'{self.use}', 7)
-
-
-
-
-class Rat(Sprite): 
-    def __init__(self, x, y):
-        
-        self.x = x
-        self.y = y
-        self.u = 32
-        self.v = 0
-        self.w = 16
-        self.h = 16
-        super().__init__(x=self.x, y=self.y, bank=0, u=self.u, v= self.v, w=self.w, h=self.h)
-
-class Mouse(Sprite):
-    def __init__(self, x, y,u=0) -> None:
-        self.u = 8
-        super().__init__(x, y, 0, 0, 16, 8, 8)
-
     
 class Pointer(Sprite):
     """A companion for the houses on the town screen to give info on what the house is."""
@@ -395,3 +380,4 @@ class Pointer(Sprite):
         self.h = entrance_dict['h']
         self.colkey = 0
         super().__init__(x=self.x, y=self.y, bank=self.bank, u=self.u, v= self.v, w=self.w, h=self.h, colkey=self.colkey)
+

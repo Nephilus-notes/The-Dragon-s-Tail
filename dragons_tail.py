@@ -5,7 +5,8 @@ import pyxel as px
 
 from pyxel_code.constants import *
 from pyxel_code.game import Game
-
+from pyxel_code.image_classes import Sidebar
+from pyxel_code.utils import sidebar
 
 
 class App:
