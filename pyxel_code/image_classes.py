@@ -231,7 +231,7 @@ class PlayerEquippableItem(ShopItem):
                 self.player.bag.equipped.slot[self.slot] = {'nothing':'nothing'}
                 return
 
-            print('equip clicked')
+            # print('equip clicked')
             self.player.bag.equip(self)
             self.is_interacting = True
 
@@ -258,7 +258,7 @@ class PlayerConsumableItem(ShopItem):
             else:
                 try:
                     self.freeze()
-                    print('potion clicked')
+                    # print('potion clicked')
                     print(self)
                     print(self.player.bag.potion_slots)
                     self.player.bag.use_potion(self)
@@ -314,8 +314,8 @@ class AddStat(Button):
             px.text(120, 86, f"Cost: {self.stat*4}", 7)
             px.text(120, 94, f"MON: {self.player.currency}", 7)
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                if self.player.currency >= self.stat * 4:
-                    self.player.currency -= self.stat * 4
+                if self.player.currency >= self.stat * 3:
+                    self.player.currency -= self.stat * 3
                     self.stat_object.stat +=1
                     self.stat = self.stat_object.stat
                 else:
@@ -325,10 +325,10 @@ class AddStat(Button):
             if self.stat_object.stat > self.min:
                 px.text(120, 86, "Click to reduce", 7)
                 px.text(120, 94, f"Refund: {(self.stat_object.stat -1) *4}", 7)
-                if px.btn(px.MOUSE_BUTTON_LEFT):
+                if px.btnr(px.MOUSE_BUTTON_LEFT):
                     self.stat_object.stat -=1
                     self.stat = self.stat_object.stat
-                    self.player.currency += (self.stat_object.stat -1) *4
+                    self.player.currency += (self.stat_object.stat -1) *3
 
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
