@@ -14,7 +14,9 @@ jobs:
         with:
           python-version: 3.11.1
 
-      - run: pip install pyxel
+      - run: pip install pyxel pytest
+      - run: pytest
+      
       - run: pyxel package . dragons_tail.py
       - run: pyxel app2html Dragon-Pyxel-Tail.pyxapp
       - run: git config --global user.name "Nephilus-notes"
