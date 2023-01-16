@@ -1,6 +1,5 @@
 from random import randint as RI
 from time import time, sleep
-import json
 import pyxel as px
 
 

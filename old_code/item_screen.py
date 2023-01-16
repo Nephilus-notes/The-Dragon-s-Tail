@@ -1,21 +1,6 @@
-# inventory is going to be best in a list (for now), so that it's easily modified, 
-# And slots can be taken up by whichever items make sense.
-# Now, the equipped inventory is going to be a dictionary
-# so that particular body slots can be called by functions to
-# define combat attributes, etc.
-# I could even have a function that starts every combat that would 
-# check equipped item slots, and adjust combat function accordingly
-
-# Also, going from the inventory screen (Which will just have a list with numbers)
-# will allow you to equip things. but... perhaps the full dictionary entry for the item
-# will dictate which slot it can go into? more information about it!
-
 from threading import Timer
 
-from pyxel_code.utils import items as itm, Layer, Interactable
-from .text import text as txt
-
-
+from pyxel_code.utils import Layer, Interactable
 
 
 class DragonItem:

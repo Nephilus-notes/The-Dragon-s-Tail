@@ -1,13 +1,10 @@
 # import pdb; pdb.set_trace()
-from os.path import join as path_join
 from time import time
 
 import pyxel as px
 
 from pyxel_code.constants import *
 from pyxel_code.game import Game
-from pyxel_code.image_classes import Sidebar
-from pyxel_code.utils import sidebar
 
 
 class App:
