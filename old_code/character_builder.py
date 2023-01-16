@@ -276,7 +276,7 @@ dances about nimbly.''')
 
     def set_dependant_atts(self):
         self.current_hp = self.hp
-        self.armor_val = self.armor
+        self.armor_val = self.armor if self.armor >= 0 else 0
         self.att_val = self.dexterity if self.dexterity > self.strength else self.strength  
         self.damage = self.strength // 2 + self.weapon_damage if self.strength > 2 else 1 + self.weapon_damage
         self.damage_val = self.damage

@@ -1,23 +1,19 @@
+import pytest 
+
 from old_code.npc_classes import GraithLizard
-# from test.conftest import early_game_character, end_game_character
+from test.conftest import combat_state
 
-# def test_str_based_attack(end_game_character):
-#     lizard = GraithLizard()
 
-#     lizard.attack(end_game_character)
-#     lizard.attack(end_game_character)
-#     lizard.attack(end_game_character)
-#     lizard.attack(end_game_character)
-#     lizard.attack(end_game_character)
-#     assert end_game_character.currency == 500
-#     lizard.current_hp = -2
+@pytest.mark.skip
+def test_str_based_attack(combat_state):
+    lizard = GraithLizard()
 
-# def test_rogue_goblin_attack(early_game_character):
-#     gob = RogueGoblin()
-
-#     gob.attack(early_game_character)
-#     gob.attack(early_game_character)
-#     gob.attack(early_game_character)
-#     gob.attack(early_game_character)
+    lizard.attack(combat_state.player)
+    lizard.attack(combat_state.player)
+    lizard.attack(combat_state.player)
+    lizard.attack(combat_state.player)
+    lizard.attack(combat_state.player)
+    assert combat_state.currency == 500
+    lizard.current_hp = -2
 
 

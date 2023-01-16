@@ -116,8 +116,8 @@ npc_classes_attributes = {
     'braba_bat': {'strength': 'very_weak', 'dexterity': 'average', 'constitution': 'weak', 'intelligence': 'very_weak', 'armor': 'none', 'resistance': 'average'},
     'shadefire_fox': {'strength': 'average', 'dexterity': 'very_strong', 'constitution': 'average', 'intelligence': 'average', 'armor': 'chain', 'resistance': 'strong'},
     'gratka_wolf': {'strength': 'average', 'dexterity': 'average', 'constitution': 'average', 'intelligence': 'weak', 'armor':'leather', 'resistance': 'average'},
-    'graith_queen': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'very_strong', 'intelligence': 'very_weak', 'armor':'bone', 'resistance': 'average'},
-    'graith_apple': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
+    'graith_queen': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'strong', 'intelligence': 'very_weak', 'armor':'bone', 'resistance': 'average'},
+    'graith_apple': {'strength': 'very_strong', 'dexterity': 'very_strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
 }
 
 

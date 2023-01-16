@@ -25,7 +25,7 @@ class NPC(Character):
         self.dexterity = atb['attribute'][npca[self.class_name]['dexterity']] + RI(*AR[npca[self.class_name]['dexterity']])
         self.intelligence = atb['attribute'][npca[self.class_name]['intelligence']] + RI(*AR[npca[self.class_name]['intelligence']])
         self.constitution = atb['attribute'][npca[self.class_name]['constitution']] + RI(*AR[npca[self.class_name]['constitution']])
-        self.armor = atb['armor_type'][npca[self.class_name]['armor']] + RI(-1, 1)
+        self.armor = atb['armor_type'][npca[self.class_name]['armor']] + RI(-1, 1) if atb['armor_type'][npca[self.class_name]['armor']] > 0 else 0
         self.resistance = atb['attribute'][npca[self.class_name]['resistance']] + RI(*AR[npca[self.class_name]['resistance']])
 
 class GraithLizard(NPC, Sprite):
