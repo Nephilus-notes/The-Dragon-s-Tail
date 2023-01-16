@@ -6,7 +6,7 @@ on:
     - prod
     
 jobs: 
-  build-html-and-push-to-bare-bones-branch:
+  build-html-and-push-to-prod:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,5 +23,5 @@ jobs:
       - run: git mv -f Dragon-Pyxel-Tail.html index.html
       - run: git add index.html 
       - run: git commit -m "updating html"
-      - run: git push -u origin bare-bones
+      - run: git push -u origin prod
     
