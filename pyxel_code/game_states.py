@@ -374,6 +374,7 @@ class BlacksmithScreen(GameState):
         self.bg = Background(**background['blacksmith'])
         self.items = []
         for num in range(6):
+            # add logic so you can't buy again
             item = ShopItem(self.game.player, **items[num], id=num)
             self.items.append(item)
         self.build_interactables(self.items)
