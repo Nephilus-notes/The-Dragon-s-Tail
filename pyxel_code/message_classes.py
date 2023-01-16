@@ -50,8 +50,11 @@ class CombatText(DisplayImage):
                 if self.game.text_timer >= self.display_time and px.btn(px.MOUSE_BUTTON_LEFT):
                     print(f'CombatText: game explored {self.game.explored} ')
                     if self.game.explored >= 10:
-                        print('to the trees')
-                        self.combat_state.end_game()
+                        if self.game._previous_state.name == "The Shining Forest":
+                            print('to the trees')
+                            self.combat_state.end_game()
+                        else:
+                            self.combat_state.to_town()
                     else:
                         print("going back")
                         self.combat_state.go_back()

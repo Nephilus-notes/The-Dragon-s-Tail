@@ -451,7 +451,7 @@ class CombatState(GameState):
         # self.build_exit() # For debugging purposes, MUST DELETE PREPRODUCTION
         self.player_action = ''
         self.player_abilities = []
-        Layer.back.append(self.bg)    
+        Layer.back.append(self.bg)   
 
         if self.player.exploring == False:
             self.game.explored = 0
