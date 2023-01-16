@@ -19,7 +19,7 @@ jobs:
       - run: git config --global user.name "Nephilus-notes"
       - run: git config --global user.email "cmhmcc@gmail.com"
       
-      - run: git add uno.pyxapp
+      - run: git add .
       - run: git commit -m "adding pyxapp"
       - run: git push -u origin prod
     
