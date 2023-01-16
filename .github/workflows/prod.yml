@@ -6,13 +6,14 @@ on:
     - prod
     
 jobs: 
-  runs-on: windows-latest
+  build-and-push-html-file:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
         with:
           python-version: 3.11.1
-          
+
       - run: pip install pyxel
       - run: pyxel package . dragons_tail.py
       - run: pyxel app2html uno.pyxapp
