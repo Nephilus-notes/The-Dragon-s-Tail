@@ -16,7 +16,7 @@ class Game:
         self.player =  Player(**background_stats["Nakat'th"]['stats'], game=self)
         self.won_game = False
         self.text_timer = 0
-# How to set levels for all sound?
+# How to set levels for all sound? Not sure.
         px.Sound(1)
         
 
