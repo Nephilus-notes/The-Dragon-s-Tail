@@ -16,7 +16,6 @@ jobs:
 
       - run: pip install pyxel
       - run: pyxel package . dragons_tail.py
-      - run: pyxel app2html uno.pyxapp
       - run: git add .
       - run: git commit -m "adding html"
       - run: git push -u origin prod
