@@ -6,7 +6,7 @@ on:
     - prod
     
 jobs: 
-  build-and-push-html-file:
+  build-pyxapp:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,6 +16,10 @@ jobs:
 
       - run: pip install pyxel
       - run: pyxel package . dragons_tail.py
-      - run: git add .
-      - run: git commit -m "adding html"
+      - run: git config --global user.name "Nephilus-notes"
+      - run: git config --global user.email "cmhmcc@gmail.com"
+      
+      - run: git add uno.pyxapp
+      - run: git commit -m "adding pyxapp"
       - run: git push -u origin prod
+    
