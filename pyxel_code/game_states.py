@@ -23,7 +23,7 @@ class GameState(ABC):
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.MOUSE_LOCATION = ''
-        self.text_timer = 0
+        # self.text_timer = 0
         self.speed = 1.5
         self.time_last_frame = time()
         self.dt = 0
@@ -199,6 +199,20 @@ class GameState(ABC):
                     x, y = player_sprite_locations[self.name][3]
                 px.blt(x, y, 2, 8, self.game.player.v, 8, 8, 7)
 
+    def display_text(self):
+        if len(self.game.text) > 0:
+            # self.game.text_timer = 0
+            if self.game.text[-1] != Interactable.unfreeze:
+                print('adding unfreeze')
+                self.game.text.append(Interactable.unfreeze)
+
+            if self.game.text[0] == Interactable.unfreeze:
+                Interactable.unfreeze()
+                self.game.text.pop(0)
+
+            else:
+                CombatText(**self.game.text[0])
+
 class TitleScreen(GameState):
     def on_enter(self):
         self.clear_layers()
@@ -319,14 +333,6 @@ class CreditsScreen(GameState):
         self.check_mouse_position()
         px.text(4, 12, game_text['credit_screen'], 7)
         # self.game.player.draw_sidebar()
-
-
-    def display_text(self):
-        if self.game.text:
-            if self.game.text[-1] != Interactable.freeze:
-                self.game.text.append(Interactable.freeze)
-            
-            CombatText(self.game.text[0])
 
 
 
@@ -505,7 +511,7 @@ class CombatState(GameState):
                 if self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
-                        return CombatText(self, "You retreat.", combat_won=False, combat_ongoing=False)
+                        return self.add_text("You retreat.", {"combat_won":False, "combat_ongoing":False})
             
                     
                 else:
@@ -520,8 +526,8 @@ class CombatState(GameState):
                     combatant.abilities[ability_index]()
                 # sleep(1)
             if self.player.current_hp <= 0:
-                return CombatText(self, """You lost the battle
-Return to town for healing...""", combat_ongoing=False, combat_won=False)
+                return self.add_text(self, """You lost the battle
+Return to town for healing...""", {"combat_won":False, "combat_ongoing":False})
             elif self.enemy.current_hp<= 0:
                 return self.player_reward()
             self.check_status()
@@ -552,23 +558,21 @@ Return to town for healing...""", combat_ongoing=False, combat_won=False)
             self.player.lifetime_currency += self.enemy.currency
             scythe = PlayerEquippableItem(self.player, **items[7], id = 7)
             self.player.bag.add_item(scythe)
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-Death's Scythe!""", combat_ongoing=False)
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+Death's Scythe!""", {"combat_ongoing":False})
 
         elif self.enemy.class_name == 'shadefire_fox':
             self.player.currency += self.enemy.currency
             self.player.lifetime_currency += self.enemy.currency
             bonemail = PlayerEquippableItem(self.player, **items[6], id = 6)
             self.player.bag.add_item(bonemail)
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-Bone Armor!""", combat_ongoing=False)
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+Bone Armor!""", {"combat_ongoing":False})
         else:
             self.player.currency += self.enemy.currency
             self.player.lifetime_currency += self.enemy.currency
-#             return self.add_text(combat_state=self, text=f"""Found trophies: {self.enemy.currency}
-# [Click to continue]""", kwarg_dict={'combat_ongoing':False})
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-[Click to continue]""", combat_ongoing=False)
+
+            return self.add_text(f"""Found trophies: {self.enemy.currency}""", {"combat_ongoing":False})
 
     def check_status(self):
         self.round_inc()
@@ -596,9 +600,22 @@ Bone Armor!""", combat_ongoing=False)
         self.player.combat_draw()
         self.check_mouse_position()
         self.player.draw_sidebar()
+        self.display_text()
 
     def choose_enemy(self):
         return encounter_function_list[self.game.explored//3](self.game._previous_state.name)
 
     def add_text(self:object, text:str, kwarg_dict:dict):
-        self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
+        print(f'Game text length = {len(self.game.text)}')
+        print(self.game.text)
+
+        if len(self.game.text) < 1:
+            self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
+        elif len(self.game.text) >= 1:
+            if self.game.text[-1] == Interactable.unfreeze:
+                print('popping')
+                popped = self.game.text.pop()
+                self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
+                self.game.text.append(popped)
+            else:
+                self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
