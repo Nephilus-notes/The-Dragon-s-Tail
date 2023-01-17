@@ -34,12 +34,15 @@ class CombatText(DisplayImage):
         if self.combat_ongoing == False:
 
             if self.combat_won == False:
+                print('getting out of here')
                 self.game.player.reset_flags()
                 if self.game.text_timer >= self.display_time:
+                    print(self.game.text_timer)
+                    print(self.display_time)
                     px.cls(0)
 
-                self.remove_self()
-                self.to_town()
+                    self.remove_self()
+                    self.to_town()
 
 
             if self.combat_won:

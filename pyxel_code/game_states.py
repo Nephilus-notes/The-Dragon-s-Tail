@@ -307,7 +307,7 @@ class EndGameScreen(GameState):
         self.game.text_timer = 0
 
     def check_mouse_position(self):
-        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 1:
             self._next_state = CreditsScreen(self.game)
 
     def draw(self):
@@ -324,7 +324,7 @@ class CreditsScreen(GameState):
         self.game.text_timer = 0
 
     def check_mouse_position(self):
-        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 1:
             self._next_state = TownScreenState(self.game)
 
     def draw(self):
@@ -519,15 +519,15 @@ class CombatState(GameState):
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = RI(0,2)
+                ability_index = 0# RI(0,2)
                 if ability_index == 0:
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
                 # sleep(1)
             if self.player.current_hp <= 0:
-                return self.add_text(self, """You lost the battle
-Return to town for healing...""", {"combat_won":False, "combat_ongoing":False})
+                return self.add_text("""You lost the battle
+Returning to town...""", {"combat_won":False, "combat_ongoing":False})
             elif self.enemy.current_hp<= 0:
                 return self.player_reward()
             self.check_status()
