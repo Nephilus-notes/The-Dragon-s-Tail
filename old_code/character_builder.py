@@ -139,7 +139,8 @@ class Character():
                 self.in_combat_text(f"""{target.name.title()} blocks 
 {self.name.title()}' strike.""")
             elif damage_num <= 0 and target.name[-1] == "s":
-                self.in_combat_text(f"{target.name.title()} blocks\n{self.name.title()}'s strike.")
+                self.in_combat_text(f"""{target.name.title()} blocks
+{self.name.title()}'s strike.""")
                 
 
     def wear_armor(self):
