@@ -1,5 +1,4 @@
 import pyxel as px
-import jsonpickle
 
 from pyxel_code.image_classes import DisplayImage, Clickable, AddStat, LevelUpStat, Button
 from pyxel_code.utils import Interactable, Layer
@@ -25,13 +24,12 @@ class Save(DisplayImage, Clickable):
     def intersection(self):
         px.text(84, 84, "save", 7)
         if px.btn(px.MOUSE_BUTTON_LEFT):
-            pickled_player = jsonpickle.encode(self.player)
 
             # new_save = SaveFile(pickle=pickled_player)
 
             # new_save.save()
 
-            px.text(108, 84, "api call, saved from save_heal_level", 7)
+            px.text(108, 84, "Save function to be added", 7)
 
             # api call to save player state in the database
             # if successful px.text "saved" for 5 seconds (Integrate code to check the time)
