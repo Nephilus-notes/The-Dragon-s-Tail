@@ -23,7 +23,7 @@ class GameState(ABC):
         self.character_info = Sidebar(**sidebar['character_info'])
         self.item_info = Sidebar(**sidebar['items'])
         self.MOUSE_LOCATION = ''
-        self.text_timer = 0
+        # self.text_timer = 0
         self.speed = 1.5
         self.time_last_frame = time()
         self.dt = 0
@@ -165,6 +165,7 @@ class GameState(ABC):
         self.game.player.draw_sidebar()
         self.draw_name()
         self.draw_explorer()
+        self.display_text()
 
     def set_previous_state(self):
         self.game._previous_state = self
@@ -197,6 +198,20 @@ class GameState(ABC):
                 elif self.game.explored >= 9:
                     x, y = player_sprite_locations[self.name][3]
                 px.blt(x, y, 2, 8, self.game.player.v, 8, 8, 7)
+
+    def display_text(self):
+        if len(self.game.text) > 0:
+            # self.game.text_timer = 0
+            if self.game.text[-1] != Interactable.unfreeze:
+                print('adding unfreeze')
+                self.game.text.append(Interactable.unfreeze)
+
+            if self.game.text[0] == Interactable.unfreeze:
+                Interactable.unfreeze()
+                self.game.text.pop(0)
+
+            else:
+                CombatText(**self.game.text[0])
 
 class TitleScreen(GameState):
     def on_enter(self):
@@ -292,7 +307,7 @@ class EndGameScreen(GameState):
         self.game.text_timer = 0
 
     def check_mouse_position(self):
-        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 1:
             self._next_state = CreditsScreen(self.game)
 
     def draw(self):
@@ -309,7 +324,7 @@ class CreditsScreen(GameState):
         self.game.text_timer = 0
 
     def check_mouse_position(self):
-        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 2:
+        if px.btnr(px.MOUSE_BUTTON_LEFT) and self.game.text_timer > 1:
             self._next_state = TownScreenState(self.game)
 
     def draw(self):
@@ -492,11 +507,12 @@ class CombatState(GameState):
         start_time = time()
 
         for combatant in self.initiative_list:
+            print(combatant.name)
             if combatant == self.player:
                 if self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
-                        return CombatText(self, "You retreat.", time(), combat_won=False, combat_ongoing=False)
+                        return self.add_text("You retreat.\n[Click to Continue]", {"combat_won":False, "combat_ongoing":False})
             
                     
                 else:
@@ -504,18 +520,18 @@ class CombatState(GameState):
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = RI(0,2)
+                ability_index = 0# RI(0,2)
                 if ability_index == 0:
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
                 # sleep(1)
             if self.player.current_hp <= 0:
-                return CombatText(self, """You lost the battle
-Return to town for healing...""", time(), combat_ongoing=False, combat_won=False)
+                return self.add_text("""You lost the battle
+Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoing":False})
             elif self.enemy.current_hp<= 0:
                 return self.player_reward()
-            self.check_status()
+        self.check_status()
             
 
 
@@ -543,40 +559,44 @@ Return to town for healing...""", time(), combat_ongoing=False, combat_won=False
             self.player.lifetime_currency += self.enemy.currency
             scythe = PlayerEquippableItem(self.player, **items[7], id = 7)
             self.player.bag.add_item(scythe)
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-Death's Scythe!""", time(), combat_ongoing=False)
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+Death's Scythe!""", {"combat_ongoing":False})
 
         elif self.enemy.class_name == 'shadefire_fox':
             self.player.currency += self.enemy.currency
             self.player.lifetime_currency += self.enemy.currency
             bonemail = PlayerEquippableItem(self.player, **items[6], id = 6)
             self.player.bag.add_item(bonemail)
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-Bone Armor!""", time(), combat_ongoing=False)
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+Bone Armor!""", {"combat_ongoing":False})
         else:
             self.player.currency += self.enemy.currency
             self.player.lifetime_currency += self.enemy.currency
-            return CombatText(self, f"""Found trophies: {self.enemy.currency}
-[Click to continue]""", time(), combat_ongoing=False)
+
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+[Click to Continue]""", {"combat_ongoing":False})
 
     def check_status(self):
         self.round_inc()
-        for player in self.initiative_list:
-            if player.dodging == True:
-                if player.dodge_round >= 2:
-                    player.undodge()
-                            # reset the player.dodge so that dodge can be used again.
+        for combatant in self.initiative_list:
+            print(combatant.name)
+            if combatant.dodging == True:
+                if combatant.dodge_round >= 2:
+                    print(combatant.dodge_round)
+                    print("still dodging")
+                    combatant.undodge()
+                            # reset the combatant.dodge so that dodge can be used again.
                 else:
-                    player.dodge_round += 1
-                    print(f'dodging for {player.dodge_round} rounds')
+                    combatant.dodge_round += 1
+                    print(f'dodging for {combatant.dodge_round} rounds')
                     break
-            if player.defended == True:
-                if player.defend_round >= 2:
-                    player.undefend()
+            if combatant.defended == True:
+                if combatant.defend_round >= 2:
+                    combatant.undefend()
                     break
                 else:
-                    print(f'defended {player.defend_round}')
-                    player.defend_round += 1
+                    print(f'defended {combatant.defend_round}')
+                    combatant.defend_round += 1
                     break
 
     def draw(self):
@@ -585,6 +605,22 @@ Bone Armor!""", time(), combat_ongoing=False)
         self.player.combat_draw()
         self.check_mouse_position()
         self.player.draw_sidebar()
+        self.display_text()
 
     def choose_enemy(self):
         return encounter_function_list[self.game.explored//3](self.game._previous_state.name)
+
+    def add_text(self:object, text:str, kwarg_dict:dict):
+        print(f'Game text length = {len(self.game.text)}')
+        print(self.game.text)
+
+        if len(self.game.text) < 1:
+            self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
+        elif len(self.game.text) >= 1:
+            if self.game.text[-1] == Interactable.unfreeze:
+                print('popping')
+                popped = self.game.text.pop()
+                self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
+                self.game.text.append(popped)
+            else:
+                self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})

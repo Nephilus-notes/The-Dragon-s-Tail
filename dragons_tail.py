@@ -5,12 +5,14 @@ import pyxel as px
 
 from pyxel_code.constants import *
 from pyxel_code.game import Game
+from pyxel_code.image_classes import Sidebar
+from pyxel_code.utils import sidebar
 
 
 class App:
     def __init__(self):
         px.init(WIDTH, HEIGHT, title="From the Dragon's Tail", fps=15, capture_sec=0, display_scale=5)
-        px.load("dragons_tail.pyxres")
+        px.load("assets/dragons_tail.pyxres")
         # px.fullscreen(True)
 
         self.MOUSE_LOCATION = ''
