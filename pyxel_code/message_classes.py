@@ -10,7 +10,7 @@ from .utils import *
 
 
 class CombatText(DisplayImage):
-    def __init__(self, combat_state:object, combat_text:str, display_time:float=2,
+    def __init__(self, combat_state:object, combat_text:str, display_time:float=4,
     combat_ongoing:bool=True, combat_won:bool = True, x=76, y=84, bank=1, u=0, 
     v=192, w=120, h=48, colkey=7 ) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
@@ -23,7 +23,7 @@ class CombatText(DisplayImage):
         self.display_time = display_time
         self.start_draw()
         self.reset_timer()
-        print("combat text created")
+        # print("combat text created")
 
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
@@ -34,11 +34,12 @@ class CombatText(DisplayImage):
         if self.combat_ongoing == False:
 
             if self.combat_won == False:
-                print('getting out of here')
-                self.game.player.reset_flags()
-                if self.game.text_timer >= self.display_time:
-                    print(self.game.text_timer)
-                    print(self.display_time)
+                # print('getting out of here')
+                if px.btnr(px.MOUSE_BUTTON_LEFT):
+                    # print(self.game.text_timer)
+                    self.game.player.set_dependant_atts()
+                    self.game.player.reset_flags()
+                    # print(self.display_time)
                     px.cls(0)
 
                     self.remove_self()
@@ -49,8 +50,10 @@ class CombatText(DisplayImage):
                 # print('combat won!')
                 # print(self.game.text_timer)
                 # print(self.display_time)
-                if self.game.text_timer >= self.display_time:
+                if px.btnr(px.MOUSE_BUTTON_LEFT):
                     # print(f'CombatText: game explored {self.game.explored} ')
+                    self.game.player.set_dependant_atts()
+                    self.game.player.reset_flags()
                     if self.game.explored >= 11:
                         # print('to the trees')
                         try:

@@ -101,7 +101,7 @@ class Character():
 
 
     def attack(self, target):
-        self.in_combat_text(f'{self.name.title()} attacks {target.name.title()}!')
+        self.in_combat_text(f'{self.name.title()} attacks!')
 
         if self.dexterity > self.strength:
             if RI(*dex) == 2:
@@ -171,7 +171,7 @@ relaxes their guard.''')
     def dodge(self):
         self.dodge_round = 0
         self.dodging = True
-        self.dodge_val = self.dexterity / 2 + 2
+        self.dodge_val = self.dexterity // 2 + 2
         if self.class_name == 'player':
             self.in_combat_text(f"""You focus on dodging. 
 Dodge: {self.dodge_val}""")
@@ -183,7 +183,7 @@ dances about nimbly.''')
     def undodge(self):
         self.dodging = False
         self.dodge_round = 0
-        self.dodge_val = self.dexterity / 2
+        self.dodge_val = self.dexterity // 2
 
     def flee(self, enemy):
         if self.dexterity > enemy.dexterity or self.flee_count > 0:            
@@ -278,7 +278,7 @@ dances about nimbly.''')
     def set_dependant_atts(self):
         self.current_hp = self.hp
         self.armor_val = self.armor if self.armor >= 0 else 0
-        self.att_val = self.dexterity if self.dexterity > self.strength else self.strength  
+        self.att_val = self.dexterity // 2 if self.dexterity > self.strength else self.strength  // 2
         self.damage = self.strength // 2 + self.weapon_damage if self.strength > 2 else 1 + self.weapon_damage
         self.damage_val = self.damage
         self.dodge_val = self.dexterity // 2 if self.dexterity > 2 else 1
@@ -309,7 +309,7 @@ dances about nimbly.''')
 
 
     def add_text(self, combat_state:object, text:str, kwarg_dict:dict):
-        print(f'Game text length = {len(self.game.text)}')
+        # print(f'Game text length = {len(self.game.text)}')
         if len(self.game.text) < 1:
            self.game.text.append({'combat_state': combat_state, 'combat_text': text, **kwarg_dict})
         elif len(self.game.text) >= 1:
@@ -354,17 +354,18 @@ class Player(Character, Sprite):
     def draw_sidebar(self):
         stat_list = []
 
-        px.text(12, 24, f"HP: {self.current_hp}/{self.hp}", 7)
-        px.text(12, 34, f"STR: {self.strength}", 7)
-        px.text(12, 42, f"DEX: {self.dexterity}", 7)
-        px.text(12, 50, f"CON: {self.constitution}", 7)
-        px.text(12, 58, f"INT: {self.intelligence}", 7)
-        px.text(12, 68, f"Attack: {self.att_val}", 7)
-        px.text(12, 76, f"Damage: {self.damage}", 7)
-        px.text(12, 84, f"Defense: {self.armor_val}", 7)
-        px.text(12, 92, f"Resistance: {self.resistance}", 7)
-        px.text(12, 100, f"Dodge: {self.dodge_val}", 7)
-        px.text(12, 110, f"Trophies: {self.currency}", 7)
+        px.text(12, 24, f'NAME: {self.name}', 7)
+        px.text(12, 32, f"HP: {self.current_hp}/{self.hp}", 7)
+        px.text(12, 42, f"STR: {self.strength}", 7)
+        px.text(12, 50, f"DEX: {self.dexterity}", 7)
+        px.text(12, 58, f"CON: {self.constitution}", 7)
+        px.text(12, 66, f"INT: {self.intelligence}", 7)
+        px.text(12, 76, f"Attack: {self.att_val}", 7)
+        px.text(12, 84, f"Damage: {self.damage}", 7)
+        px.text(12, 92, f"Defense: {self.armor_val}", 7)
+        px.text(12, 100, f"Resistance: {self.resistance}", 7)
+        px.text(12, 108, f"Dodge: {self.dodge_val}", 7)
+        px.text(12, 118, f"Trophies: {self.currency}", 7)
 
         # placeholder
         # px.text(32, 118, "Quit", 0)

@@ -507,11 +507,12 @@ class CombatState(GameState):
         start_time = time()
 
         for combatant in self.initiative_list:
+            print(combatant.name)
             if combatant == self.player:
                 if self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
-                        return self.add_text("You retreat.", {"combat_won":False, "combat_ongoing":False})
+                        return self.add_text("You retreat.\n[Click to Continue]", {"combat_won":False, "combat_ongoing":False})
             
                     
                 else:
@@ -527,10 +528,10 @@ class CombatState(GameState):
                 # sleep(1)
             if self.player.current_hp <= 0:
                 return self.add_text("""You lost the battle
-Returning to town...""", {"combat_won":False, "combat_ongoing":False})
+Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoing":False})
             elif self.enemy.current_hp<= 0:
                 return self.player_reward()
-            self.check_status()
+        self.check_status()
             
 
 
@@ -572,26 +573,30 @@ Bone Armor!""", {"combat_ongoing":False})
             self.player.currency += self.enemy.currency
             self.player.lifetime_currency += self.enemy.currency
 
-            return self.add_text(f"""Found trophies: {self.enemy.currency}""", {"combat_ongoing":False})
+            return self.add_text(f"""Found trophies: {self.enemy.currency}
+[Click to Continue]""", {"combat_ongoing":False})
 
     def check_status(self):
         self.round_inc()
-        for player in self.initiative_list:
-            if player.dodging == True:
-                if player.dodge_round >= 2:
-                    player.undodge()
-                            # reset the player.dodge so that dodge can be used again.
+        for combatant in self.initiative_list:
+            print(combatant.name)
+            if combatant.dodging == True:
+                if combatant.dodge_round >= 2:
+                    print(combatant.dodge_round)
+                    print("still dodging")
+                    combatant.undodge()
+                            # reset the combatant.dodge so that dodge can be used again.
                 else:
-                    player.dodge_round += 1
-                    print(f'dodging for {player.dodge_round} rounds')
+                    combatant.dodge_round += 1
+                    print(f'dodging for {combatant.dodge_round} rounds')
                     break
-            if player.defended == True:
-                if player.defend_round >= 2:
-                    player.undefend()
+            if combatant.defended == True:
+                if combatant.defend_round >= 2:
+                    combatant.undefend()
                     break
                 else:
-                    print(f'defended {player.defend_round}')
-                    player.defend_round += 1
+                    print(f'defended {combatant.defend_round}')
+                    combatant.defend_round += 1
                     break
 
     def draw(self):
