@@ -21,14 +21,12 @@ class Backpack(DragonItem):
 
 # add an item to your bag, or give you the chance to replace an item in your bag with something else.
     def add_item(self, item:object):
-        print('adding item')
         try:
             item.freeze()
         except:
             pass
         if len(self.slots) < self.size:
             key = self.new_key(self.slots_used)
-            print('got new key')
 
         if key <=2:
             item.y = 24
@@ -56,7 +54,6 @@ class Backpack(DragonItem):
     def add_potion(self, item:object):
         if len(self.slots) < self.size:
             key = self.new_key(self.potion_slots_used)
-            print('got new key')
 
         if key == 0:
             item.y = 88
@@ -68,23 +65,13 @@ class Backpack(DragonItem):
         item.bag_id = key
         self.potion_slots[key] = item
         self.potion_slots_used.append(key)
-        print("key ", key)
-        print(self.potion_slots[key])
-        print(self.potion_slots)
+
 
     def use_potion(self, potion:object):
-        print(potion.bag_id)
-        print(self.potion_slots)
         self.owner.current_hp += potion.item_stat
         if self.owner.current_hp > self.owner.hp:
             self.owner.current_hp = self.owner.hp
         del self.potion_slots[potion.bag_id]
-
-    # def drop_item(self, item):
-    #     if item in self.slots:
-    #         del self.slots[item]
-    #     else:
-    #         print('drop failed')
 
 
     def equip_item(self, item:object):
@@ -104,7 +91,6 @@ class Backpack(DragonItem):
 
     def equip(self, item:object):
         if self.equipped.slot[item.slot] == {'nothing':'nothing'}:
-            print('nothing here')
             return self.equip_item(item)
         unequipped = self.equipped.slot[item.slot]
         self.equip_item(item)
@@ -113,8 +99,6 @@ class Backpack(DragonItem):
     def new_key(self, slots_used:list):
         min = 0
         if slots_used:
-            print('checking slots used')
-            print(self.slots_used)
             for num in sorted(slots_used):
                 if min == num:
                     min += 1
@@ -147,47 +131,3 @@ class EquippedItems():
         self.owner = owner
 
        
-
-
-equipped_items = {"head":'', "body":'chain armor', "hand":''}
-
-inventory = {1:'', 2:'', 3:'', 4:'', 5:'',
-6:'', 7:'', 8:'', 9:''}
-inventory_list = ['healing potion']
-
-def inventory_details(item_numbers, items_worn):
-    key_count= 0
-    for key, item in items_worn.items():
-        print("\nYou are wearing {item} in your {key} slot.".format(item=item,key=key))
-        key_count += 1
-    # arrange a connection between dialogue and other code
-    # equipped_description= f'''You are currently wearing an {equipped_items["head"]}, 
-# {equipped_items["body"]} and wielding a {equipped_items['hand']}'''
-
-    inventory_items = "What has it got in its pocketses?? Let's see!"
-    
-    print(inventory_items)
-    if inventory_list:
-        for item in inventory_list:
-            print(item)
-    elif not inventory_list:
-        print("It's got nothing in its pocketses!!")
-
-
-def inventory_screen():
-    for value in inventory:
-        item = 0
-        if value:
-            item += 1
-    item_numbers = item
-    
-    items_worn ={}
-    for key, value in equipped_items.items():
-        if value:
-            items_worn[key] = [value]
-
-    inventory_details(item_numbers, items_worn)
-
-# inventory_screen()
-
-# inventory_screen()

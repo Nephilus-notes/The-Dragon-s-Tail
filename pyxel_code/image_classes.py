@@ -95,12 +95,10 @@ class Clickable:
 
     def freeze(self):
         Interactable.main.remove(self)
-        print('freeze')
         Interactable.frozen.append(self)
 
     def unfreeze(self):
         Interactable.frozen.remove(self)
-        print('unfreeze')
         Interactable.main.append(self)
 
 class Sidebar(DisplayImage):
@@ -171,7 +169,6 @@ class ShopItem(Clickable, DisplayImage):
                 Layer.main.remove(self)
                 
                 if self.id in range(0, 8):
-                    print("id = ", self.id)
 
                     self.player.bag.add_item(PlayerEquippableItem(self.player,
                         self.x, self.y, self.u, self.v, self.w, self.h, 
@@ -190,9 +187,6 @@ class ShopItem(Clickable, DisplayImage):
                     )
 
                     self.player.bag.add_potion(new_potion)
-
-                    print(new_potion.name)
-
 
     def item_text(self):
             px.text(84, 84, self.name, 7)
@@ -231,7 +225,7 @@ class PlayerEquippableItem(ShopItem):
                 self.player.bag.equipped.slot[self.slot] = {'nothing':'nothing'}
                 return
 
-            # print('equip clicked')
+
             self.player.bag.equip(self)
             self.is_interacting = True
 
@@ -258,9 +252,7 @@ class PlayerConsumableItem(ShopItem):
             else:
                 try:
                     self.freeze()
-                    # print('potion clicked')
-                    print(self)
-                    print(self.player.bag.potion_slots)
+                    
                     self.player.bag.use_potion(self)
                 except:
                     print('tried to drink potion')

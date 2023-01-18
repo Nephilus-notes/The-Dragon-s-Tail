@@ -116,9 +116,7 @@ class KraktRat(NPC, Sprite):
         self.w=16
         self.h=16
         self.colkey=7
-        # print(self.name)
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        # print(f'dex = {self.dexterity}')
 
 class BrabaBat(NPC, Sprite):
     def __init__(self, u=0, v=48):
@@ -127,8 +125,6 @@ class BrabaBat(NPC, Sprite):
         self.generate_stats()
         self.u=u 
         self.v=v
-        # If I have implimented multiple enemies, this is a great candidate for swarms of 3 +
-        # if that's the case their stats have to be super low, but they will also try to flee if there is only one of them in the battle.
         self.x=96
         self.y=24
         self.bank=2
@@ -136,9 +132,7 @@ class BrabaBat(NPC, Sprite):
         self.h=16
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        # print(self.name)
 
-        # print(f'dex = {self.dexterity}')
 
 
     def feed(self, target):

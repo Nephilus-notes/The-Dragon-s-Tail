@@ -83,13 +83,11 @@ class GameState(ABC):
 
                 if self.name != 'Combat':
                     if item == self.exit and px.btnr(px.MOUSE_BUTTON_LEFT):
-                        # self.go_back()
                         self._next_state = TownScreenState(self.game)
 
                     if self.name == "The Shining Forest" or self.name == "The Underbelly":
                         if item == self.explore and px.btnr(px.MOUSE_BUTTON_LEFT):
                             self.game._previous_state = self
-                            print(f"Entering combat state: {self.game._previous_state.name}")
                             self._next_state = CombatState(self.game)
 
 
@@ -121,8 +119,6 @@ class GameState(ABC):
             Layer.main.append(sprite)
 
     def go_back(self):
-        # print(self.game._previous_state.name)
-        # print(f'next state {self._next_state.name}')
         if self.name == "Combat" and self.game._previous_state.name == 'The Shining Forest':
             self.set_previous_state()
             self._next_state = ShiningForestMapState(self.game)
@@ -203,7 +199,6 @@ class GameState(ABC):
         if len(self.game.text) > 0:
             # self.game.text_timer = 0
             if self.game.text[-1] != Interactable.unfreeze:
-                print('adding unfreeze')
                 self.game.text.append(Interactable.unfreeze)
 
             if self.game.text[0] == Interactable.unfreeze:
@@ -476,7 +471,6 @@ class CombatState(GameState):
         self.game.explored += 1
         if self.game.explored == 11 and self.game._previous_state.name == 'The Shining Forest':
             self._next_state = EndGameScreen(self.game)
-        print(f"exploring: {self.game.explored}")
 
 
         if self.game.explored == 1 or self.game.explored % 3 == 0:
@@ -507,7 +501,6 @@ class CombatState(GameState):
         start_time = time()
 
         for combatant in self.initiative_list:
-            print(combatant.name)
             if combatant == self.player:
                 if self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
@@ -579,23 +572,19 @@ Bone Armor!""", {"combat_ongoing":False})
     def check_status(self):
         self.round_inc()
         for combatant in self.initiative_list:
-            print(combatant.name)
             if combatant.dodging == True:
                 if combatant.dodge_round >= 2:
-                    print(combatant.dodge_round)
-                    print("still dodging")
+
                     combatant.undodge()
                             # reset the combatant.dodge so that dodge can be used again.
                 else:
                     combatant.dodge_round += 1
-                    print(f'dodging for {combatant.dodge_round} rounds')
                     break
             if combatant.defended == True:
                 if combatant.defend_round >= 2:
                     combatant.undefend()
                     break
                 else:
-                    print(f'defended {combatant.defend_round}')
                     combatant.defend_round += 1
                     break
 
@@ -611,14 +600,11 @@ Bone Armor!""", {"combat_ongoing":False})
         return encounter_function_list[self.game.explored//3](self.game._previous_state.name)
 
     def add_text(self:object, text:str, kwarg_dict:dict):
-        print(f'Game text length = {len(self.game.text)}')
-        print(self.game.text)
 
         if len(self.game.text) < 1:
             self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
         elif len(self.game.text) >= 1:
             if self.game.text[-1] == Interactable.unfreeze:
-                print('popping')
                 popped = self.game.text.pop()
                 self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
                 self.game.text.append(popped)

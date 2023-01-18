@@ -152,13 +152,12 @@ class Character():
         self.armor_val = self.armor + 2
         self.defended = True
         if self.class_name == 'player':
-            print(f'You are defended: Armor val = {self.armor_val} ')
             self.in_combat_text(f"""You focus on defending. 
 Armor: {self.armor_val}""")
         else:
             self.in_combat_text(f'''The { self.combat_state.enemy} 
 hunkers down to defend.''')
-        # rnd_count = 2
+
 
     def undefend(self):
         self.armor_val = self.armor
