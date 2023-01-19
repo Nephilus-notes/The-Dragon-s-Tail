@@ -18,7 +18,7 @@ jobs:
       - run: pytest
       
       - run: pyxel package . dragons_tail.py
-      - run: pyxel app2html Dragon-Pyxel-Tail.pyxapp
+      - run: pyxel app2html The-Dragon-s-Tail.pyxapp
       - run: git config --global user.name "Nephilus-notes"
       - run: git config --global user.email "cmhmcc@gmail.com"
       
