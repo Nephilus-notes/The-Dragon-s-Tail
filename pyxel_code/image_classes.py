@@ -316,11 +316,11 @@ class AddStat(Button):
         if self.name == "Reduce":
             if self.stat_object.stat > self.min:
                 px.text(120, 86, "Click to reduce", 7)
-                px.text(120, 94, f"Refund: {(self.stat_object.stat -1) *4}", 7)
+                px.text(120, 94, f"Refund: {(self.stat_object.stat) *3}", 7)
                 if px.btnr(px.MOUSE_BUTTON_LEFT):
+                    self.player.currency += (self.stat_object.stat) *3
                     self.stat_object.stat -=1
                     self.stat = self.stat_object.stat
-                    self.player.currency += (self.stat_object.stat -1) *3
 
     def draw(self):
         px.blt(self.x, self.y, self.bank, self.u, self.v, self.w, self.h, colkey= self.colkey)
