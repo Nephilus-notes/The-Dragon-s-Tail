@@ -72,6 +72,7 @@ def test_ShadeFireFox():
     assert shade_fire.current_mp == shade_fire.max_mp and shade_fire.max_mp == shade_fire.intelligence * 2
     assert shade_fire.currency >= lower_6 and shade_fire.currency <= upper_6
     assert shade_fire.dodge_val >= very_strong_lower_val and shade_fire.dodge_val <= very_strong_upper_val
+    assert shade_fire.abilities[3] == shade_fire.double_strike
 
 def test_graith_lizard():
     """
@@ -92,6 +93,7 @@ def test_graith_lizard():
     assert graith_lizard.current_mp == graith_lizard.max_mp and graith_lizard.max_mp == graith_lizard.intelligence * 2
     assert graith_lizard.currency >= lower_4 and graith_lizard.currency <= upper_4
     assert graith_lizard.dodge_val >= weak_lower_val and graith_lizard.dodge_val <= weak_upper_val
+    assert graith_lizard.abilities[3] == graith_lizard.attack
 
 def test_graith_tree():
     """
@@ -112,6 +114,7 @@ def test_graith_tree():
     assert graith_tree.current_mp == graith_tree.max_mp and graith_tree.max_mp == graith_tree.intelligence * 2
     assert graith_tree.currency >= lower_4 and graith_tree.currency <= upper_4
     assert graith_tree.dodge_val >= weak_lower_val and graith_tree.dodge_val <= weak_upper_val
+    assert graith_tree.abilities[3] == graith_tree.entrap
     # graith_tree.defend()
     # assert graith_tree.defended == True
     # # change this , and defended, to only giving 2 armor
@@ -142,6 +145,8 @@ def test_grakta_wolf():
     grakta_wolf.flee(second_wolf)
     assert grakta_wolf.fleeing == True
 
+    assert grakta_wolf.abilities[3] == grakta_wolf.trip
+
 def test_krakta_rat():
     """
     GIVEN an KraktRat class
@@ -161,6 +166,7 @@ def test_krakta_rat():
     assert krakta_rat.current_mp == krakta_rat.max_mp and krakta_rat.max_mp == krakta_rat.intelligence * 2
     assert krakta_rat.currency >= lower_1 and krakta_rat.currency <= upper_1
     assert krakta_rat.dodge_val >= average_lower_val and krakta_rat.dodge_val <= average_upper_val 
+    assert krakta_rat.abilities[3] == krakta_rat.attack
 
 def test_braba_bat():
     """
@@ -181,6 +187,7 @@ def test_braba_bat():
     assert braba_bat.current_mp == braba_bat.max_mp and braba_bat.max_mp == braba_bat.intelligence * 2
     assert braba_bat.currency >= lower_2 and braba_bat.currency <= upper_2
     assert braba_bat.dodge_val >= average_lower_val and braba_bat.dodge_val <= average_upper_val 
+    assert braba_bat.abilities[3] == braba_bat.feed
 
     # braba_bat.dodge()
     # assert braba_bat.dodging == True
@@ -205,6 +212,7 @@ def test_graith_queen():
     assert queen.currency >= lower_6 and queen.currency <= upper_6
     assert queen.dodge_val >= strong_lower_val and queen.dodge_val <= strong_upper_val 
     assert queen.class_name == "graith_queen"
+    assert queen.abilities[3] == queen.attack
 
 def test_graith_apple():
     """
@@ -225,4 +233,5 @@ def test_graith_apple():
     assert apple.armor_val >= brigandine_lower and apple.armor_val <= brigandine_upper
     assert apple.resist_val >= weak_lower and apple.resist_val <= weak_upper
     assert apple.currency >= lower_6 and apple.currency <= upper_6
+    assert apple.abilities[3] == apple.entrap
     
