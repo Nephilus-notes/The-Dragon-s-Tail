@@ -361,7 +361,7 @@ class AbilityButton(Button):
         if px.btnr(px.MOUSE_BUTTON_LEFT):
 
             self.combat_state.player_action = self.ability_index
-            px.text(2,2, "ability clicked", 7)
+            # px.text(2,2, "ability clicked", 7)
             self.combat_state.take_actions()
 
     def draw(self):

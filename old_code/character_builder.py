@@ -14,7 +14,7 @@ from pyxel_code.image_classes import Sprite, DisplayText # Application Imports
 
 dex = [-1, 2]
 strength = [-3, 4]
-int = [-1, 1]
+intelligence = [-1, 1]
 
 
 rirs = randint(0,1) # randint small (0,1)
@@ -89,9 +89,17 @@ class Character():
         self.stunned = False        
 
         #  Status Incrementors
-        self.dodge_round = 0
-        self.defend_round = 0
+        self.dodging_rounds = 0
+        self.defended_rounds = 0
         self.flee_count = 0
+        self.stunned_rounds = 0
+        self.slowed_rounds = 0
+        self.stone_armored_rounds = 0
+        self.vulnerable_rounds = 0
+        self.double_armed_rounds = 0
+        self.burning_blades_rounds = 0
+        self.burning_rounds = 0
+        self.poisoned_rounds = 0
         self.set_attribute_list()
         # self.set_currency()
 
@@ -102,9 +110,10 @@ class Character():
 
     def attack(self, target):
         self.in_combat_text(f'{self.name.title()} attacks!')
-
+        damage_num = 0
         if self.dexterity > self.strength:
-            if RI(*dex) == 2:
+            attack_mod = RI(*dex)
+            if attack_mod == 2:
                 damage_num = (self.damage + 2)
                 self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
@@ -113,9 +122,11 @@ class Character():
             elif self.att_val + RI(*dex) > target.dodge_val:
                 damage_num = (self.damage + RI(*dex)) - target.armor_val
                 self.attack_damage(target, damage_num)
+            return attack_mod, damage_num
 
         elif self.strength >= self.dexterity:
-            if RI(*strength) == 4:
+            attack_mod = RI(*strength)
+            if attack_mod == 4:
                 damage_num = (self.damage + 4) - target.armor_val
                 self.in_combat_text('**Critical hit!**')
                 self.attack_damage(target, damage_num)
@@ -124,6 +135,7 @@ class Character():
             elif self.att_val + RI(*strength) > target.dodge_val:
                 damage_num = (self.damage + RI(*strength)) - target.armor_val
                 self.attack_damage(target, damage_num)
+            return attack_mod, damage_num
 
 
     def attack_damage(self, target, damage_num):
@@ -148,42 +160,48 @@ class Character():
         self.armor_val = self.armor
 
     def defend(self):
-        self.defend_round = 0
-        self.armor_val = self.armor + 2
-        self.defended = True
-        if self.class_name == 'player':
-            print(f'You are defended: Armor val = {self.armor_val} ')
-            self.in_combat_text(f"""You focus on defending. 
-Armor: {self.armor_val}""")
+        if self.defended:
+            self.defended_rounds = 0
+            self.in_combat_text(f"{self.name} is defending")
         else:
-            self.in_combat_text(f'''The { self.combat_state.enemy} 
-hunkers down to defend.''')
+            self.armor_val += 2
+            self.defended = True
+            if self.class_name == 'player':
+                print(f'You are defended: Armor val = {self.armor_val} ')
+                self.in_combat_text(f"""You focus on defending. 
+    Armor: {self.armor_val}""")
+            else:
+                self.in_combat_text(f'''The { self.combat_state.enemy} 
+    hunkers down to defend.''')
         # rnd_count = 2
 
     def undefend(self):
-        self.armor_val = self.armor
+        self.armor_val -= 2
         self.defended = False
-        self.defend_round = 0
+        self.defended_rounds = 0
         if self.class_name != 'player':
             self.in_combat_text(f'''The { self.combat_state.enemy} 
 relaxes their guard.''')
 
     def dodge(self):
-        self.dodge_round = 0
-        self.dodging = True
-        self.dodge_val = self.dexterity // 2 + 2
-        if self.class_name == 'player':
-            self.in_combat_text(f"""You focus on dodging. 
-Dodge: {self.dodge_val}""")
+        if self.dodging == True:
+            self.dodging_rounds = 0
+            self.in_combat_text(f"{self.name} is dodging")
         else:
-            self.in_combat_text(f'''The { self.combat_state.enemy} 
-dances about nimbly.''')
-        # rnd_count = 2
+            self.dodging = True
+            self.dodge_val += 2
+            if self.class_name == 'player':
+                self.in_combat_text(f"""You focus on dodging. 
+    Dodge: {self.dodge_val}""")
+            else:
+                self.in_combat_text(f'''The { self.combat_state.enemy} 
+    dances about nimbly.''')
+            # rnd_count = 2
 
     def undodge(self):
         self.dodging = False
-        self.dodge_round = 0
-        self.dodge_val = self.dexterity // 2
+        self.dodging_rounds = 0
+        self.dodge_val -= 2
 
     def flee(self, enemy):
         if self.dexterity > enemy.dexterity or self.flee_count > 0:            
@@ -197,17 +215,27 @@ dances about nimbly.''')
         return self.name.title()
 
     def stone_armor(self):
-        self.armor_val = self.armor + 2
-        self.stone_armored = True
-        print(f"You cast a spell to boost your armor. Armor: {self.armor_val}")
+        if self.stone_armored == True:
+            self.in_combat_text(F'''{self.name}
+is already protected''')
+        else:
+            self.armor_val += 2
+            self.stone_armored = True
+            print(f"You cast a spell to boost your armor. Armor: {self.armor_val}")
 
     def slow(self):
         if self.slowed:
+            self.slowed_rounds = 0
             print(f"{self.name} is already slowed")
         else:
             self.dodge_val -= 2
             self.slowed = True
             print(f"{self.name} is slowed")
+    
+    def unslow(self):
+        self.dodge_val += 2
+        self.slowed_rounds = 0
+        self.slowed = False
 
     def vulnerability(self):
         if self.vulnerable:
@@ -249,7 +277,14 @@ dances about nimbly.''')
         self.wind_hit_by = True
 
     def stun(self):
-        self.stunned = True
+        if self.stunned == True:
+            self.stunned_rounds = 0
+        else:
+            self.stunned = True
+
+    def unstun(self):
+        self.stunned = False
+        self.stunned_rounds = 0
     
     def level_attribute(self, stat_choice:str, new_stat:int = 1):
         if stat_choice == 'STR':
@@ -284,6 +319,8 @@ dances about nimbly.''')
         self.dodge_val = self.dexterity // 2 if self.dexterity > 2 else 1
         self.resist_val = self.resistance
 
+        self.current_mp = self.max_mp
+
     def change_outfit(self, outfit:tuple):
         self.u = outfit[0]
         self.v = outfit[1]
@@ -299,8 +336,8 @@ dances about nimbly.''')
         self.double_armed = False  # Incrementor
         self.burning_blades = False # Incrementor = damage = magic
         self.stone_fists = False # Incrementor = Bonus damage
-        self.dodge_round = 0
-        self.defend_round = 0
+        self.dodging_rounds = 0
+        self.defended_rounds = 0
         self.flee_count = 0
 
 
@@ -388,3 +425,10 @@ class Player(Character, Sprite):
             px.text(86, 102, f'{background_stats[self.name]["description"]}', 7)
 
         # if px.btnr()
+    def set_combat_atts(self):
+        self.armor_val = self.armor if self.armor >= 0 else 0
+        self.att_val = self.dexterity // 2 if self.dexterity > self.strength else self.strength  // 2
+        self.damage = self.strength // 2 + self.weapon_damage if self.strength > 2 else 1 + self.weapon_damage
+        self.damage_val = self.damage
+        self.dodge_val = self.dexterity // 2 if self.dexterity > 2 else 1
+        self.resist_val = self.resistance

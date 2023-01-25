@@ -203,7 +203,7 @@ class GameState(ABC):
         if len(self.game.text) > 0:
             # self.game.text_timer = 0
             if self.game.text[-1] != Interactable.unfreeze:
-                print('adding unfreeze')
+                # print('adding unfreeze')
                 self.game.text.append(Interactable.unfreeze)
 
             if self.game.text[0] == Interactable.unfreeze:
@@ -520,8 +520,8 @@ class CombatState(GameState):
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = 0# RI(0,2)
-                if ability_index == 0:
+                ability_index = 3 #RI(0,3)
+                if ability_index == 0 or ability_index == 3:
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
@@ -579,25 +579,31 @@ Bone Armor!""", {"combat_ongoing":False})
     def check_status(self):
         self.round_inc()
         for combatant in self.initiative_list:
-            print(combatant.name)
             if combatant.dodging == True:
-                if combatant.dodge_round >= 2:
-                    print(combatant.dodge_round)
-                    print("still dodging")
+                if combatant.dodging_rounds >= 2:
                     combatant.undodge()
                             # reset the combatant.dodge so that dodge can be used again.
                 else:
-                    combatant.dodge_round += 1
-                    print(f'dodging for {combatant.dodge_round} rounds')
-                    break
+                    combatant.dodging_rounds += 1
+                    # break
             if combatant.defended == True:
-                if combatant.defend_round >= 2:
+                if combatant.defended_rounds >= 2:
                     combatant.undefend()
-                    break
+                    # break
                 else:
-                    print(f'defended {combatant.defend_round}')
-                    combatant.defend_round += 1
-                    break
+                    combatant.defended_rounds += 1
+                    # break
+            if combatant.slowed == True:
+                if combatant.slowed_rounds >= 2:
+                    combatant.unslow()
+                else:
+                    combatant.slowed_rounds += 1
+            
+            if combatant.stunned == True:
+                if combatant.stunned_rounds >= 1:
+                    combatant.unstun()
+                else:
+                    combatant.stunned_rounds += 1
 
     def draw(self):
         self.draw_layers()

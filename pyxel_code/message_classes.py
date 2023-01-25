@@ -52,7 +52,7 @@ class CombatText(DisplayImage):
                 # print(self.display_time)
                 if px.btnr(px.MOUSE_BUTTON_LEFT):
                     # print(f'CombatText: game explored {self.game.explored} ')
-                    self.game.player.set_dependant_atts()
+                    self.game.player.set_combat_atts()
                     self.game.player.reset_flags()
                     if self.game.explored >= 11:
                         # print('to the trees')

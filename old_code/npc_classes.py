@@ -1,7 +1,7 @@
 from random import randint as RI
 import pyxel as px
 
-from .character_builder import Character
+from .character_builder import Character, dex, strength, intelligence
 from .dicts import attributes as atb, lvl_dict, currency_tiers, encounter_dict, npc_classes_attributes as npca, attribute_range as AR
 from pyxel_code.utils import items as itm
 from pyxel_code.image_classes import Sprite
@@ -21,12 +21,16 @@ class NPC(Character):
         px.text(74, 10, f"HP:{self.current_hp}/{self.hp}", 7)
 
     def generate_stats(self):
+        print("generating stats")
         self.strength = atb['attribute'][npca[self.class_name]['strength']] + RI(*AR[npca[self.class_name]['strength']])
         self.dexterity = atb['attribute'][npca[self.class_name]['dexterity']] + RI(*AR[npca[self.class_name]['dexterity']])
         self.intelligence = atb['attribute'][npca[self.class_name]['intelligence']] + RI(*AR[npca[self.class_name]['intelligence']])
         self.constitution = atb['attribute'][npca[self.class_name]['constitution']] + RI(*AR[npca[self.class_name]['constitution']])
         self.armor = atb['armor_type'][npca[self.class_name]['armor']] + RI(-1, 1) if atb['armor_type'][npca[self.class_name]['armor']] > 0 else 0
         self.resistance = atb['attribute'][npca[self.class_name]['resistance']] + RI(*AR[npca[self.class_name]['resistance']])
+
+    def replace_4th_ability(self, ability):
+        self.abilities[3] = ability
 
 class GraithLizard(NPC, Sprite):
     def __init__ (self, u=32, v=48):
@@ -44,24 +48,21 @@ class GraithLizard(NPC, Sprite):
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
+        self.replace_4th_ability(self.attack)
 
 
-class GraithQueen(NPC, Sprite):
+class GraithQueen(GraithLizard, Sprite):
     def __init__ (self, u=48, v=48):
+        self.u=u 
+        self.v=v
+        super().__init__(self.u, self.v)
         self.class_name = 'graith_queen'
         self.name = "Graith'Gesh Queen"
         self.generate_stats()
-        self.u=u 
-        self.v=v
-        self.x=96
-        self.y=24
-        self.bank=2
-        self.w=16
-        self.h=16
-        self.colkey=7
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
         self.hp = self.constitution * 4
+        self.max_mp = self.intelligence * 2
         self.set_dependant_atts()
+        self.set_currency()
 
 class GraithTree(NPC, Sprite):
     def __init__ (self, u=80, v=48):
@@ -79,29 +80,30 @@ class GraithTree(NPC, Sprite):
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
+        self.replace_4th_ability(self.entrap)
+
 
     def entrap(self, target):
-        # uses its branches to attack adn try to trap the target
-        # less chance of hitting, but if it does hit chance to stun and 
-        # raise a stunned flag on the target, disabling them from taking action the next turn
-        pass
+        attack = self.attack(target)
+        if attack[1]:
+            if attack[0] >= 2:
+                self.in_combat_text("You are stunned!")
+                target.stun()
 
-class GraithApple(NPC, Sprite):
+
+class GraithApple(GraithTree, Sprite):
      def __init__ (self, u=96, v=48):
+        self.u=u 
+        self.v=v
+        super().__init__(self.u, self.v)
         self.class_name = 'graith_apple'
         self.name = "Graith'Gesh Apple Tree"
         self.generate_stats()
-        self.u=u 
-        self.v=v
-        self.x=96
-        self.y=24
-        self.bank=2
-        self.w=16
-        self.h=16
-        self.colkey=7
-        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
         self.hp = self.constitution * 4
+        self.max_mp = self.intelligence * 2
         self.set_dependant_atts()
+        self.set_currency()
+
 
 class KraktRat(NPC, Sprite):
     def __init__(self, u=16, v=48):
@@ -116,9 +118,8 @@ class KraktRat(NPC, Sprite):
         self.w=16
         self.h=16
         self.colkey=7
-        # print(self.name)
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        # print(f'dex = {self.dexterity}')
+        self.replace_4th_ability(self.attack)
 
 class BrabaBat(NPC, Sprite):
     def __init__(self, u=0, v=48):
@@ -127,8 +128,6 @@ class BrabaBat(NPC, Sprite):
         self.generate_stats()
         self.u=u 
         self.v=v
-        # If I have implimented multiple enemies, this is a great candidate for swarms of 3 +
-        # if that's the case their stats have to be super low, but they will also try to flee if there is only one of them in the battle.
         self.x=96
         self.y=24
         self.bank=2
@@ -136,14 +135,20 @@ class BrabaBat(NPC, Sprite):
         self.h=16
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
-        # print(self.name)
-
-        # print(f'dex = {self.dexterity}')
+        self.replace_4th_ability(self.feed)
 
 
     def feed(self, target):
-        # an attack that heals them for half the amount of damage dealt
-        pass
+        attack = self.attack(target)
+
+        if attack[1]:
+            if self.current_hp < self.hp:
+                self.current_hp += attack[1] // 2
+                self.in_combat_text(f"""{self.name} fed
+off you and regained {attack[1] // 2} hp""")
+            
+            if self.current_hp > self.hp:
+                self.current_hp = self.hp
 
 
 class ShadeFireFox(NPC, Sprite):
@@ -162,10 +167,15 @@ class ShadeFireFox(NPC, Sprite):
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
         self.hp = self.constitution * 4
         self.set_dependant_atts()
+        self.replace_4th_ability(self.double_strike)
 
+    def double_strike(self, target):
+        self.attack(target)
+        self.in_combat_text(f"{self.name} strikes again!")
+        self.attack(target)
 
     def immolate(self, target):
-        # any non magic attacks hurt the attack for 3 turns 
+        # any non magic attacks hurt the attacker for 3 turns 
         # needs a cooldown
         pass
 
@@ -184,11 +194,15 @@ class GraktaWolf(NPC, Sprite):
         self.h=16
         self.colkey=7
         super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        self.replace_4th_ability(self.trip)
+
 
     def trip(self, target):
-        # decreases targets dodge value for 2/3 turns
-        # needs a cooldown
-        pass
+        attack = self.attack(target)
+        if attack[1]:
+            if attack[0] >= 2:
+                self.in_combat_text("You are slowed!")
+                target.slow()
 
 
 
