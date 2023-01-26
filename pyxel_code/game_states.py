@@ -486,7 +486,7 @@ class CombatState(GameState):
         if self.game.explored == 10 and self.game._previous_state.name == 'The Shining Forest':
             self.enemy = GraithApple()
         else:
-            self.enemy = VenktathSpider()
+            self.enemy = GraithQueen()
 
         Layer.main.append(self.enemy)
 
