@@ -153,11 +153,11 @@ class ShopItem(Clickable, DisplayImage):
     def intersection(self):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                # if self.player.currency < self.price:
-                #     return px.text(81, 56, "More Trophies", 7)
+                if self.player.currency < self.price:
+                    return px.text(81, 56, "More Trophies", 7)
                     
                 self.freeze()
-                # self.player.currency -= self.price
+                self.player.currency -= self.price
                 
                 Layer.main.remove(self)
                 
@@ -305,12 +305,12 @@ class AddStat(Button):
             px.text(120, 86, f"Cost: {self.stat*4}", 7)
             px.text(120, 94, f"Trophies: {self.player.currency}", 7)
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                # if self.player.currency >= self.stat * 3:
-                    # self.player.currency -= self.stat * 3
-                self.stat_object.stat +=1
-                self.stat = self.stat_object.stat
-                # else:
-                #     px.text(90, 56, "Not enough Trophies", 7)
+                if self.player.currency >= self.stat * 3:
+                    self.player.currency -= self.stat * 3
+                    self.stat_object.stat +=1
+                    self.stat = self.stat_object.stat
+                else:
+                    px.text(90, 56, "Not enough Trophies", 7)
 
         if self.name == "Reduce":
             if self.stat_object.stat > self.min:

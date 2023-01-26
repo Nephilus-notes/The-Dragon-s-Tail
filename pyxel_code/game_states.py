@@ -492,7 +492,7 @@ class CombatState(GameState):
         if self.game.explored == 10 and self.game._previous_state.name == 'The Shining Forest':
             self.enemy = GraithApple()
         else:
-            self.enemy = GraithQueen()
+            self.enemy = self.choose_enemy()
 
         Runners.main.append(self.player)
         Runners.main.append(self.enemy)
@@ -531,14 +531,12 @@ stunned!""", {'combat_ongoing':True})
                 else:
                     combatant.abilities[self.player_action]()
 
-                # player.    attack                  (enemy)
             elif combatant == self.enemy:
                 ability_index = RI(0,3)
                 if ability_index == 0 or ability_index == 3:
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
-                # sleep(1)
             if self.player.current_hp <= 0:
                 return self.add_text("""You lost the battle
 Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoing":False})
@@ -552,7 +550,6 @@ Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoi
         # compare the dex to the character in the 0 slot, and instert if their dex is lower. else, look at the next index and repeat the process.
         if self.player.dexterity >= self.enemy.dexterity:
             self.initiative_list = [self.player, self.enemy]
-            # The player sees an enemy
         else:
             self.initiative_list = [self.enemy, self.player]
             # the player is ambushed by something 
@@ -598,14 +595,14 @@ Bone Armor!""", {"combat_ongoing":False})
                             # reset the combatant.dodge so that dodge can be used again.
                 else:
                     combatant.dodging_rounds += 1
-                    # break
+
             if combatant.defended == True:
                 if combatant.defended_rounds >= 2:
                     combatant.undefend()
-                    # break
+
                 else:
                     combatant.defended_rounds += 1
-                    # break
+
             if combatant.slowed == True:
                 if combatant.slowed_rounds >= 2:
                     combatant.unslow()
@@ -635,14 +632,11 @@ Bone Armor!""", {"combat_ongoing":False})
         return encounter_function_list[self.game.explored//3](self.game._previous_state.name)
 
     def add_text(self:object, text:str, kwarg_dict:dict):
-        # print(f'Game text length = {len(self.game.text)}')
-        # print(self.game.text)
 
         if len(self.game.text) < 1:
             self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
         elif len(self.game.text) >= 1:
             if self.game.text[-1] == Interactable.unfreeze:
-                # print('popping')
                 popped = self.game.text.pop()
                 self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
                 self.game.text.append(popped)
