@@ -111,31 +111,34 @@ class Character():
     def attack(self, target):
         self.in_combat_text(f'{self.name.title()} attacks!')
         damage_num = 0
-        if self.dexterity > self.strength:
-            attack_mod = RI(*dex)
-            if attack_mod == 2:
-                damage_num = (self.damage + 2)
-                self.in_combat_text('**Critical hit!**')
-                self.attack_damage(target, damage_num)
-            elif self.att_val + RI(*dex) <= target.dodge_val:
-                self.in_combat_text(f"{self.name.title()} missed!")
-            elif self.att_val + RI(*dex) > target.dodge_val:
-                damage_num = (self.damage + RI(*dex)) - target.armor_val
-                self.attack_damage(target, damage_num)
-            return attack_mod, damage_num
+        stat_mod = 0
 
-        elif self.strength >= self.dexterity:
-            attack_mod = RI(*strength)
-            if attack_mod == 4:
-                damage_num = (self.damage + 4) - target.armor_val
-                self.in_combat_text('**Critical hit!**')
-                self.attack_damage(target, damage_num)
-            elif self.att_val + RI(*strength) <= target.dodge_val:
-                self.in_combat_text (f'{self.name.title()} missed!')
-            elif self.att_val + RI(*strength) > target.dodge_val:
-                damage_num = (self.damage + RI(*strength)) - target.armor_val
-                self.attack_damage(target, damage_num)
-            return attack_mod, damage_num
+        # Setting which attack modifier to use based on high stat
+        if self.dexterity > self.strength and self.dexterity > self.intelligence:
+            stat_mod = dex
+
+        elif self.strength > self.dexterity and self.strength > self.intelligence:
+            stat_mod = strength
+
+        elif self.intelligence > self.dexterity and self.intelligence > self.strength:
+            stat_mod = intelligence
+
+        # checking for hitting and critting, then assigning damage and calling damage function
+        attack_mod = RI(*stat_mod)
+        if attack_mod == max(stat_mod):
+            damage_num = (self.damage + 2)
+            self.in_combat_text('**Critical hit!**')
+            self.attack_damage(target, damage_num)
+
+        elif self.att_val + RI(*stat_mod) <= target.dodge_val:
+            self.in_combat_text(f"{self.name.title()} missed!")
+            
+        elif self.att_val + RI(*stat_mod) > target.dodge_val:
+            damage_num = (self.damage + RI(*stat_mod)) - target.armor_val
+            self.attack_damage(target, damage_num)
+
+        return attack_mod, damage_num
+
 
 
     def attack_damage(self, target, damage_num):
