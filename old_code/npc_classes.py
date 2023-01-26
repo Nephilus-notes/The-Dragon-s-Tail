@@ -11,6 +11,8 @@ class NPC(Character):
         super().__init__(name, strength, dexterity, intelligence, constitution, armor, resistance)        
         self.class_name = self.class_name
         self.set_currency()
+        self.running = False
+        
 
     def set_currency(self):
         self.currency = currency_tiers[lvl_dict[self.class_name]] + RI(- lvl_dict[self.class_name], 2* lvl_dict[self.class_name])

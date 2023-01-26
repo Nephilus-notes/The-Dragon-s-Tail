@@ -108,7 +108,6 @@ class Character():
 
 
     def attack(self, target):
-        self.in_combat_text(f'{self.name.title()} attacks!')
         damage_num = 0
         stat_mod = 0
 
@@ -126,13 +125,17 @@ class Character():
         attack_mod = RI(*stat_mod)
         if attack_mod == max(stat_mod):
             damage_num = (self.damage + 2)
-            self.in_combat_text('**Critical hit!**')
+            self.in_combat_text(f'''{self.name.title()} attacks!
+            
+**Critical hit!**''')
             self.attack_damage(target, damage_num)
 
         elif self.att_val + RI(*stat_mod) <= target.dodge_val:
+            self.in_combat_text(f'{self.name.title()} attacks!')
             self.in_combat_text(f"{self.name.title()} missed!")
             
         elif self.att_val + RI(*stat_mod) > target.dodge_val:
+            self.in_combat_text(f'{self.name.title()} attacks!')
             damage_num = (self.damage + RI(*stat_mod)) - target.armor_val
             self.attack_damage(target, damage_num)
 
@@ -164,17 +167,18 @@ class Character():
     def defend(self):
         if self.defended:
             self.defended_rounds = 0
-            self.in_combat_text(f"{self.name} is defending")
+            self.in_combat_text(f"""{self.name}
+is defending""")
         else:
             self.armor_val += 2
             self.defended = True
             if self.class_name == 'player':
                 print(f'You are defended: Armor val = {self.armor_val} ')
-                self.in_combat_text(f"""You focus on defending. 
-    Armor: {self.armor_val}""")
+                self.in_combat_text(f"""You defend. 
+Armor: {self.armor_val}""")
             else:
-                self.in_combat_text(f'''The { self.combat_state.enemy} 
-    hunkers down to defend.''')
+                self.in_combat_text(f'''{ self.combat_state.enemy} 
+hunkers down to defend.''')
         # rnd_count = 2
 
     def undefend(self):
@@ -182,7 +186,7 @@ class Character():
         self.defended = False
         self.defended_rounds = 0
         if self.class_name != 'player':
-            self.in_combat_text(f'''The { self.combat_state.enemy} 
+            self.in_combat_text(f'''{ self.combat_state.enemy} 
 relaxes their guard.''')
 
     def dodge(self):
@@ -196,8 +200,8 @@ relaxes their guard.''')
                 self.in_combat_text(f"""You focus on dodging. 
     Dodge: {self.dodge_val}""")
             else:
-                self.in_combat_text(f'''The { self.combat_state.enemy} 
-    dances about nimbly.''')
+                self.in_combat_text(f'''{ self.combat_state.enemy} 
+dances about nimbly.''')
             # rnd_count = 2
 
     def undodge(self):
@@ -266,7 +270,8 @@ is already protected''')
             print(f"{self.name} is already poisoned!")
         else:
             self.poisoned = True
-            self.in_combat_text(f"{self.name} is poisoned")
+            self.in_combat_text(f"""{self.name} 
+is poisoned""")
 
     def unpoison(self):
         self.poisoned = False
@@ -398,6 +403,7 @@ class Player(Character, Sprite):
         self.bank = 2
         self.colkey = 7
         # self.draw_sidebar()
+        self.running = False
 
 
     def combat_draw(self):

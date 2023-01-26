@@ -26,6 +26,7 @@ class GameState(ABC):
         # self.text_timer = 0
         self.speed = 1.5
         self.time_last_frame = time()
+        self.time_since_last_move = 0
         self.dt = 0
         self._is_clicking = False
         self._register_click = False
@@ -44,8 +45,12 @@ class GameState(ABC):
         self.dt = time_this_frame - self.time_last_frame
         self.time_last_frame = time_this_frame
         self.game.text_timer += self.dt
-
+        self.time_since_last_move += self.dt
         # add sprites to running class list and check to make them move
+        if self.time_since_last_move >= 1/self.speed:
+            self.time_since_last_move=0
+            for runner in Runners.main:
+                runner.run()
 
         
 
@@ -59,6 +64,7 @@ class GameState(ABC):
         Layer.fore = []
         Interactable.main = []
         Interactable.frozen = []
+        Runners.main = []
 
     def get_next_state(self):
         return self._next_state
