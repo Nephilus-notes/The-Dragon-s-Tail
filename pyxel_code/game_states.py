@@ -89,7 +89,7 @@ class GameState(ABC):
                     if self.name == "The Shining Forest" or self.name == "The Underbelly":
                         if item == self.explore and px.btnr(px.MOUSE_BUTTON_LEFT):
                             self.game._previous_state = self
-                            print(f"Entering combat state: {self.game._previous_state.name}")
+                            # print(f"Entering combat state: {self.game._previous_state.name}")
                             self._next_state = CombatState(self.game)
 
 
@@ -476,7 +476,7 @@ class CombatState(GameState):
         self.game.explored += 1
         if self.game.explored == 11 and self.game._previous_state.name == 'The Shining Forest':
             self._next_state = EndGameScreen(self.game)
-        print(f"exploring: {self.game.explored}")
+        # print(f"exploring: {self.game.explored}")
 
 
         if self.game.explored == 1 or self.game.explored % 3 == 0:
@@ -486,7 +486,7 @@ class CombatState(GameState):
         if self.game.explored == 10 and self.game._previous_state.name == 'The Shining Forest':
             self.enemy = GraithApple()
         else:
-            self.enemy = self.choose_enemy()
+            self.enemy = GraithApple()
 
         Layer.main.append(self.enemy)
 
@@ -507,9 +507,13 @@ class CombatState(GameState):
         start_time = time()
 
         for combatant in self.initiative_list:
-            print(combatant.name)
+            # print(combatant.name)
             if combatant == self.player:
-                if self.player_action == 0 or self.player_action == 3:
+                if combatant.stunned:
+                    self.add_text(f"""You are
+stunned!""", {'combat_ongoing':True})
+                    combatant.stunned = False
+                elif self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
                         return self.add_text("You retreat.\n[Click to Continue]", {"combat_won":False, "combat_ongoing":False})
@@ -598,12 +602,7 @@ Bone Armor!""", {"combat_ongoing":False})
                     combatant.unslow()
                 else:
                     combatant.slowed_rounds += 1
-            
-            if combatant.stunned == True:
-                if combatant.stunned_rounds >= 1:
-                    combatant.unstun()
-                else:
-                    combatant.stunned_rounds += 1
+
 
     def draw(self):
         self.draw_layers()
@@ -617,14 +616,14 @@ Bone Armor!""", {"combat_ongoing":False})
         return encounter_function_list[self.game.explored//3](self.game._previous_state.name)
 
     def add_text(self:object, text:str, kwarg_dict:dict):
-        print(f'Game text length = {len(self.game.text)}')
-        print(self.game.text)
+        # print(f'Game text length = {len(self.game.text)}')
+        # print(self.game.text)
 
         if len(self.game.text) < 1:
             self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
         elif len(self.game.text) >= 1:
             if self.game.text[-1] == Interactable.unfreeze:
-                print('popping')
+                # print('popping')
                 popped = self.game.text.pop()
                 self.game.text.append({'combat_state': self, 'combat_text': text, **kwarg_dict})
                 self.game.text.append(popped)
