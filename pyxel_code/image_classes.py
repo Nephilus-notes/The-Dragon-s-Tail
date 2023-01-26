@@ -135,16 +135,7 @@ class Entrance(DisplayImage, Clickable):
         self.flag = Pointer(self.entrance_dict)
         self.flag.draw()
         px.text(self.x - self.offset, self.y - 24, self.name, self.color)
-        # if px.btn(px.MOUSE_BUTTON_LEFT):
-        #     if self == self.owner.blacksmith:
-        #             px.text(1,1, "clicked", 7)
-        #             self._next_state = BlacksmithScreen(self.game) 
 
-# class Button(Clickable, DisplayImage): 
-#     def __init__(self, x, y, bank, u, v, w, h, owner) -> None:
-#         super().__init__(x, y, bank, u, v, w, h)
-#     def intersection(self):
-#         owner._next_state = BlacksmithScreen(self.game)
 
 class ShopItem(Clickable, DisplayImage):
     """Items to display in the shop that will (eventually) hook up to the items dictionary"""

@@ -92,7 +92,6 @@ class Character():
         self.dodging_rounds = 0
         self.defended_rounds = 0
         self.flee_count = 0
-        self.stunned_rounds = 0
         self.slowed_rounds = 0
         self.stone_armored_rounds = 0
         self.vulnerable_rounds = 0
@@ -111,31 +110,34 @@ class Character():
     def attack(self, target):
         self.in_combat_text(f'{self.name.title()} attacks!')
         damage_num = 0
-        if self.dexterity > self.strength:
-            attack_mod = RI(*dex)
-            if attack_mod == 2:
-                damage_num = (self.damage + 2)
-                self.in_combat_text('**Critical hit!**')
-                self.attack_damage(target, damage_num)
-            elif self.att_val + RI(*dex) <= target.dodge_val:
-                self.in_combat_text(f"{self.name.title()} missed!")
-            elif self.att_val + RI(*dex) > target.dodge_val:
-                damage_num = (self.damage + RI(*dex)) - target.armor_val
-                self.attack_damage(target, damage_num)
-            return attack_mod, damage_num
+        stat_mod = 0
 
-        elif self.strength >= self.dexterity:
-            attack_mod = RI(*strength)
-            if attack_mod == 4:
-                damage_num = (self.damage + 4) - target.armor_val
-                self.in_combat_text('**Critical hit!**')
-                self.attack_damage(target, damage_num)
-            elif self.att_val + RI(*strength) <= target.dodge_val:
-                self.in_combat_text (f'{self.name.title()} missed!')
-            elif self.att_val + RI(*strength) > target.dodge_val:
-                damage_num = (self.damage + RI(*strength)) - target.armor_val
-                self.attack_damage(target, damage_num)
-            return attack_mod, damage_num
+        # Setting which attack modifier to use based on high stat
+        if self.dexterity > self.strength and self.dexterity > self.intelligence:
+            stat_mod = dex
+
+        elif self.strength > self.dexterity and self.strength > self.intelligence:
+            stat_mod = strength
+
+        elif self.intelligence > self.dexterity and self.intelligence > self.strength:
+            stat_mod = intelligence
+
+        # checking for hitting and critting, then assigning damage and calling damage function
+        attack_mod = RI(*stat_mod)
+        if attack_mod == max(stat_mod):
+            damage_num = (self.damage + 2)
+            self.in_combat_text('**Critical hit!**')
+            self.attack_damage(target, damage_num)
+
+        elif self.att_val + RI(*stat_mod) <= target.dodge_val:
+            self.in_combat_text(f"{self.name.title()} missed!")
+            
+        elif self.att_val + RI(*stat_mod) > target.dodge_val:
+            damage_num = (self.damage + RI(*stat_mod)) - target.armor_val
+            self.attack_damage(target, damage_num)
+
+        return attack_mod, damage_num
+
 
 
     def attack_damage(self, target, damage_num):
@@ -264,7 +266,13 @@ is already protected''')
             print(f"{self.name} is already poisoned!")
         else:
             self.poisoned = True
-            print(f"{self.name} is poisoned")
+            self.in_combat_text(f"{self.name} is poisoned")
+
+    def unpoison(self):
+        self.poisoned = False
+        self.poisoned_rounds = 0
+        self.in_combat_text("""You recover
+from poison""")
 
     def burn_baby_burn(self):
         if self.burning:
@@ -336,12 +344,20 @@ is already protected''')
         self.double_armed = False  # Incrementor
         self.burning_blades = False # Incrementor = damage = magic
         self.stone_fists = False # Incrementor = Bonus damage
+        self.stunned = False
         self.dodging_rounds = 0
         self.defended_rounds = 0
         self.flee_count = 0
+        self.slowed_rounds = 0
+        self.stone_armored_rounds = 0
+        self.vulnerable_rounds = 0
+        self.double_armed_rounds = 0
+        self.burning_blades_rounds = 0
+        self.burning_rounds = 0
+        self.poisoned_rounds = 0
 
 
-    def in_combat_text(self, combat_text, display_time:int = 1):
+    def in_combat_text(self, combat_text, display_time:float = 1.5):
         self.add_text(self.combat_state, combat_text, {'display_time':display_time})
 
 
@@ -424,7 +440,6 @@ class Player(Character, Sprite):
             px.text(84, 92, f"Job: {self.job} ", 7)
             px.text(86, 102, f'{background_stats[self.name]["description"]}', 7)
 
-        # if px.btnr()
     def set_combat_atts(self):
         self.armor_val = self.armor if self.armor >= 0 else 0
         self.att_val = self.dexterity // 2 if self.dexterity > self.strength else self.strength  // 2

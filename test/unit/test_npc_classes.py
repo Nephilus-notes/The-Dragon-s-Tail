@@ -1,4 +1,4 @@
-from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, KraktRat, npc_class_choice, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple
+from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, KraktRat, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple, VenktathSpider
 from old_code.dicts import lvl_dict, currency_tiers
 
 # Testing Bounds
@@ -91,7 +91,7 @@ def test_graith_lizard():
     assert graith_lizard.hp == graith_lizard.constitution * 4
     assert graith_lizard.current_hp >= average_lower * 4 and graith_lizard.current_hp <= average_upper *4
     assert graith_lizard.current_mp == graith_lizard.max_mp and graith_lizard.max_mp == graith_lizard.intelligence * 2
-    assert graith_lizard.currency >= lower_4 and graith_lizard.currency <= upper_4
+    assert graith_lizard.currency >= lower_5 and graith_lizard.currency <= upper_5
     assert graith_lizard.dodge_val >= weak_lower_val and graith_lizard.dodge_val <= weak_upper_val
     assert graith_lizard.abilities[3] == graith_lizard.attack
 
@@ -112,7 +112,7 @@ def test_graith_tree():
     assert graith_tree.hp == graith_tree.constitution * 4
     assert graith_tree.current_hp >= strong_lower * 4 and graith_tree.current_hp <= strong_upper * 4
     assert graith_tree.current_mp == graith_tree.max_mp and graith_tree.max_mp == graith_tree.intelligence * 2
-    assert graith_tree.currency >= lower_4 and graith_tree.currency <= upper_4
+    assert graith_tree.currency >= lower_5 and graith_tree.currency <= upper_5
     assert graith_tree.dodge_val >= weak_lower_val and graith_tree.dodge_val <= weak_upper_val
     assert graith_tree.abilities[3] == graith_tree.entrap
     # graith_tree.defend()
@@ -137,7 +137,7 @@ def test_grakta_wolf():
     assert grakta_wolf.hp == grakta_wolf.constitution * 2
     assert grakta_wolf.current_hp >= average_lower * 2 and grakta_wolf.current_hp <= average_upper * 2
     assert grakta_wolf.current_mp == grakta_wolf.max_mp and grakta_wolf.max_mp == grakta_wolf.intelligence * 2
-    assert grakta_wolf.currency >= lower_3 and grakta_wolf.currency <= upper_3
+    assert grakta_wolf.currency >= lower_4 and grakta_wolf.currency <= upper_4
     assert grakta_wolf.dodge_val >= average_lower_val and grakta_wolf.dodge_val <= average_upper_val    
     second_wolf = GraktaWolf()
     second_wolf.dexterity = 1
@@ -185,7 +185,7 @@ def test_braba_bat():
     assert braba_bat.hp == braba_bat.constitution * 2
     assert braba_bat.current_hp >= weak_lower * 2 and braba_bat.current_hp <= weak_upper * 2
     assert braba_bat.current_mp == braba_bat.max_mp and braba_bat.max_mp == braba_bat.intelligence * 2
-    assert braba_bat.currency >= lower_2 and braba_bat.currency <= upper_2
+    assert braba_bat.currency >= lower_3 and braba_bat.currency <= upper_3
     assert braba_bat.dodge_val >= average_lower_val and braba_bat.dodge_val <= average_upper_val 
     assert braba_bat.abilities[3] == braba_bat.feed
 
@@ -235,3 +235,24 @@ def test_graith_apple():
     assert apple.currency >= lower_6 and apple.currency <= upper_6
     assert apple.abilities[3] == apple.entrap
     
+
+def test_venktath_spider():
+    """
+    GIVEN an Ven'Ktath Spider class
+    WHEN a new Ven'Ktath Spider is created
+    THEN check that constitution, dexterity, dodge ability and active dodge responds correctly
+    """
+    spider = VenktathSpider()
+    assert spider.strength >= weak_lower and spider.strength <= weak_upper
+    assert spider.dexterity >= strong_lower and spider.dexterity <= strong_upper
+    assert spider.intelligence >= weak_lower and spider.intelligence <= weak_upper
+    assert spider.constitution >= average_lower and spider.constitution <= average_upper
+    assert spider.armor_val >= chain_lower and spider.armor_val <= chain_upper
+    assert spider.resist_val >= average_lower and spider.resist_val <= average_upper
+    assert spider.damage_val >=  weak_lower_val and spider.damage_val <= weak_upper_val
+    assert spider.hp == spider.constitution * 2
+    assert spider.current_hp >= average_lower * 2 and spider.current_hp <= average_upper * 2
+    assert spider.current_mp == spider.max_mp and spider.max_mp == spider.intelligence * 2
+    assert spider.currency >= lower_4 and spider.currency <= upper_4
+    assert spider.dodge_val >= strong_lower_val and spider.dodge_val <= strong_upper_val 
+    assert spider.abilities[3] == spider.spider_bite

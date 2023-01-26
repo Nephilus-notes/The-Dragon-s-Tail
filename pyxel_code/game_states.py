@@ -486,7 +486,7 @@ class CombatState(GameState):
         if self.game.explored == 10 and self.game._previous_state.name == 'The Shining Forest':
             self.enemy = GraithApple()
         else:
-            self.enemy = GraithApple()
+            self.enemy = VenktathSpider()
 
         Layer.main.append(self.enemy)
 
@@ -524,7 +524,7 @@ stunned!""", {'combat_ongoing':True})
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = 3 #RI(0,3)
+                ability_index = RI(0,3)
                 if ability_index == 0 or ability_index == 3:
                     combatant.abilities[ability_index](self.player)
                 else:
@@ -602,6 +602,16 @@ Bone Armor!""", {"combat_ongoing":False})
                     combatant.unslow()
                 else:
                     combatant.slowed_rounds += 1
+
+            if combatant.poisoned:
+                poison_damage = combatant.hp // 10
+                self.add_text(f"""You take 
+{poison_damage} damage from poison""", {'combat_ongoing':True})
+                combatant.current_hp -= poison_damage
+                combatant.poisoned_rounds += 1
+
+                if combatant.poisoned_rounds > 5:
+                    combatant.unpoison()
 
 
     def draw(self):
