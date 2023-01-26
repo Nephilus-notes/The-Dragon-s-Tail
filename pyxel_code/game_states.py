@@ -476,7 +476,7 @@ class CombatState(GameState):
         self.game.explored += 1
         if self.game.explored == 11 and self.game._previous_state.name == 'The Shining Forest':
             self._next_state = EndGameScreen(self.game)
-        print(f"exploring: {self.game.explored}")
+        # print(f"exploring: {self.game.explored}")
 
 
         if self.game.explored == 1 or self.game.explored % 3 == 0:
