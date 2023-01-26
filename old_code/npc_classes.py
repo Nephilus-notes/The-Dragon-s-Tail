@@ -86,8 +86,8 @@ class GraithTree(NPC, Sprite):
     def entrap(self, target):
         attack = self.attack(target)
         if attack[1]:
-            perc = RI(0, 3)
-            if perc == 3 and target.current_hp > 0:
+            perc = RI(0, 1)
+            if perc == 1 and target.current_hp > 0:
                 self.in_combat_text("You are stunned!")
                 target.stun()
 
@@ -144,9 +144,9 @@ class BrabaBat(NPC, Sprite):
 
         if attack[1]:
             if self.current_hp < self.hp:
-                self.current_hp += attack[1] // 2
+                self.current_hp += attack[1]
                 self.in_combat_text(f"""{self.name} fed
-off you and regained {attack[1] // 2} hp""")
+off you and regained {attack[1]} hp""")
             
             if self.current_hp > self.hp:
                 self.current_hp = self.hp
@@ -202,8 +202,8 @@ class GraktaWolf(NPC, Sprite):
     def trip(self, target):
         attack = self.attack(target)
         if attack[1]:
-            perc = RI(0, 3)
-            if perc == 3 and target.current_hp > 0:
+            perc = RI(0, 1)
+            if perc == 1 and target.current_hp > 0:
                 self.in_combat_text("You are slowed!")
                 target.slow()
 

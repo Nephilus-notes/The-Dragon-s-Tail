@@ -92,7 +92,6 @@ class Character():
         self.dodging_rounds = 0
         self.defended_rounds = 0
         self.flee_count = 0
-        self.stunned_rounds = 0
         self.slowed_rounds = 0
         self.stone_armored_rounds = 0
         self.vulnerable_rounds = 0
@@ -339,9 +338,17 @@ is already protected''')
         self.double_armed = False  # Incrementor
         self.burning_blades = False # Incrementor = damage = magic
         self.stone_fists = False # Incrementor = Bonus damage
+        self.stunned = False
         self.dodging_rounds = 0
         self.defended_rounds = 0
         self.flee_count = 0
+        self.slowed_rounds = 0
+        self.stone_armored_rounds = 0
+        self.vulnerable_rounds = 0
+        self.double_armed_rounds = 0
+        self.burning_blades_rounds = 0
+        self.burning_rounds = 0
+        self.poisoned_rounds = 0
 
 
     def in_combat_text(self, combat_text, display_time:int = 1):

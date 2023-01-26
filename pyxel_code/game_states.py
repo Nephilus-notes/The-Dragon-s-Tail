@@ -524,7 +524,7 @@ stunned!""", {'combat_ongoing':True})
 
                 # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = 3 #RI(0,3)
+                ability_index = RI(0,3)
                 if ability_index == 0 or ability_index == 3:
                     combatant.abilities[ability_index](self.player)
                 else:
