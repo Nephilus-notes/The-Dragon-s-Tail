@@ -403,6 +403,7 @@ class Player(Character, Sprite):
         self.bank = 2
         self.colkey = 7
         # self.draw_sidebar()
+        self.running = False
 
 
     def combat_draw(self):
