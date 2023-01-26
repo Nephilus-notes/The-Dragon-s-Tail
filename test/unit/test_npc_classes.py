@@ -1,4 +1,4 @@
-from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, KraktRat, npc_class_choice, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple
+from old_code.npc_classes import GraithLizard, GraithTree, GraktaWolf, KraktRat, npc_class_choice, npc_class_dct, ShadeFireFox, BrabaBat, GraithQueen, GraithApple, VenktathSpider
 from old_code.dicts import lvl_dict, currency_tiers
 
 # Testing Bounds
@@ -235,3 +235,24 @@ def test_graith_apple():
     assert apple.currency >= lower_6 and apple.currency <= upper_6
     assert apple.abilities[3] == apple.entrap
     
+
+def test_venktath_spider():
+    """
+    GIVEN an Ven'Ktath Spider class
+    WHEN a new Ven'Ktath Spider is created
+    THEN check that constitution, dexterity, dodge ability and active dodge responds correctly
+    """
+    spider = VenktathSpider()
+    assert spider.strength >= very_weak_lower and spider.strength <= very_weak_upper
+    assert spider.dexterity >= average_lower and spider.dexterity <= average_upper
+    assert spider.intelligence >= very_weak_lower and spider.intelligence <= very_weak_upper
+    assert spider.constitution >= weak_lower and spider.constitution <= weak_upper
+    assert spider.armor_val >= none_lower and spider.armor_val <= none_upper
+    assert spider.resist_val >= average_lower and spider.resist_val <= average_upper
+    assert spider.damage_val ==  very_weak_val
+    assert spider.hp == spider.constitution * 2
+    assert spider.current_hp >= weak_lower * 2 and spider.current_hp <= weak_upper * 2
+    assert spider.current_mp == spider.max_mp and spider.max_mp == spider.intelligence * 2
+    assert spider.currency >= lower_2 and spider.currency <= upper_2
+    assert spider.dodge_val >= average_lower_val and spider.dodge_val <= average_upper_val 
+    assert spider.abilities[3] == spider.spider_bite

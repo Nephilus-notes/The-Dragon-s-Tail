@@ -434,7 +434,6 @@ class Player(Character, Sprite):
             px.text(84, 92, f"Job: {self.job} ", 7)
             px.text(86, 102, f'{background_stats[self.name]["description"]}', 7)
 
-        # if px.btnr()
     def set_combat_atts(self):
         self.armor_val = self.armor if self.armor >= 0 else 0
         self.att_val = self.dexterity // 2 if self.dexterity > self.strength else self.strength  // 2

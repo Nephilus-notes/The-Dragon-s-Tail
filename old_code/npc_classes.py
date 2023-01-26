@@ -208,19 +208,27 @@ class GraktaWolf(NPC, Sprite):
                 target.slow()
 
 
+class VenktathSpider(NPC, Sprite):
+    def __init__(self, u=120, v=48):
+        self.name = "Ven'ktath Spider"
+        self.class_name = 'ven_spider'
+        self.generate_stats()
+        self.u=u 
+        self.v=v
+        self.x=96
+        self.y=24
+        self.bank=2
+        self.w=16
+        self.h=16
+        self.colkey=7
+        super().__init__(self.name, self.strength, self.dexterity, self.intelligence, self.constitution, self.armor, self.resistance)
+        self.replace_4th_ability(self.spider_bite)
 
+    def spider_bite(self, target):
+        self.attack(target)
 
-npc_class_choice = {
-    1: 'graith_lizard',
-    2: 'graith_tree',
-    3: 'krakt_rat', 
-    4: 'braba_bat',
-    5: 'shadefire_fox',
-    6: 'gratka_wolf',
-    7: 'rogue_goblin',
-    8: 'graith_queen',
-    9: 'graith_apple'
-}
+        target.poison()
+
 
 npc_class_dct = {
    'graith_lizard': GraithLizard,
@@ -229,7 +237,7 @@ npc_class_dct = {
      'braba_bat': BrabaBat,
     'shadefire_fox': ShadeFireFox,
    'gratka_wolf': GraktaWolf,
-    #  'rogue_goblin': RogueGoblin,
+    'ven_spider': VenktathSpider,
     'graith_queen': GraithQueen,
     'graith_apple': GraithApple
 } 
