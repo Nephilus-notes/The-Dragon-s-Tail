@@ -494,6 +494,9 @@ class CombatState(GameState):
         else:
             self.enemy = GraithQueen()
 
+        Runners.main.append(self.player)
+        Runners.main.append(self.enemy)
+
         Layer.main.append(self.enemy)
 
 

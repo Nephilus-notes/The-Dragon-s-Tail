@@ -153,11 +153,11 @@ class ShopItem(Clickable, DisplayImage):
     def intersection(self):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                if self.player.currency < self.price:
-                    return px.text(81, 56, "More Trophies", 7)
+                # if self.player.currency < self.price:
+                #     return px.text(81, 56, "More Trophies", 7)
                     
                 self.freeze()
-                self.player.currency -= self.price
+                # self.player.currency -= self.price
                 
                 Layer.main.remove(self)
                 
@@ -190,7 +190,7 @@ class ShopItem(Clickable, DisplayImage):
             px.text(84, 96, f"Price: {self.price} ", 7)
             px.text(127, 96, f'Slot: {self.slot}', 7)
             px.text(83, 103, f'{self.description}', 7)
-            if self.id in range(3):
+            if self.id in range(3) or self.id == 7:
                 px.text(84, 103, f'DAM: {self.item_stat}', 7)
             elif self.id in range(3, 6):
                 px.text(84, 103, f"DEF: {self.item_stat}", 7)
@@ -305,12 +305,12 @@ class AddStat(Button):
             px.text(120, 86, f"Cost: {self.stat*4}", 7)
             px.text(120, 94, f"Trophies: {self.player.currency}", 7)
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                if self.player.currency >= self.stat * 3:
-                    self.player.currency -= self.stat * 3
-                    self.stat_object.stat +=1
-                    self.stat = self.stat_object.stat
-                else:
-                    px.text(90, 56, "Not enough Trophies", 7)
+                # if self.player.currency >= self.stat * 3:
+                    # self.player.currency -= self.stat * 3
+                self.stat_object.stat +=1
+                self.stat = self.stat_object.stat
+                # else:
+                #     px.text(90, 56, "Not enough Trophies", 7)
 
         if self.name == "Reduce":
             if self.stat_object.stat > self.min:

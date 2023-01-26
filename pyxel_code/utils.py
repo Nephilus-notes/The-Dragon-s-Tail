@@ -117,12 +117,12 @@ Can easily take chunks
 out of full grown trees."""},
     7: {'x': 1, 'y': 3, 'u': 48, 'v': 0, 'colkey': 7,
         'name': "Death's Scythe", 'w': 16, 'h': 16,
-        'item_stat': 15, 'price': 1000, "slot": "hand",
+        'item_stat': 15, 'price': 500, "slot": "hand",
         'description': 
 """          Magical scythe 
-Whenever you touch this weapon 
-you can hear faint whispers 
-all around you."""},
+Whenever you touch this 
+weapon you can hear faint 
+whispers all around you."""},
 
     # // ARMOR //
     3: {'x': 104, 'y': 40, 'u': 0, 'v': 16, 'colkey': 7,

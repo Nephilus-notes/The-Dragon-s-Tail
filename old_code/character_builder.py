@@ -197,8 +197,7 @@ relaxes their guard.''')
             self.dodging = True
             self.dodge_val += 2
             if self.class_name == 'player':
-                self.in_combat_text(f"""You focus on dodging. 
-    Dodge: {self.dodge_val}""")
+                self.in_combat_text(f"""You focus on dodging.""")
             else:
                 self.in_combat_text(f'''{ self.combat_state.enemy} 
 dances about nimbly.''')
