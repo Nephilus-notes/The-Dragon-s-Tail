@@ -172,7 +172,8 @@ class ShadeFireFox(NPC, Sprite):
 
     def double_strike(self, target):
         self.attack(target)
-        self.in_combat_text(f"{self.name} strikes again!")
+        self.in_combat_text(f"""{self.name} 
+strikes again!""")
         self.attack(target)
 
     def immolate(self, target):
