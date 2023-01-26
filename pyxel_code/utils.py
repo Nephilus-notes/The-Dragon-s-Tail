@@ -101,7 +101,7 @@ taking on large rodents."""},
 
     1: {'x': 120, 'y': 24, 'u': 16, 'v': 0, 'colkey': 7,
         'name': 'Sword', 'w': 16, 'h': 16,
-        'item_stat': 3, 'price': 30, "slot": "hand",
+        'item_stat': 3, 'price': 50, "slot": "hand",
         'description': 
 """          Well-made sword 
 
@@ -109,7 +109,7 @@ Used to fight
 many foes."""},
     2: {'x': 152, 'y': 24, 'u': 32, 'v': 0, 'colkey': 7,
         'name': 'Axe', 'w': 16, 'h': 16,
-        'item_stat': 4, 'price': 45, "slot": "hand",
+        'item_stat': 4, 'price': 90, "slot": "hand",
         'description': 
 """          Polished axe 
 
@@ -127,7 +127,7 @@ all around you."""},
     # // ARMOR //
     3: {'x': 104, 'y': 40, 'u': 0, 'v': 16, 'colkey': 7,
         'name': 'Leather Armor', 'w': 16, 'h': 16,
-        'item_stat': 1, 'price': 10, "slot": "body",
+        'item_stat': 1, 'price': 20, "slot": "body",
         'description': 
 """         Toughened leather 
 
@@ -135,7 +135,7 @@ Protects against
 both elements and enemies."""},
     4: {'x': 136, 'y': 40, 'u': 16, 'v': 16, 'colkey': 7,
         'name': 'Chain Armor', 'w': 16, 'h': 16,
-        'item_stat': 3, 'price': 50, "slot": "body",
+        'item_stat': 3, 'price': 60, "slot": "body",
         'description': 
 """           Long steel shirt  
 
@@ -143,7 +143,7 @@ Great protection
 without limiting movement."""},
     5: {'x': 168, 'y': 40, 'u': 32, 'v': 16, 'colkey': 7,
         'name': "Brigandine", 'w': 16, 'h': 16,
-        'item_stat': 4, 'price': 75, "slot": "body",
+        'item_stat': 4, 'price': 100, "slot": "body",
         'description': 
 """           Steel leather 
 
@@ -176,7 +176,7 @@ Smells of mint and orange.
 Heals some health."""},
     10: {'x': 132, 'y': 32, 'u': 8, 'v': 32, 'colkey': 7,
          'name': 'Major Health Potion', 'w': 8, 'h': 8, 'item_stat': 8,
-         'price': 50, 'slot': 'consumable', 'description': 
+         'price': 40, 'slot': 'consumable', 'description': 
 """             Yellow potion 
 
 Smells of lemon and fresh 

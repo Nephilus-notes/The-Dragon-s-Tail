@@ -154,7 +154,7 @@ class ShopItem(Clickable, DisplayImage):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
                 if self.player.currency < self.price:
-                    return px.text(144, 64, "More Trophies", 7)
+                    return px.text(81, 56, "More Trophies", 7)
                     
                 self.freeze()
                 self.player.currency -= self.price

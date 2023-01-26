@@ -34,25 +34,6 @@ lvl_dict = {
      'graith_apple':6,
 }
 
-# underbelly = {
-#     1: 'krakt_rat', 
-#     2: 'braba_bat',
-#     3: 'rogue_goblin',
-#     4: 'graith_lizard',
-#     5: 'shadefire_fox',
-#     6: 'graith_queen'
-# }
-
-# shining_forest = {
-#     1: 'krakt_rat', 
-#     2: 'gratka_wolf',
-#     3: 'rogue_goblin',
-#     4: 'graith_tree',
-#     5: 'shadefire_fox',
-#     6: 'graith_apple'
-# }
-
-
 encounter_dict = {
     'The Underbelly': {
         1: 'krakt_rat', 
@@ -120,7 +101,6 @@ npc_classes_attributes = {
     'graith_apple': {'strength': 'very_strong', 'dexterity': 'very_strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
     'ven_spider': {'strength': 'weak', 'dexterity':'strong', 'constitution': 'average', 'intelligence': 'weak', 'armor': 'chain', 'resistance': 'average'}
 }
-
 
 npc_class_choice = {
     1: 'graith_lizard',
