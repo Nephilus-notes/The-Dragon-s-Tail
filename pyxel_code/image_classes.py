@@ -153,11 +153,11 @@ class ShopItem(Clickable, DisplayImage):
     def intersection(self):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
-                # if self.player.currency < self.price:
-                    # return px.text(144, 64, "More Trophies", 7)
+                if self.player.currency < self.price:
+                    return px.text(144, 64, "More Trophies", 7)
                     
                 self.freeze()
-                # self.player.currency -= self.price
+                self.player.currency -= self.price
                 
                 Layer.main.remove(self)
                 
