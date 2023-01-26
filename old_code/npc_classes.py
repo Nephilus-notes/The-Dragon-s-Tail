@@ -86,7 +86,8 @@ class GraithTree(NPC, Sprite):
     def entrap(self, target):
         attack = self.attack(target)
         if attack[1]:
-            if attack[0] >= 2:
+            perc = RI(0, 3)
+            if perc == 3 and target.current_hp > 0:
                 self.in_combat_text("You are stunned!")
                 target.stun()
 
@@ -97,7 +98,7 @@ class GraithApple(GraithTree, Sprite):
         self.v=v
         super().__init__(self.u, self.v)
         self.class_name = 'graith_apple'
-        self.name = "Graith'Gesh Apple Tree"
+        self.name = "Graith'Gesh Apple"
         self.generate_stats()
         self.hp = self.constitution * 4
         self.max_mp = self.intelligence * 2
@@ -200,7 +201,8 @@ class GraktaWolf(NPC, Sprite):
     def trip(self, target):
         attack = self.attack(target)
         if attack[1]:
-            if attack[0] >= 2:
+            perc = RI(0, 3)
+            if perc == 3 and target.current_hp > 0:
                 self.in_combat_text("You are slowed!")
                 target.slow()
 
