@@ -86,7 +86,9 @@ class GraithTree(NPC, Sprite):
     def entrap(self, target):
         attack = self.attack(target)
         if attack[1]:
-            if attack[0] >= 2:
+            perc = RI(0, 3)
+            print(perc)
+            if perc == 3 and target.current_hp > 0:
                 self.in_combat_text("You are stunned!")
                 target.stun()
 
