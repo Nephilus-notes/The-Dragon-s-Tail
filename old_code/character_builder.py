@@ -236,6 +236,9 @@ is already protected''')
             self.dodge_val -= 2
             self.slowed = True
             print(f"{self.name} is slowed")
+
+            # something
+            
     
     def unslow(self):
         self.dodge_val += 2
