@@ -133,16 +133,7 @@ class Entrance(DisplayImage, Clickable):
         self.flag = Pointer(self.entrance_dict)
         self.flag.draw()
         px.text(self.x - self.offset, self.y - 24, self.name, self.color)
-        # if px.btn(px.MOUSE_BUTTON_LEFT):
-        #     if self == self.owner.blacksmith:
-        #             px.text(1,1, "clicked", 7)
-        #             self._next_state = BlacksmithScreen(self.game) 
 
-# class Button(Clickable, DisplayImage): 
-#     def __init__(self, x, y, bank, u, v, w, h, owner) -> None:
-#         super().__init__(x, y, bank, u, v, w, h)
-#     def intersection(self):
-#         owner._next_state = BlacksmithScreen(self.game)
 
 class ShopItem(Clickable, DisplayImage):
     """Items to display in the shop that will (eventually) hook up to the items dictionary"""
@@ -161,7 +152,7 @@ class ShopItem(Clickable, DisplayImage):
             self.item_text()
             if px.btn(px.MOUSE_BUTTON_LEFT):
                 if self.player.currency < self.price:
-                    return px.text(144, 64, "More Trophies", 7)
+                    return px.text(81, 56, "More Trophies", 7)
                     
                 self.freeze()
                 self.player.currency -= self.price
@@ -193,7 +184,7 @@ class ShopItem(Clickable, DisplayImage):
             px.text(84, 96, f"Price: {self.price} ", 7)
             px.text(127, 96, f'Slot: {self.slot}', 7)
             px.text(83, 103, f'{self.description}', 7)
-            if self.id in range(3):
+            if self.id in range(3) or self.id == 7:
                 px.text(84, 103, f'DAM: {self.item_stat}', 7)
             elif self.id in range(3, 6):
                 px.text(84, 103, f"DEF: {self.item_stat}", 7)
@@ -353,7 +344,7 @@ class AbilityButton(Button):
         if px.btnr(px.MOUSE_BUTTON_LEFT):
 
             self.combat_state.player_action = self.ability_index
-            px.text(2,2, "ability clicked", 7)
+            # px.text(2,2, "ability clicked", 7)
             self.combat_state.take_actions()
 
     def draw(self):

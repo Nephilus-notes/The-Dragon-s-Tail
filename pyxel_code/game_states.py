@@ -26,6 +26,7 @@ class GameState(ABC):
         # self.text_timer = 0
         self.speed = 1.5
         self.time_last_frame = time()
+        self.time_since_last_move = 0
         self.dt = 0
         self._is_clicking = False
         self._register_click = False
@@ -44,8 +45,12 @@ class GameState(ABC):
         self.dt = time_this_frame - self.time_last_frame
         self.time_last_frame = time_this_frame
         self.game.text_timer += self.dt
-
+        self.time_since_last_move += self.dt
         # add sprites to running class list and check to make them move
+        if self.time_since_last_move >= 1/self.speed:
+            self.time_since_last_move=0
+            for runner in Runners.main:
+                runner.run()
 
         
 
@@ -59,6 +64,7 @@ class GameState(ABC):
         Layer.fore = []
         Interactable.main = []
         Interactable.frozen = []
+        Runners.main = []
 
     def get_next_state(self):
         return self._next_state
@@ -88,6 +94,7 @@ class GameState(ABC):
                     if self.name == "The Shining Forest" or self.name == "The Underbelly":
                         if item == self.explore and px.btnr(px.MOUSE_BUTTON_LEFT):
                             self.game._previous_state = self
+                            # print(f"Entering combat state: {self.game._previous_state.name}")
                             self._next_state = CombatState(self.game)
 
 
@@ -199,6 +206,7 @@ class GameState(ABC):
         if len(self.game.text) > 0:
             # self.game.text_timer = 0
             if self.game.text[-1] != Interactable.unfreeze:
+                # print('adding unfreeze')
                 self.game.text.append(Interactable.unfreeze)
 
             if self.game.text[0] == Interactable.unfreeze:
@@ -471,6 +479,7 @@ class CombatState(GameState):
         self.game.explored += 1
         if self.game.explored == 11 and self.game._previous_state.name == 'The Shining Forest':
             self._next_state = EndGameScreen(self.game)
+        # print(f"exploring: {self.game.explored}")
 
 
         if self.game.explored == 1 or self.game.explored % 3 == 0:
@@ -481,6 +490,9 @@ class CombatState(GameState):
             self.enemy = GraithApple()
         else:
             self.enemy = self.choose_enemy()
+
+        Runners.main.append(self.player)
+        Runners.main.append(self.enemy)
 
         Layer.main.append(self.enemy)
 
@@ -501,8 +513,13 @@ class CombatState(GameState):
         start_time = time()
 
         for combatant in self.initiative_list:
+            # print(combatant.name)
             if combatant == self.player:
-                if self.player_action == 0 or self.player_action == 3:
+                if combatant.stunned:
+                    self.add_text(f"""You are
+stunned!""", {'combat_ongoing':True})
+                    combatant.stunned = False
+                elif self.player_action == 0 or self.player_action == 3:
                     flee_response = combatant.abilities[self.player_action](self.enemy)
                     if self.player.fleeing:
                         return self.add_text("You retreat.\n[Click to Continue]", {"combat_won":False, "combat_ongoing":False})
@@ -511,14 +528,12 @@ class CombatState(GameState):
                 else:
                     combatant.abilities[self.player_action]()
 
-                # player.    attack                  (enemy)
             elif combatant == self.enemy:
-                ability_index = 0# RI(0,2)
-                if ability_index == 0:
+                ability_index = RI(0,3)
+                if ability_index == 0 or ability_index == 3:
                     combatant.abilities[ability_index](self.player)
                 else:
                     combatant.abilities[ability_index]()
-                # sleep(1)
             if self.player.current_hp <= 0:
                 return self.add_text("""You lost the battle
 Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoing":False})
@@ -532,7 +547,6 @@ Returning to town...\n[Click to Continue]""", {"combat_won":False, "combat_ongoi
         # compare the dex to the character in the 0 slot, and instert if their dex is lower. else, look at the next index and repeat the process.
         if self.player.dexterity >= self.enemy.dexterity:
             self.initiative_list = [self.player, self.enemy]
-            # The player sees an enemy
         else:
             self.initiative_list = [self.enemy, self.player]
             # the player is ambushed by something 
@@ -573,20 +587,35 @@ Bone Armor!""", {"combat_ongoing":False})
         self.round_inc()
         for combatant in self.initiative_list:
             if combatant.dodging == True:
-                if combatant.dodge_round >= 2:
-
+                if combatant.dodging_rounds >= 2:
                     combatant.undodge()
                             # reset the combatant.dodge so that dodge can be used again.
                 else:
-                    combatant.dodge_round += 1
-                    break
+                    combatant.dodging_rounds += 1
+
             if combatant.defended == True:
-                if combatant.defend_round >= 2:
+                if combatant.defended_rounds >= 2:
                     combatant.undefend()
-                    break
+
                 else:
-                    combatant.defend_round += 1
-                    break
+                    combatant.defended_rounds += 1
+
+            if combatant.slowed == True:
+                if combatant.slowed_rounds >= 2:
+                    combatant.unslow()
+                else:
+                    combatant.slowed_rounds += 1
+
+            if combatant.poisoned:
+                poison_damage = combatant.hp // 10
+                self.add_text(f"""You take 
+{poison_damage} damage from poison""", {'combat_ongoing':True})
+                combatant.current_hp -= poison_damage
+                combatant.poisoned_rounds += 1
+
+                if combatant.poisoned_rounds > 5:
+                    combatant.unpoison()
+
 
     def draw(self):
         self.draw_layers()

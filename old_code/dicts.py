@@ -23,41 +23,22 @@ currency_tiers = {
 }
 
 lvl_dict = {
-    'graith_lizard': 4,
-     'graith_tree': 4,
+    'graith_lizard': 5,
+     'graith_tree': 5,
     'krakt_rat': 1, 
-     'braba_bat' : 2,
+     'braba_bat' : 3,
      'shadefire_fox': 6,
-     'gratka_wolf':3,
-     'rogue_goblin': 2,
+     'gratka_wolf':4,
+     'ven_spider': 4,
      'graith_queen':6,
      'graith_apple':6,
 }
-
-underbelly = {
-    1: 'krakt_rat', 
-    2: 'braba_bat',
-    3: 'rogue_goblin',
-    4: 'graith_lizard',
-    5: 'shadefire_fox',
-    6: 'graith_queen'
-}
-
-shining_forest = {
-    1: 'krakt_rat', 
-    2: 'gratka_wolf',
-    3: 'rogue_goblin',
-    4: 'graith_tree',
-    5: 'shadefire_fox',
-    6: 'graith_apple'
-}
-
 
 encounter_dict = {
     'The Underbelly': {
         1: 'krakt_rat', 
         2: 'braba_bat',
-        3: 'gratka_wolf',
+        3: 'ven_spider',
         4: 'graith_lizard',
         5: 'shadefire_fox',
         6: 'graith_queen'
@@ -118,8 +99,8 @@ npc_classes_attributes = {
     'gratka_wolf': {'strength': 'average', 'dexterity': 'average', 'constitution': 'average', 'intelligence': 'weak', 'armor':'leather', 'resistance': 'average'},
     'graith_queen': {'strength': 'very_strong', 'dexterity': 'strong', 'constitution': 'strong', 'intelligence': 'very_weak', 'armor':'bone', 'resistance': 'average'},
     'graith_apple': {'strength': 'very_strong', 'dexterity': 'very_strong', 'constitution': 'very_strong', 'intelligence': 'average', 'armor':'brigandine', 'resistance': 'weak'},
+    'ven_spider': {'strength': 'weak', 'dexterity':'strong', 'constitution': 'average', 'intelligence': 'weak', 'armor': 'chain', 'resistance': 'average'}
 }
-
 
 npc_class_choice = {
     1: 'graith_lizard',
@@ -128,7 +109,7 @@ npc_class_choice = {
     4: 'braba_bat',
     5: 'shadefire_fox',
     6: 'gratka_wolf',
-    7: None,
+    7: 'ven_spider',
     8: 'graith_queen',
     9: 'graith_apple'
 }

@@ -10,7 +10,7 @@ from .utils import *
 
 
 class CombatText(DisplayImage):
-    def __init__(self, combat_state:object, combat_text:str, display_time:float=4,
+    def __init__(self, combat_state:object, combat_text:str, display_time:float=1.5,
     combat_ongoing:bool=True, combat_won:bool = True, x=76, y=84, bank=1, u=0, 
     v=192, w=120, h=48, colkey=7 ) -> None:
         super().__init__(x, y, bank, u, v, w, h, colkey)
@@ -46,7 +46,8 @@ class CombatText(DisplayImage):
             if self.combat_won:
 
                 if px.btnr(px.MOUSE_BUTTON_LEFT):
-                    self.game.player.set_dependant_atts()
+                    # print(f'CombatText: game explored {self.game.explored} ')
+                    self.game.player.set_combat_atts()
                     self.game.player.reset_flags()
                     if self.game.explored >= 11:
                         try:

@@ -11,7 +11,7 @@ from pyxel_code.utils import sidebar
 
 class App:
     def __init__(self):
-        px.init(WIDTH, HEIGHT, title="From the Dragon's Tail", fps=15, capture_sec=0, display_scale=5)
+        px.init(WIDTH, HEIGHT, title="From the Dragon's Tail", fps=15, capture_sec=5, display_scale=5)
         px.load("assets/dragons_tail.pyxres")
         # px.fullscreen(True)
 
