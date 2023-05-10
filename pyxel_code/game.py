@@ -19,7 +19,7 @@ class Game:
         self.text = []
 
 # How to set levels for all sound? Not sure.
-        px.Sound(1)
+        px.Sound()
         
 
         self.state = TitleScreen(self)
