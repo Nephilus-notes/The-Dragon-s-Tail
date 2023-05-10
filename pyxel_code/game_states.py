@@ -204,6 +204,10 @@ class GameState(ABC):
 
     def display_text(self):
         if len(self.game.text) > 0:
+
+            # change this to just freeze interacables if there is text, 
+            # and unfreeze if there is not. maybe conditional based on whether there are interactables or not.
+            
             # self.game.text_timer = 0
             if self.game.text[-1] != Interactable.unfreeze:
                 # print('adding unfreeze')

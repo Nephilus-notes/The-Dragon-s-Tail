@@ -15,9 +15,10 @@ Changes will not always come quickly but here are a variety of changes planned f
 3. Adding more enemies
 4. Adding more statuses
 
-Play the latest release of the game by following the link below:
+Play the latest release of the game below:
 
-https://lighthearted-pasca-06e9b2.netlify.app/
+[Play Now](https://lighthearted-pasca-06e9b2.netlify.app/)
+|---|
 
 If you have any feedback or bugs to report please open an issue and let me know.
 
