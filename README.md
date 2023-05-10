@@ -1,5 +1,13 @@
 # The Dragon's Tail
 
+We have moved.  FEel free to check out the legacy version of the game below or
+
+[Click Here](https://github.com/Nephilus-notes/Portfolio-Dragon-s-Tail)
+|---|
+
+To go to the most recent version's Github.  It is currently in alpha and the link will be updated when it goes live.
+
+#
 Welcome! The Dragon's Tail is a game about one young goblin's quest to claim their place as an adult by
 defeating the Graith Trees that keep the goblins underground and reuniting with their aboveground 
 brethren. 
@@ -15,7 +23,7 @@ Changes will not always come quickly but here are a variety of changes planned f
 3. Adding more enemies
 4. Adding more statuses
 
-Play the latest release of the game below:
+Play the Legacy version of the game below:
 
 [Play Now](https://lighthearted-pasca-06e9b2.netlify.app/)
 |---|
