@@ -1,6 +1,6 @@
 # The Dragon's Tail
 
-We have moved.  FEel free to check out the legacy version of the game below or
+We have moved.  Feel free to check out the legacy version of the game below or
 
 [Click Here](https://github.com/Nephilus-notes/Portfolio-Dragon-s-Tail)
 |---|
